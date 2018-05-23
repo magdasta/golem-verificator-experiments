@@ -14,35 +14,15 @@ def _ensure_dir( file_path ):
 ##
 def load_image( file_path ):
 
-    pixelType = itk.UC
-    imageType = itk.Image[pixelType, 2]
-
-    readerType = itk.ImageFileReader[ imageType ]
-    reader = readerType.New()
-    
-    reader.SetFileName( file_path )
-    return reader
+    return itk.imread( file_path )
 
 ## ====================================
 ##
 def save_image( file_path, image ):
-    
-    pixelType = itk.UC
-    imageType = itk.Image[pixelType, 2]
 
-    writerType = itk.ImageFileWriter[imageType]
-    writer = writerType.New()
-
-    writer.SetFileName( argv[2] )
-        
-    # Create empty file
-    _ensure_dir( argv[2] )
-    open( argv[2], 'a' ).close()
-    
-    writer.SetInput( image )
-    writer.Update()
+    itk.imwrite( image, file_path )
     
 
 
-reader = load_image( argv[ 1 ] )
-save_image( argv[ 2 ], reader.GetOutput() )
+output = load_image( argv[ 1 ] )
+save_image( argv[ 2 ], output )
