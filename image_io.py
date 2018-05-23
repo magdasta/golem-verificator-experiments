@@ -10,23 +10,39 @@ def _ensure_dir( file_path ):
     if not os.path.exists( directory ):
         os.makedirs( directory )
 
+## ====================================
+##
+def load_image( file_path ):
 
-pixelType = itk.UC
-imageType = itk.Image[pixelType, 2]
+    pixelType = itk.UC
+    imageType = itk.Image[pixelType, 2]
 
-readerType = itk.ImageFileReader[imageType]
-writerType = itk.ImageFileWriter[imageType]
+    readerType = itk.ImageFileReader[ imageType ]
+    reader = readerType.New()
+    
+    reader.SetFileName( file_path )
+    return reader
 
-reader = readerType.New()
-writer = writerType.New()
+## ====================================
+##
+def save_image( file_path, image ):
+    
+    pixelType = itk.UC
+    imageType = itk.Image[pixelType, 2]
 
-reader.SetFileName( argv[1] )
-writer.SetFileName( argv[2] )
+    writerType = itk.ImageFileWriter[imageType]
+    writer = writerType.New()
 
-# Create empty file
-_ensure_dir( argv[2] )
-open( argv[2], 'a' ).close()
+    writer.SetFileName( argv[2] )
+        
+    # Create empty file
+    _ensure_dir( argv[2] )
+    open( argv[2], 'a' ).close()
+    
+    writer.SetInput( image )
+    writer.Update()
+    
 
 
-writer.SetInput( reader.GetOutput() )
-writer.Update()
+reader = load_image( argv[ 1 ] )
+save_image( argv[ 2 ], reader.GetOutput() )
