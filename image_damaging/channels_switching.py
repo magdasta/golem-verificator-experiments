@@ -4,12 +4,6 @@ from PIL import Image
 import random
 
 
-def is_valid_image_file(file_name):
-    return (file_name.endswith(".png") or file_name.endswith(".jpg")) \
-           or file_name.endswith(".jpeg") or file_name.endswith(".exr") \
-           and "output" not in file_name
-
-
 def get_at_x_y(pixels, width, x, y):
     return pixels[width * y + x]
 
@@ -60,15 +54,14 @@ def run():
         subdirectory_name = (os.path.basename(root))
         channels_order = []
         for file_name in files:
-            if is_valid_image_file(file_name):
-                path_in = os.path.join(root, file_name)
-                image = Image.open(path_in)
-                if not channels_order:
-                    channels_order = get_random_channels_order(image.getdata()[0])
-                create_directory_if_doesnt_exist(os.path.join(results_directory, subdirectory_name))
-                convert_image(image,
-                              prepare_output_file_name(results_directory, subdirectory_name, file_name, channels_order)
-                              , channels_order)
+            path_in = os.path.join(root, file_name)
+            image = Image.open(path_in)
+            if not channels_order:
+                channels_order = get_random_channels_order(image.getdata()[0])
+            create_directory_if_doesnt_exist(os.path.join(results_directory, subdirectory_name))
+            convert_image(image,
+                          prepare_output_file_name(results_directory, subdirectory_name, file_name, channels_order),
+                          channels_order)
 
 
 if __name__ == "__main__":
