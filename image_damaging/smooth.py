@@ -15,19 +15,15 @@ def smooth( image, parameters ):
       
 ## ======================= ##
 ##
-def smooth_images( src_file, target_dir ):
-    
-    [ file_name, extension ] = os.path.splitext( os.path.basename( src_file ) ) 
-    target_file = file_name + "_smoothed" + extension
-    target_path = os.path.join( target_dir, target_file )
-    
-    helpers.process_image( src_file, target_path, smooth, None )
-      
-## ======================= ##
-##
 def run():
 
-    helpers.process_directory( sys.argv[ 1 ], sys.argv[ 2 ], smooth_images )
+    parameters = []
+    parameters_set = helpers.Parameters()
+    parameters_set.file_postfix = "_smoothed"
+    
+    parameters.append( parameters_set )
+
+    helpers.process_directory( sys.argv[ 1 ], sys.argv[ 2 ], smooth, parameters )
 
     
     

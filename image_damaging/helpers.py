@@ -24,16 +24,32 @@ def is_valid_image_file( file_name ):
 
 ## ======================= ##
 ##
-def process_image( src_file, target_file, processor, parameters ):
+def process_image( src_file, target_file, processor, parameters_set ):
     
     image = Image.open( src_file )
-    processed = processor( image, parameters )
+    processed = processor( image, parameters_set )
     processed.save( target_file )
-        
         
 ## ======================= ##
 ##
-def process_directory( src_dir, target_dir, processor ):
+def process_images( src_file, target_dir, processor, parameters ):
+    
+    [ file_name, extension ] = os.path.splitext( os.path.basename( src_file ) ) 
+    
+    for parameters_set in parameters:
+    
+        target_file = file_name + parameters_set.file_postfix + extension
+        target_path = os.path.join( target_dir, target_file )
+        
+        print( "    Generating image: [" + target_path + "]" )
+        
+        process_image( src_file, target_path, processor, parameters_set )
+        
+## ======================= ##
+## @param processoris function which takes PIL Image and generic parameters set.
+## @param parameters is list of parameters sets invoked for each image. This structure should contain
+## file_postfix field which will be appended to src file name.
+def process_directory( src_dir, target_dir, processor, parameters ):
 
     source_images_directory = src_dir
     create_directory_if_doesnt_exist( target_dir )
@@ -55,7 +71,7 @@ def process_directory( src_dir, target_dir, processor ):
                 
                 print( "Processing file: [" + src_path + "]."  )
                 
-                processor( src_path, results_directory )
+                process_images( src_path, results_directory, processor, parameters )
                 
             else:
                 print( "Ignoring file: [" + src_path + "] as not valid image." )

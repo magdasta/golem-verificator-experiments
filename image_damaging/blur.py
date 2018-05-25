@@ -34,7 +34,17 @@ def blur_images( src_file, target_dir ):
 ##
 def run():
 
-    helpers.process_directory( sys.argv[ 1 ], sys.argv[ 2 ], blur_images )
+    parameters = []
+
+    for kernel_size in range( 1, 5 ):
+        
+        parameters_set = helpers.Parameters()
+        parameters_set.kernel_size = kernel_size
+        parameters_set.file_postfix = "_blured_" + str( kernel_size )
+        
+        parameters.append( parameters_set )
+
+    helpers.process_directory( sys.argv[ 1 ], sys.argv[ 2 ], blur, parameters )
 
     
     
