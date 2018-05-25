@@ -46,10 +46,25 @@ def process_images( src_file, target_dir, processor, parameters ):
         process_image( src_file, target_path, processor, parameters_set )
         
 ## ======================= ##
-## @param processoris function which takes PIL Image and generic parameters set.
+## @param processors function which takes file to process and calls processing multiple times.
 ## @param parameters is list of parameters sets invoked for each image. This structure should contain
 ## file_postfix field which will be appended to src file name.
 def process_directory( src_dir, target_dir, processor, parameters ):
+    _process_directory( src_dir, target_dir, None, processor, parameters )
+
+## ======================= ##
+## @param processors function which takes PIL Image and generic parameters set.
+## @param parameters is list of parameters sets invoked for each image. This structure should contain
+## file_postfix field which will be appended to src file name.
+def simple_process_directory( src_dir, target_dir, processor, parameters ):
+    _process_directory( src_dir, target_dir, processor, None, parameters )            
+                
+## ======================= ##
+## @param processors function which takes PIL Image and generic parameters set. Use only one processors or multi_processor
+## @param multi_processor replaces process_images function. multi_processor should implement splitting parameters sets into calls
+## @param parameters is list of parameters sets invoked for each image. This structure should contain
+## file_postfix field which will be appended to src file name.
+def _process_directory( src_dir, target_dir, processor, multi_processor, parameters ):
 
     source_images_directory = src_dir
     create_directory_if_doesnt_exist( target_dir )
@@ -71,12 +86,13 @@ def process_directory( src_dir, target_dir, processor, parameters ):
                 
                 print( "Processing file: [" + src_path + "]."  )
                 
-                process_images( src_path, results_directory, processor, parameters )
+                if multi_processor:
+                    multi_processor( src_path, results_directory, parameters )
+                else:
+                    process_images( src_path, results_directory, processor, parameters )
                 
             else:
                 print( "Ignoring file: [" + src_path + "] as not valid image." )
-                
-                
     
     
 

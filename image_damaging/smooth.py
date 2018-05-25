@@ -23,7 +23,7 @@ def run():
     
     parameters.append( parameters_set )
 
-    helpers.process_directory( sys.argv[ 1 ], sys.argv[ 2 ], smooth, parameters )
+    helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], smooth, parameters )
 
     
     
