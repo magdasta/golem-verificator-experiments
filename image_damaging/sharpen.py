@@ -12,22 +12,13 @@ def sharpen( image, parameters ):
     
 ## ======================= ##
 ##
-def sharpen_image( src_file, target_file ):
-
-    image = Image.open( src_file )
-    sharpened = sharpen( image, None )
-    sharpened.save( target_file )
-
-
-## ======================= ##
-##
 def sharpen_images( src_file, target_dir ):
 
     [file_name, extension] = os.path.splitext(os.path.basename(src_file))
-    target_file = file_name + "_smoothed" + extension
+    target_file = file_name + "_sharpened" + extension
     target_path = os.path.join(target_dir, target_file)
 
-    sharpen_image(src_file, target_path)
+    helpers.process_image( src_file, target_path, sharpen, None )
     
 
 ## ======================= ##

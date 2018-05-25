@@ -1,6 +1,12 @@
 import sys
 import os
+from PIL import Image
 
+
+## ======================= ##
+##
+class Parameters:
+    pass
 
 
 ## ======================= ##
@@ -16,6 +22,13 @@ def is_valid_image_file( file_name ):
            or file_name.endswith(".jpeg") or file_name.endswith(".exr") \
            and "output" not in file_name
 
+## ======================= ##
+##
+def process_image( src_file, target_file, processor, parameters ):
+    
+    image = Image.open( src_file )
+    processed = processor( image, parameters )
+    processed.save( target_file )
         
         
 ## ======================= ##
