@@ -1,0 +1,3 @@
+python edge_extraction/edge_extraction.py TestImages/barcelona_00087_800_600_8725.png ProcessedImages/barcelona_edges.png
+python destruction/smooth.py TestImages/barcelona_00087_800_600_8725.png ProcessedImages/barcelona_smooth.png
+python destruction/sharpen.py TestImages/barcelona_00087_800_600_8725.png ProcessedImages/barcelona_sharpen.png
