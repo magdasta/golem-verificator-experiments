@@ -33,8 +33,7 @@ def smooth_images( src_file, target_dir ):
 ## ======================= ##
 ##
 def run():
-    
-    #smooth_image( sys.argv[ 1 ], sys.argv[ 2 ] )
+
     helpers.process_directory( sys.argv[ 1 ], sys.argv[ 2 ], smooth_images )
 
     
