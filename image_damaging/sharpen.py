@@ -17,4 +17,16 @@ def sharpen_image( src_file, target_file ):
     sharpened.save( target_file )
     
     
-sharpen_image( sys.argv[ 1 ], sys.argv[ 2 ] )
+
+## ======================= ##
+##
+def run():
+    sharpen_image( sys.argv[ 1 ], sys.argv[ 2 ] )
+
+    
+## ======================= ##
+##
+if __name__ == "__main__":
+    run()
+    
+    
