@@ -118,13 +118,13 @@ def run():
         
         parameters.append( parameters_set )
 
-    #helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], noise, parameters )
+    helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], noise, parameters )
     
     for param_set in parameters:
         param_set.file_postfix = "_noise_colored" + param_to_postfix( param_set )
     
     
-    #helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], colored_noise, parameters )
+    helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], colored_noise, parameters )
 
     
     parameters = []
