@@ -59,6 +59,41 @@ def colored_noise( image, parameters ):
     return add_noise( image, random_image_r, random_image_g, random_image_b )
     
     
+## ======================= ##
+##
+def burned_pixels( image, parameters ):
+    
+    mean = parameters.mean
+    stddev = parameters.stddev
+    size = image.width * image.height
+    channel_probability = parameters.probability / 3
+    
+    random_noise = numpy.random.normal( mean, stddev, size )
+    
+    pixel_mask = numpy.random.rand( size )
+    
+    pixel_mask_r = ( pixel_mask < channel_probability )
+    
+    pixel_mask_g = ( pixel_mask < 2 * channel_probability )
+    pixel_mask_g = ( pixel_mask_g >= channel_probability )
+    
+    pixel_mask_b = ( pixel_mask < 3 * channel_probability )
+    pixel_mask_b = ( pixel_mask_b >= 2 * channel_probability )
+    
+    random_noise_r = random_noise * pixel_mask_r
+    random_noise_r = numpy.reshape( random_noise_r, [ image.height, image.width ] )
+
+    random_noise_g = random_noise * pixel_mask_g
+    random_noise_g = numpy.reshape( random_noise_g, [ image.height, image.width ] )
+    
+    random_noise_b = random_noise * pixel_mask_b
+    random_noise_b = numpy.reshape( random_noise_b, [ image.height, image.width ] )
+    
+    random_image_r = Image.fromarray( random_noise_r )
+    random_image_g = Image.fromarray( random_noise_g )
+    random_image_b = Image.fromarray( random_noise_b )
+
+    return add_noise( image, random_image_r, random_image_g, random_image_b )
       
 ## ======================= ##
 ##
@@ -83,7 +118,7 @@ def run():
         
         parameters.append( parameters_set )
 
-    #helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], noise, parameters )
+    helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], noise, parameters )
     
     for param_set in parameters:
         param_set.file_postfix = "_noise_colored" + param_to_postfix( param_set )
@@ -92,6 +127,21 @@ def run():
     helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], colored_noise, parameters )
 
     
+    parameters = []
+    
+    probabilities = ( 0.001, 0.005, 0.01, 0.02, 0.04, 0.08, 0.15 )
+    
+    for probability in probabilities:
+        parameters_set = helpers.Parameters()
+        
+        parameters_set.mean = 128
+        parameters_set.stddev = 110
+        parameters_set.probability = probability
+        parameters_set.file_postfix = "_noise_peak_probability" + str( probability )
+        
+        parameters.append( parameters_set )
+    
+    helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], burned_pixels, parameters )
     
 if __name__ == "__main__":
     run()
