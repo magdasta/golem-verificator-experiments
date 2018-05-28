@@ -5,3 +5,4 @@ python image_damaging/sharpen.py TestImages/barcelona_00087_800_600_8725.png Pro
 python image_damaging/smooth.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/smooth/
 python image_damaging/sharpen.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/sharpen/
 python image_damaging/blur.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/blur/
+python image_damaging/noise.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/noise/
