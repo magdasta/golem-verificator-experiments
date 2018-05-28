@@ -6,3 +6,5 @@ python image_damaging/smooth.py D:/GolemData/PSNR/ D:/GolemData/damaging_results
 python image_damaging/sharpen.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/sharpen/
 python image_damaging/blur.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/blur/
 python image_damaging/noise.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/noise/
+
+python image_damaging/wavelet_smooth.py DataSets/PSNR_data_set/bunkbed/ processed/ db4 4
