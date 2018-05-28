@@ -75,10 +75,10 @@ def burned_pixels( image, parameters ):
     pixel_mask_r = ( pixel_mask < channel_probability )
     
     pixel_mask_g = ( pixel_mask < 2 * channel_probability )
-    pixel_mask_g = ( pixel_mask_g >= channel_probability )
+    pixel_mask_g = ( pixel_mask >= channel_probability ) & pixel_mask_g
     
     pixel_mask_b = ( pixel_mask < 3 * channel_probability )
-    pixel_mask_b = ( pixel_mask_b >= 2 * channel_probability )
+    pixel_mask_b = ( pixel_mask >= 2 * channel_probability ) & pixel_mask_b
     
     random_noise_r = random_noise * pixel_mask_r
     random_noise_r = numpy.reshape( random_noise_r, [ image.height, image.width ] )
@@ -118,13 +118,13 @@ def run():
         
         parameters.append( parameters_set )
 
-    helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], noise, parameters )
+    #helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], noise, parameters )
     
     for param_set in parameters:
         param_set.file_postfix = "_noise_colored" + param_to_postfix( param_set )
     
     
-    helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], colored_noise, parameters )
+    #helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], colored_noise, parameters )
 
     
     parameters = []
