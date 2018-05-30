@@ -39,6 +39,11 @@ def pair_image_with_reference( images, reference_files ):
 
 ## ======================= ##
 ##
+def make_relative_path( pair, relative_dir ):
+    return ( os.path.join( relative_dir, pair[ 0 ] ), os.path.join( relative_dir, pair[ 1 ] ) )
+        
+## ======================= ##
+##
 def list_reference_comparisions( images_dir, reference_dir ):
 
     # consists of pairs of files to compare
@@ -52,22 +57,67 @@ def list_reference_comparisions( images_dir, reference_dir ):
         reference_path = os.path.join( reference_dir, relative_directory )
         
         print( "Processing directory: [" + root + "]" )
-        print( "Looking for reference images in [" + reference_path + "]")
+        print( "    Looking for reference images in [" + reference_path + "]")
         
         reference_files = list_files( reference_path )
         
         pairs = pair_image_with_reference( files, reference_files )
+        pairs = [ make_relative_path( pair, relative_directory ) for pair in pairs ]
+        
         comparision_list.extend( pairs )
+        
+        print( "    Found " + str( len( pairs ) ) + " pairs of files to compare." )
         
     return comparision_list
         
 
 ## ======================= ##
 ##
+def all_combinations( files ):
+    
+    combintations = []
+    
+    for first in range( 0, len( files ) ):
+        for second in range( 0, first ):
+            combintations.append( ( files[ first ], files[ second ] ) )
+    
+    return combintations
+    
+        
+## ======================= ##
+##
+def list_all_combinations_comparisions( directory ):
+       
+    # consists of pairs of files to compare
+    comparision_list = []
+    
+    for root, dirs, files in os.walk( directory ):
+    
+        relative_directory = os.path.relpath( root, directory )
+        
+        print( "Processing directory: [" + root + "]" )    
+        
+        pairs = all_combinations( files )
+        pairs = [ make_relative_path( pair, relative_directory ) for pair in pairs ]
+        
+        comparision_list.extend( pairs )
+        
+        print( "    Found " + str( len( pairs ) ) + " pairs of files to compare." )
+    
+    return comparision_list
+        
+## ======================= ##
+##
 def run():
 
-    print( list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] ) )
-    #list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] )
+    #print( list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] ) )
+    #list = list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] )
+    list = list_all_combinations_comparisions( sys.argv[ 1 ] )
+    
+    file = open("list.txt","w") 
+    file.write( str( list ) )
+
+        
         
 if __name__ == "__main__":
     run()
