@@ -9,3 +9,10 @@ python image_damaging/noise.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/
 python image_damaging/transparent_watermark.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/watermarks/ Images/Watermark.png
 
 python image_damaging/wavelet_smooth.py DataSets/PSNR_data_set/bunkbed/ processed/ db4 4
+
+
+# classification scripts
+
+python classification/list_comparisions.py D:/GolemData/PSNR/barcelona/ D:/GolemData/damaging_results/blur/barcelona/
+
+
