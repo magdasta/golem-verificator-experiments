@@ -119,20 +119,22 @@ def list_all_combinations_comparisions( directory ):
         
 ## ======================= ##
 ##
-def list_all( reference_dir, compare_dir_parent, subdirs ):
+def list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs ):
     
     comparision_list = []
+    
+    print( "Processing subdirectories: " + str( subdirs ) + "\n")
     
     for subdir in subdirs:
     
         dir = make_relative( compare_dir_parent, subdir )
-        
+    
         list = list_reference_comparisions( dir, reference_dir )
-        pairs = [ ( pair[ 0 ], make_relative( dir, pair[ 1 ] ) ) for pair in list ]
+        pairs = [ ( pair[ 0 ], make_relative( subdir, pair[ 1 ] ) ) for pair in list ]
         
-        comparision_list.append( pairs )
+        comparision_list.extend( pairs )
         
-    comparision_list.append( list_all_combinations_comparisions( reference_dir ) )
+    comparision_list.extend( list_all_combinations_comparisions( reference_dir ) )
 
     return comparision_list
         
@@ -141,7 +143,7 @@ def list_all( reference_dir, compare_dir_parent, subdirs ):
 def list_all( reference_dir, compare_dir_parent ):
 
     subdirs = list_directories( compare_dir_parent )
-    return list_all( reference_dir, compare_dir_parent, subdirs )
+    return list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs )
     
     
         
@@ -151,13 +153,10 @@ def run():
 
     reference_dir = sys.argv[ 1 ]
     compare_dir_parent = sys.argv[ 2 ]
-    subdirs = list_directories( compare_dir_parent )
-    
-    print( "Processing subdirectories [" + subdirs "]\n")
 
     #print( list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] ) )
     #list = list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] )
-    list = list_all( reference_dir, compare_dir_parent, subdirs )
+    list = list_all( reference_dir, compare_dir_parent )
     
     file = open("list.txt","w") 
     file.write( str( list ) )
