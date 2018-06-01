@@ -14,5 +14,5 @@ python image_damaging/wavelet_smooth.py DataSets/PSNR_data_set/bunkbed/ processe
 # classification scripts
 
 python classification/list_comparisions.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/
-
+python classification/extract_features.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/ params.csv
 
