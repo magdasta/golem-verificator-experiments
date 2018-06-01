@@ -23,7 +23,7 @@ def run():
         
         parameters_set = helpers.Parameters()
         parameters_set.kernel_size = kernel_size
-        parameters_set.file_postfix = "_blured_" + str( kernel_size )
+        parameters_set.file_postfix = "_[blured]_" + "[kernel=" + str( kernel_size ) + "]"
         
         parameters.append( parameters_set )
 

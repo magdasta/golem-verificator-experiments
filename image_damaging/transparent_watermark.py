@@ -53,7 +53,7 @@ def run():
         parameters_set = helpers.Parameters()
         parameters_set.watermark = watermark
         parameters_set.alpha = alpha
-        parameters_set.file_postfix = "_watermark_alpha" + str( alpha )
+        parameters_set.file_postfix = "_[watermark]_[alpha=" + str( alpha ) + "]"
         
         parameters.append( parameters_set )
 

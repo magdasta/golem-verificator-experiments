@@ -8,8 +8,9 @@ from sys import argv
 def simplify_file_name(file_name):
     split = file_name.split("_")
     samples_and_extension = split[-1]
+    ( samples, extension ) = os.path.splitext( samples_and_extension )
     base_name = split[0]
-    return base_name + "_" + samples_and_extension
+    return base_name + "_[samples=" + samples + "]" + extension
 
 
 def rename():

@@ -19,7 +19,7 @@ def run():
 
     parameters = []
     parameters_set = helpers.Parameters()
-    parameters_set.file_postfix = "_smoothed"
+    parameters_set.file_postfix = "_[smoothed]"
     
     parameters.append( parameters_set )
 

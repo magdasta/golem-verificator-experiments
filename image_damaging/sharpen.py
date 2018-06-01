@@ -17,7 +17,7 @@ def run():
 
     parameters = []
     parameters_set = helpers.Parameters()
-    parameters_set.file_postfix = "_sharpened"
+    parameters_set.file_postfix = "_[sharpened]"
     
     parameters.append( parameters_set )
 

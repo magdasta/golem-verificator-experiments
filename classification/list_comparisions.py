@@ -9,7 +9,11 @@ def list_files( directory ):
     for ( dirpath, dirnames, filenames ) in os.walk( directory ):
         return filenames
 
-        
+## ======================= ##
+##
+def list_directories( directory ):
+    
+    return next(os.walk(directory))[ 1 ]
         
 ## ======================= ##
 ##
@@ -39,8 +43,14 @@ def pair_image_with_reference( images, reference_files ):
 
 ## ======================= ##
 ##
+def make_relative( relative, path ):
+    return os.path.join( relative, path )
+
+        
+## ======================= ##
+##
 def make_relative_path( pair, relative_dir ):
-    return ( os.path.join( relative_dir, pair[ 0 ] ), os.path.join( relative_dir, pair[ 1 ] ) )
+    return ( make_relative( relative_dir, pair[ 0 ] ), make_relative( relative_dir, pair[ 1 ] ) )
         
 ## ======================= ##
 ##
@@ -106,13 +116,48 @@ def list_all_combinations_comparisions( directory ):
     
     return comparision_list
         
+        
+## ======================= ##
+##
+def list_all( reference_dir, compare_dir_parent, subdirs ):
+    
+    comparision_list = []
+    
+    for subdir in subdirs:
+    
+        dir = make_relative( compare_dir_parent, subdir )
+        
+        list = list_reference_comparisions( dir, reference_dir )
+        pairs = [ ( pair[ 0 ], make_relative( dir, pair[ 1 ] ) ) for pair in list ]
+        
+        comparision_list.append( pairs )
+        
+    comparision_list.append( list_all_combinations_comparisions( reference_dir ) )
+
+    return comparision_list
+        
+## ======================= ##
+##
+def list_all( reference_dir, compare_dir_parent ):
+
+    subdirs = list_directories( compare_dir_parent )
+    return list_all( reference_dir, compare_dir_parent, subdirs )
+    
+    
+        
 ## ======================= ##
 ##
 def run():
 
+    reference_dir = sys.argv[ 1 ]
+    compare_dir_parent = sys.argv[ 2 ]
+    subdirs = list_directories( compare_dir_parent )
+    
+    print( "Processing subdirectories [" + subdirs "]\n")
+
     #print( list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] ) )
     #list = list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] )
-    list = list_all_combinations_comparisions( sys.argv[ 1 ] )
+    list = list_all( reference_dir, compare_dir_parent, subdirs )
     
     file = open("list.txt","w") 
     file.write( str( list ) )

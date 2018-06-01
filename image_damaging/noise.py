@@ -99,7 +99,7 @@ def burned_pixels( image, parameters ):
 ##
 def param_to_postfix( parameters ):
     
-    return "_mean" + str( parameters.mean ) + "_stddev" + str( parameters.stddev )
+    return "_[mean=" + str( parameters.mean ) + "]_[stddev=" + str( parameters.stddev ) + "]"
       
 ## ======================= ##
 ##
@@ -114,14 +114,14 @@ def run():
         
         parameters_set.mean = 0
         parameters_set.stddev = stddev
-        parameters_set.file_postfix = "_noise" + param_to_postfix( parameters_set )
+        parameters_set.file_postfix = "_[noise]" + param_to_postfix( parameters_set )
         
         parameters.append( parameters_set )
 
     helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], noise, parameters )
     
     for param_set in parameters:
-        param_set.file_postfix = "_noise_colored" + param_to_postfix( param_set )
+        param_set.file_postfix = "_[noise_colored]" + param_to_postfix( param_set )
     
     
     helpers.simple_process_directory( sys.argv[ 1 ], sys.argv[ 2 ], colored_noise, parameters )
@@ -137,7 +137,7 @@ def run():
         parameters_set.mean = 128
         parameters_set.stddev = 110
         parameters_set.probability = probability
-        parameters_set.file_postfix = "_noise_peak_probability" + str( probability )
+        parameters_set.file_postfix = "_[noise_peak]_[probability=" + str( probability ) + "]" + param_to_postfix( parameters_set )
         
         parameters.append( parameters_set )
     
