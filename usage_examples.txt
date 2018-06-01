@@ -1,6 +1,6 @@
-python edge_extraction/edge_extraction.py TestImages/barcelona_00087_800_600_8725.png ProcessedImages/barcelona_edges.png
-python image_damaging/smooth.py TestImages/barcelona_00087_800_600_8725.png ProcessedImages/barcelona_smooth.png
-python image_damaging/sharpen.py TestImages/barcelona_00087_800_600_8725.png ProcessedImages/barcelona_sharpen.png
+python edge_extraction/edge_extraction.py TestImages/barcelona_8725.png ProcessedImages/barcelona_edges.png
+python image_damaging/smooth.py TestImages/barcelona_8725.png ProcessedImages/barcelona_smooth.png
+python image_damaging/sharpen.py TestImages/barcelona_8725.png ProcessedImages/barcelona_sharpen.png
 
 python image_damaging/smooth.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/smooth/
 python image_damaging/sharpen.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/sharpen/
@@ -16,3 +16,4 @@ python image_damaging/wavelet_smooth.py DataSets/PSNR_data_set/bunkbed/ processe
 python classification/list_comparisions.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/
 python classification/extract_features.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/ params.csv
 
+python classification/metrics/ssim.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
