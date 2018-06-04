@@ -27,6 +27,8 @@ def unique_params( compare_list ):
 ## 
 def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
     
+    errors_list = []
+    
     compare_list = list_comparisions.list_all( reference_dir, compare_dir_parent )
     
     params = list( unique_params( compare_list ) )
@@ -70,13 +72,35 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
             print( "    [" + reference + "] and: ")
             print( "    [" + to_compare + "]")
         
-            # Compute features
-            for feature in features:
-                metrics_dict = feature.compute_metrics( os.path.join( reference_dir, reference ), os.path.join( compare_dir_parent, to_compare ) )
-                paramsDict.update( metrics_dict )
+            try:
         
-            writer.writerow( paramsDict )
+                if os.path.isfile( reference ) and os.path.isfile( to_compare ):
+            
+                    # Compute features
+                    for feature in features:
+                        metrics_dict = feature.compute_metrics( reference, to_compare )
+                        paramsDict.update( metrics_dict )
+                
+                    writer.writerow( paramsDict )
+                else:
+                    if not os.path.isfile( reference ):
+                        print( "    File: [" + reference + "] doesn't exist."  )
+                        
+                    if not os.path.isfile( to_compare ):
+                        print( "    File: [" + to_compare + "] doesn't exist."  )
+            
+            except:
+            
+                print( "Error processing files: " )
+                print( "    [" + reference + "] and: ")
+                print( "    [" + to_compare + "]")
+                
+                errors_list.append( ( reference, to_compare ) )
+                
+    print( str( len( errors_list ) ) + " errors occured when processing following files:" )
     
+    for error in errors_list:
+        print( "    [" + error[ 0 ] + "] and [" + error[ 1 ] + "]" )
     
 ## ======================= ##
 ##
