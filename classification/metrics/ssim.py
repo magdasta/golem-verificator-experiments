@@ -13,10 +13,10 @@ class MetricSSIM:
 
     ## ======================= ##
     ##
-    def compute_metrics( this, image_file1, image_file2 ):
+    def compute_metrics( this, image1, image2 ):
 
-        image1 = Image.open( image_file1 ).convert("RGB")
-        image2 = Image.open( image_file2 ).convert("RGB")
+        image1 = image1.convert("RGB")
+        image2 = image2.convert("RGB")
         
         np_image1 = numpy.array( image1 )
         np_image2 = numpy.array( image2 )
