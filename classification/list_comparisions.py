@@ -79,6 +79,9 @@ def list_reference_comparisions( images_dir, reference_dir ):
         
         reference_files = list_files( reference_path )
         
+        if reference_files is None or files is None:
+            continue
+        
         # get rid of non-image files.
         reference_files = [ file for file in reference_files if is_valid_image_file( file ) ]
         files = [ file for file in files if is_valid_image_file( file ) ]

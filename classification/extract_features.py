@@ -97,10 +97,14 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
                 
                 errors_list.append( ( reference, to_compare ) )
                 
-    print( str( len( errors_list ) ) + " errors occured when processing following files:" )
-    
-    for error in errors_list:
-        print( "    [" + error[ 0 ] + "] and [" + error[ 1 ] + "]" )
+    if len( errors_list ) > 0:
+        print( str( len( errors_list ) ) + " errors occured when processing following files:" )
+        
+        for error in errors_list:
+            print( "    [" + error[ 0 ] + "] and [" + error[ 1 ] + "]" )
+    else:
+        print( "\n## ===================================================== ##" )
+        print( "Processing completed without errors." )
     
 ## ======================= ##
 ##
