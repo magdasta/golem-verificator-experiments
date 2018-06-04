@@ -2,6 +2,14 @@ import sys
 import os
 
 
+
+## ======================= ##
+##
+def is_valid_image_file( file_name ):
+    return (file_name.endswith(".png") or file_name.endswith(".jpg")) \
+           or file_name.endswith(".jpeg") or file_name.endswith(".exr") \
+           and "output" not in file_name
+
 ## ======================= ##
 ##
 def list_files( directory ):
@@ -71,6 +79,10 @@ def list_reference_comparisions( images_dir, reference_dir ):
         
         reference_files = list_files( reference_path )
         
+        # get rid of non-image files.
+        reference_files = [ file for file in reference_files if is_valid_image_file( file ) ]
+        files = [ file for file in files if is_valid_image_file( file ) ]
+        
         pairs = pair_image_with_reference( files, reference_files )
         pairs = [ make_relative_path( pair, relative_directory ) for pair in pairs ]
         
@@ -106,6 +118,9 @@ def list_all_combinations_comparisions( directory ):
         relative_directory = os.path.relpath( root, directory )
         
         print( "Processing directory: [" + root + "]" )    
+        
+        # get rid of non-image files.
+        files = [ file for file in files if is_valid_image_file( file ) ]
         
         pairs = all_combinations( files )
         pairs = [ make_relative_path( pair, relative_directory ) for pair in pairs ]
