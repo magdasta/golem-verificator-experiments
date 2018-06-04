@@ -17,3 +17,4 @@ python classification/list_comparisions.py D:/GolemData/PSNR/ D:/GolemData/damag
 python classification/extract_features.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/ params.csv
 
 python classification/metrics/ssim.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
+python classification/metrics/psnr.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png

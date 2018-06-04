@@ -1,6 +1,7 @@
 import extract_params as extr
 import list_comparisions
 import metrics.ssim
+import metrics.psnr
 
 import os
 import sys
@@ -33,6 +34,7 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
 
     labels.append( "reference_image" )
     labels.append( "image" )
+    labels.append( "samples_reference" )
     
     labels = labels + params
     
@@ -57,6 +59,9 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
             paramsDict[ "image" ] = to_compare
             
             params_list = extr.extract_params( to_compare )
+            reference_params_list = extr.extract_params( reference )
+            
+            paramsDict[ "samples_reference" ] = reference_params_list[ 0 ][ 1 ]
             
             for param in params_list:
                 paramsDict[ param[ 0 ] ] = param[ 1 ]
@@ -81,7 +86,7 @@ def run():
     compare_dir_parent = sys.argv[ 2 ]
     csv_file = sys.argv[ 3 ]
     
-    features = [ metrics.ssim.MetricSSIM() ]
+    features = [ metrics.ssim.MetricSSIM(), metrics.psnr.MetricPSNR() ]
 
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
         

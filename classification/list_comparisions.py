@@ -130,11 +130,17 @@ def list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs ):
         dir = make_relative( compare_dir_parent, subdir )
     
         list = list_reference_comparisions( dir, reference_dir )
-        pairs = [ ( pair[ 0 ], make_relative( subdir, pair[ 1 ] ) ) for pair in list ]
+        pairs = [ ( make_relative( reference_dir, pair[ 0 ] ), make_relative( dir, pair[ 1 ] ) ) for pair in list ]
         
         comparision_list.extend( pairs )
         
-    comparision_list.extend( list_all_combinations_comparisions( reference_dir ) )
+        
+    print( "Processing combinations with different sampling rate in subdirectory: " + str( reference_dir ) + "\n")
+    
+    pairs = list_all_combinations_comparisions( reference_dir )
+    pairs = [ ( make_relative( reference_dir, pair[ 0 ] ), make_relative( reference_dir, pair[ 1 ] ) ) for pair in pairs ]
+    
+    comparision_list.extend( pairs )
 
     return comparision_list
         
