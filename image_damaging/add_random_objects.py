@@ -110,10 +110,11 @@ def draw_objects(image, parameters):
 
 
 def run():
+    number_of_objects_string = argv[3]
     parameters = []
     parameters_set = helpers.Parameters()
-    parameters_set.file_postfix = "_random_shapes"
-    parameters_set.shapes_to_add = prepare_objects_data(int(argv[3]))
+    parameters_set.file_postfix = "_[randomObjects]_[numberOfObjects=" + number_of_objects_string + "]"
+    parameters_set.shapes_to_add = prepare_objects_data(int(number_of_objects_string))
 
     parameters.append(parameters_set)
 

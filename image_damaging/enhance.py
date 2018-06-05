@@ -34,7 +34,7 @@ def run():
     parameters = []
     parameters_set = helpers.Parameters()
     parameters_set.factor = float(argv[4])
-    parameters_set.file_postfix = "_" + argv[1] + "_factor_" + str(parameters_set.factor).replace(".", "_")
+    parameters_set.file_postfix = "_[enhanced" + argv[1].capitalize() + "]_[factor=" + str(parameters_set.factor) + "]"
 
     parameters.append(parameters_set)
 

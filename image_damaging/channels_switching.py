@@ -37,7 +37,7 @@ def channels_order_to_string(channels_order):
 
 def prepare_output_file_name(results_directory, subdirectory_name, file_name, channels_order):
     base_name, extension = os.path.splitext(file_name)
-    file_name = base_name + "_channels_" + channels_order_to_string(channels_order) + extension
+    file_name = base_name + "_[channelsSwitched]_[channelsOrder=" + channels_order_to_string(channels_order) + "]" + extension
     return os.path.join(results_directory, subdirectory_name, file_name)
 
 
