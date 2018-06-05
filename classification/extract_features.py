@@ -2,6 +2,7 @@ import extract_params as extr
 import list_comparisions
 import metrics.ssim
 import metrics.psnr
+import metrics.variance
 from PIL import Image
 
 import os
@@ -178,7 +179,7 @@ def run():
     compare_dir_parent = sys.argv[ 2 ]
     csv_file = sys.argv[ 3 ]
     
-    features = [ metrics.ssim.MetricSSIM(), metrics.psnr.MetricPSNR() ]
+    features = [ metrics.ssim.MetricSSIM(), metrics.psnr.MetricPSNR(), metrics.variance.ImageVariance() ]
 
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
         

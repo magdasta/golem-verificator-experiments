@@ -24,5 +24,16 @@ def save_image( file_path, image ):
     
 
 
-output = load_image( argv[ 1 ] )
-save_image( argv[ 2 ], output )
+
+
+## ======================= ##
+##
+def run():
+    
+    output = load_image( argv[ 1 ] )
+    save_image( argv[ 2 ], output )   
+        
+        
+        
+if __name__ == "__main__":
+    run()
