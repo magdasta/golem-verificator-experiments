@@ -32,6 +32,10 @@ def create_base_params_list( reference, to_compare ):
     paramsDict[ "reference_image" ] = reference
     paramsDict[ "image" ] = to_compare
     
+    paramsDict[ "is_cropped" ] = False
+    paramsDict[ "crop_x" ] = None
+    paramsDict[ "crop_y" ] = None
+    
     params_list = extr.extract_params( to_compare )
     reference_params_list = extr.extract_params( reference )
     
@@ -55,12 +59,34 @@ def compute_metrics( reference_image, image_to_compare, features ):
         paramsDict.update( metrics_dict )
             
     return paramsDict
+
+## ======================= ##
+## 
+def crop_image( tile_x, tile_y, tiles, image, reference ):
+
+    width = image.width
+    height = image.height
+    
+    if width != reference.width or height != reference.height:
+        raise ValueError( 'Image and reference ahve different size.' )
+        
+    crop_width = width / tiles
+    crop_height = height / tiles
+    
+    crop_x = tile_x * crop_width
+    crop_y = tile_y * crop_height
+    
+    box = ( crop_x, crop_y, crop_x + crop_width, crop_y + crop_height )
+    
+    return ( image.crop( box ), reference.crop( box ) )
+    
     
 ## ======================= ##
 ## 
 def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
     
     errors_list = []
+    num_crops = 10      # In one dimmension
     
     compare_list = list_comparisions.list_all( reference_dir, compare_dir_parent )
     
@@ -70,6 +96,10 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
     labels.append( "reference_image" )
     labels.append( "image" )
     labels.append( "samples_reference" )
+    
+    labels.append( "is_cropped" )
+    labels.append( "crop_x" )
+    labels.append( "crop_y" )
     
     labels = labels + params
     
@@ -95,15 +125,31 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
         
             try:
                 
+                paramsDict = create_base_params_list( reference, to_compare )
+                
                 reference_image = Image.open( reference )
                 image_to_compare = Image.open( to_compare )
-            
-                paramsDict = create_base_params_list( reference, to_compare )
-            
+                
+                # Compute metrics for whole image
                 metrics_dict = compute_metrics( reference_image, image_to_compare, features )
                 paramsDict.update( metrics_dict )
                 
                 writer.writerow( paramsDict )
+            
+                # Compute metrics for crops
+                for y in range( 0, num_crops ):
+                    for x in range( 0, num_crops ):
+                    
+                        ( cropped_image, cropped_reference ) = crop_image( x, y, num_crops, image_to_compare, reference_image )
+                
+                        paramsDict[ "is_cropped" ] = True
+                        paramsDict[ "crop_x" ] = x
+                        paramsDict[ "crop_y" ] = y
+                    
+                        metrics_dict = compute_metrics( cropped_reference, cropped_image, features )
+                        paramsDict.update( metrics_dict )
+                        
+                        writer.writerow( paramsDict )
             
             except Exception as e:
             

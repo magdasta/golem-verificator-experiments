@@ -1,5 +1,6 @@
 TestImages/
 ProcessedImages/
 Compression/
+Data/
 __pycache__
 .idea
