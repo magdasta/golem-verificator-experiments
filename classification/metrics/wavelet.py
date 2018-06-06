@@ -1,16 +1,32 @@
+from pywt import wavedec2
 import pywt
 import numpy
 from PIL import Image
 
 import sys
 
+def calculate_sum( coeff ):
+    return sum( sum( coeff ** 2 ) )
+
+def calculate_size( coeff ):
+    shape = coeff.shape
+    return shape[ 0 ] * shape[ 1 ]
+
 def calculate_mse( coeff1, coeff2, low, high ):
-    sum = 0
+    suma = 0
     num = 0
     for i in range( low, high ):
-        sum += sum( ( coeff1[ i ] - coeff2[ i ] ) ** 2 )
-        num += len( coeff1[ i ] - coeff2[ i ] )
-    return sum / num
+        if type( coeff1[ i ] ) is tuple:
+            suma += calculate_sum( coeff1[ i ][ 0 ] - coeff2[ i ][ 0 ] )
+            suma += calculate_sum( coeff1[ i ][ 1 ] - coeff2[ i ][ 1 ] )
+            suma += calculate_sum( coeff1[ i ][ 2 ] - coeff2[ i ][ 2 ] )
+        else:
+            suma += calculate_sum(coeff1[i] - coeff2[i] )
+        num += len( coeff1[ i ] )
+    if( num == 0 ):
+        return 0
+    else:
+        return suma / num
 
 ## ======================= ##
 ##
@@ -26,16 +42,22 @@ class MetricWavelet:
         np_image1 = numpy.array(image1)
         np_image2 = numpy.array(image2)
 
-        coeff1 = pywt.wavedec2( np_image1, "db4" )
-        coeff2 = pywt.wavedec2( np_image2, "db4" )
-
-        len_div_3 = len( coeff1 ) / 3
-        len_two_thirds = len( coeff1 ) * 2 / 3\
-
         result = dict()
-        result[ "wavelet_low" ] = calculate_mse( coeff1, coeff2, 0, low_div_3 )
-        result[ "wavelet_mid" ] = calculate_mse( coeff1, coeff2, low_div_3, len_two_thirds )
-        result[ "wavelet_high" ] = calculate_mse( coeff1, coeff2, len_two_thirds, len( coeff1 ) )
+        result["wavelet_low"] = 0
+        result["wavelet_mid"] = 0
+        result["wavelet_high"] = 0
+
+        for i in range(0,3):
+            coeff1 = pywt.wavedec2( np_image1[...,i], "db4" )
+            coeff2 = pywt.wavedec2( np_image2[...,i], "db4" )
+
+            len_div_3 = int( len( coeff1 ) / 3 )
+            len_two_thirds = int( len( coeff1 ) * 2 / 3 )
+            len_total = len( coeff1 )
+
+            result[ "wavelet_low" ] = result[ "wavelet_low" ] + calculate_mse( coeff1, coeff2, 0, len_div_3 )
+            result[ "wavelet_mid" ] = result[ "wavelet_mid" ] + calculate_mse( coeff1, coeff2, len_div_3, len_two_thirds )
+            result[ "wavelet_high" ] = result[ "wavelet_high" ] + calculate_mse( coeff1, coeff2, len_two_thirds, len_total )
 
         return result
 
@@ -43,30 +65,6 @@ class MetricWavelet:
     ##
     def get_labels(this):
         return [ "wavelet_low", "wavelet_mid", "wavelet_high" ]
-
-
-def waveletSmooth(x, wavelet="db4", freq_idx=6, level=None, title=None):
-    coeff = pywt.wavedec2(x, wavelet)
-
-    for i, _ in enumerate(coeff[freq_idx]):
-        coeff[freq_idx][i].fill(0)
-
-    y = pywt.waverec2(coeff, wavelet)
-    return y
-
-
-def wavlet_processor(image, parameters):
-    # original_cv = cv2.imread(sys.argv[1])
-    original = np.asarray(image)
-
-    blue = original[..., 0]
-    green = original[..., 1]
-    red = original[..., 2]
-    processed_blue = waveletSmooth(blue, parameters.wavelet, parameters.freq_idx)
-    processed_green = waveletSmooth(green, parameters.wavelet, parameters.freq_idx)
-    processed_red = waveletSmooth(red, parameters.wavelet, parameters.freq_idx)
-    processed = np.dstack((processed_blue, processed_green, processed_red))
-    return Image.fromarray(np.uint8(processed))
 
 
 ## ======================= ##
