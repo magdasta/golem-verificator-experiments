@@ -7,9 +7,7 @@ python image_damaging/sharpen.py D:/GolemData/PSNR/ D:/GolemData/damaging_result
 python image_damaging/blur.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/blur/
 python image_damaging/noise.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/noise/
 python image_damaging/transparent_watermark.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/watermarks/ Images/Watermark.png
-
-python image_damaging/wavelet_smooth.py DataSets/PSNR_data_set/bunkbed/ processed/ db4 4
-
+python image_damaging/wavelet_smooth.py DataSets/PSNR_data_set/bunkbed/ processed/ 5
 
 # classification scripts
 
@@ -26,3 +24,4 @@ python classification/extract_features.py D:/GolemData/PSNR-Copy/ D:/GolemData/d
 python classification/metrics/ssim.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
 python classification/metrics/psnr.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
 python classification/metrics/edges.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
+
