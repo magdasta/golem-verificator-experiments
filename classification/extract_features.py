@@ -13,6 +13,12 @@ import csv
 
 ## ======================= ##
 ##
+def create_directory_if_doesnt_exist(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+## ======================= ##
+##
 def unique_params( compare_list ):
 
     labels = set()
@@ -86,6 +92,8 @@ def crop_image( tile_x, tile_y, tiles, image, reference ):
 ## ======================= ##
 ## 
 def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
+    
+    create_directory_if_doesnt_exist( os.path.dirname( csv_file ) )
     
     errors_list = []
     num_crops = 10      # In one dimmension
