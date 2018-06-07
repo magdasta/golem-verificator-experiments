@@ -157,7 +157,7 @@ def show_cropped_plot( xlabel, ylabel ):
 def run():
 
     #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
-    show_cropped_plot( "ref_edge_factor", "ssim" )
+    show_cropped_plot( "reference_variance", "ssim" )
 
 
 if __name__ == "__main__":

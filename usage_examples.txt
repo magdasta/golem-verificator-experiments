@@ -26,3 +26,8 @@ python classification/extract_features.py D:/GolemData/PSNR-Copy/ D:/GolemData/d
 python classification/metrics/ssim.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
 python classification/metrics/psnr.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
 python classification/metrics/edges.py D:/GolemData/PSNR/barcelona/barcelona_[samples=8725].png D:/GolemData/damaging_results/smooth/barcelona/barcelona_[samples=8725]_[smoothed].png
+
+# data filtering
+
+python classification/data_filtering.py Data/edge_metrics.csv Data/edge_metrics_nameless.csv
+
