@@ -128,7 +128,7 @@ data_file = sys.argv[ 1 ]
 data = numpy.recfromcsv( data_file, delimiter=',', names=True )
 
 
-data = data[ data[ "reference_variance" ] > 6000 ]
+data = data[ data[ "ref_edge_factor" ] > 20 ]
 
 damage = data[ data[ "samples" ] == data[ "samples_reference" ] ]
 diffrent_sampling = data[ data[ "samples" ] != data[ "samples_reference" ] ]
@@ -141,10 +141,15 @@ save_filtered_dataset( damage, sys.argv[ 2 ], sys.argv[ 3 ] )
 # damage = damage[ damage[ "is_cropped" ] == True ]
 # diffrent_sampling = diffrent_sampling[ diffrent_sampling[ "is_cropped" ] == True ]
 
-# xlabel = "reference_variance"
-# ylabel = "psnr"
+# xlabel = "ref_edge_factor"
+# ylabel = "ssim"
 
 
-# show_multidata( xlabel, ylabel, ( damage, diffrent_sampling ) )
+# #show_multidata( xlabel, ylabel, ( diffrent_sampling, damage ) )
+# #show_multidata( xlabel, ylabel, ( damage ) )
+
+# plot_data( xlabel, ylabel, damage )
+# matplotlib.pyplot.show()
+
 
 #print( data )
