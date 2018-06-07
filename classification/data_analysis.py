@@ -3,7 +3,6 @@ import matplotlib.pyplot
 import sys
 import os
 import PIL
-import pandas
 
 
 import extract_features
@@ -72,7 +71,6 @@ def save_filtered_dataset( dataset, reference_dir, compared_dir ):
     compared_image = None
     
     num_crops = 10
-    #dataframe = pandas.DataFrame( dataset )
     
     for index in range( 0, dataset.shape[ 0 ] ):
         
@@ -106,7 +104,7 @@ def save_filtered_dataset( dataset, reference_dir, compared_dir ):
 ##
 def plot_data( xlabel, ylabel, data ):
     
-    matplotlib.pyplot.scatter( damage[ xlabel ], damage[ ylabel ] )
+    matplotlib.pyplot.scatter( data[ xlabel ], data[ ylabel ] )
 
     matplotlib.pyplot.xlabel( xlabel )
     matplotlib.pyplot.ylabel( ylabel )
@@ -121,35 +119,46 @@ def show_multidata( xlabel, ylabel, data_list ):
         
     matplotlib.pyplot.show()
 
-
     
     
-data_file = sys.argv[ 1 ]
-data = numpy.recfromcsv( data_file, delimiter=',', names=True )
+## ======================= ##
+##
+def load_datasets( csv_file ):
+
+    data_file = csv_file
+    data = numpy.recfromcsv( data_file, delimiter=',', names=True )
+
+    #data = data[ data[ "ref_edge_factor" ] > 20 ]
+    
+    damage = data[ data[ "samples" ] == data[ "samples_reference" ] ]
+    diffrent_sampling = data[ data[ "samples" ] != data[ "samples_reference" ] ] 
+    
+    return ( damage, diffrent_sampling )
+    
+
+## ======================= ##
+##
+def show_cropped_plot( xlabel, ylabel ):
+    
+    damage, diffrent_sampling = load_datasets( sys.argv[ 1 ] )
+    
+    damage = damage[ damage[ "is_cropped" ] == True ]
+    diffrent_sampling = diffrent_sampling[ diffrent_sampling[ "is_cropped" ] == True ]
+    
+    #show_multidata( xlabel, ylabel, ( diffrent_sampling, damage ) )
+    #show_multidata( xlabel, ylabel, ( damage ) )
+
+    plot_data( xlabel, ylabel, damage )
+    matplotlib.pyplot.show()
+    
+    
+## ======================= ##
+##
+def run():
+
+    #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
+    show_cropped_plot( "ref_edge_factor", "ssim" )
 
 
-data = data[ data[ "ref_edge_factor" ] > 20 ]
-
-damage = data[ data[ "samples" ] == data[ "samples_reference" ] ]
-diffrent_sampling = data[ data[ "samples" ] != data[ "samples_reference" ] ]
-
-
-save_filtered_dataset( damage, sys.argv[ 2 ], sys.argv[ 3 ] )
-
-
-
-# damage = damage[ damage[ "is_cropped" ] == True ]
-# diffrent_sampling = diffrent_sampling[ diffrent_sampling[ "is_cropped" ] == True ]
-
-# xlabel = "ref_edge_factor"
-# ylabel = "ssim"
-
-
-# #show_multidata( xlabel, ylabel, ( diffrent_sampling, damage ) )
-# #show_multidata( xlabel, ylabel, ( damage ) )
-
-# plot_data( xlabel, ylabel, damage )
-# matplotlib.pyplot.show()
-
-
-#print( data )
+if __name__ == "__main__":
+    run()
