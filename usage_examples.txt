@@ -39,4 +39,5 @@ python classification/metrics/edges.py D:/GolemData/PSNR/barcelona/barcelona_[sa
 # data filtering
 
 python classification/data_filtering.py Data/edge_metrics.csv Data/edge_metrics_nameless.csv
-
+python classification/data_filtering.py Data/edge_metrics.csv Data/edge_metrics_nameless.csv
+python classification/data_filtering.py D:\GolemData\images_database\metrics/metrics_full.csv D:\GolemData\images_database\metrics/metrics_full.npy

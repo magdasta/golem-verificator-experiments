@@ -23,6 +23,21 @@ def load_images( reference_file, compared_file ):
     
     return ( ref_image, compared_image )
 
+## ======================= ##
+##
+def load_dataset( file_path ):
+
+    print( "Loading file [" + file_path + "]" )
+    
+    ( file, ext ) = os.path.splitext( file_path )
+    
+    if ext == ".csv":
+        return numpy.recfromcsv( file_path, delimiter=',', names=True )
+    elif ext == ".npy":
+        return numpy.load( file_path )
+    else:
+        return None
+
     
 ## ======================= ##
 ##
@@ -98,7 +113,11 @@ def save_filtered_dataset( dataset, reference_dir, compared_dir ):
             compared_image.save( os.path.join( compared_dir, gen_file_name( compared_file, row ) ), "PNG" )
             reference_image.save( os.path.join( reference_dir, gen_file_name( reference_file, row ) ), "PNG" )
         
-    
+## ======================= ##
+##
+def save_filtered_csv( dataset, file_path ):
+
+    numpy.savetxt( file_path, dataset )
     
 ## ======================= ##
 ##
@@ -164,12 +183,10 @@ def show_cropped_plot( xlabel, ylabel ):
 ##
 def load_correct_images( csv_file ):
     
-    print( "Loading file [" + csv_file + "]" )
-    
     samples_treshold = 2000
     
     data_file = csv_file
-    data = numpy.recfromcsv( data_file, delimiter=',', names=True )
+    data = load_dataset( data_file )
     
     print( "Filtering image comparisions with different number of samples." )
     correct_images = data[ data[ "samples" ] != data[ "samples_reference" ] ] 
@@ -190,10 +207,11 @@ def run():
     #show_cropped_plot( "ref_edge_factor", "ssim" )
     
     correct = load_correct_images( sys.argv[ 1 ] )
+    correct = correct[ correct[ "ref_edge_factor" ] > 25 ]
     #correct = correct[ correct[ "ssim" ] < 0.91 ]
     
     #save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
-    
+    #save_filtered_csv( correct, sys.argv[ 2 ] )
     
     plot_single_set( "ref_edge_factor", "ssim", correct )
     
