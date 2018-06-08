@@ -119,6 +119,12 @@ def show_multidata( xlabel, ylabel, data_list ):
         
     matplotlib.pyplot.show()
 
+## ======================= ##
+##
+def plot_single_set( xlabel, ylabel, data ):
+    
+    plot_data( xlabel, ylabel, data )
+    matplotlib.pyplot.show()
     
     
 ## ======================= ##
@@ -145,20 +151,55 @@ def show_cropped_plot( xlabel, ylabel ):
     damage = damage[ damage[ "is_cropped" ] == True ]
     diffrent_sampling = diffrent_sampling[ diffrent_sampling[ "is_cropped" ] == True ]
     
+    diffrent_sampling = diffrent_sampling[ diffrent_sampling[ "samples" ] > 2000 ]
+    diffrent_sampling = diffrent_sampling[ diffrent_sampling[ "samples_reference" ] > 2000 ]
+    
     #show_multidata( xlabel, ylabel, ( diffrent_sampling, damage ) )
     #show_multidata( xlabel, ylabel, ( damage ) )
 
-    plot_data( xlabel, ylabel, damage )
+    plot_data( xlabel, ylabel, diffrent_sampling )
     matplotlib.pyplot.show()
     
+## ======================= ##
+##
+def load_correct_images( csv_file ):
+    
+    print( "Loading file [" + csv_file + "]" )
+    
+    samples_treshold = 2000
+    
+    data_file = csv_file
+    data = numpy.recfromcsv( data_file, delimiter=',', names=True )
+    
+    print( "Filtering image comparisions with different number of samples." )
+    correct_images = data[ data[ "samples" ] != data[ "samples_reference" ] ] 
+    
+    print( "Filtering compared images with number of samples less then " + str( samples_treshold ) )
+    correct_images = correct_images[ correct_images[ "samples" ] > samples_treshold ]
+    
+    print( "Filtering reference images with number of samples less then " + str( samples_treshold ) )
+    correct_images = correct_images[ correct_images[ "samples_reference" ] > samples_treshold ]
+    
+    return correct_images
     
 ## ======================= ##
 ##
 def run():
 
     #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
-    show_cropped_plot( "reference_variance", "ssim" )
-
+    #show_cropped_plot( "ref_edge_factor", "ssim" )
+    
+    correct = load_correct_images( sys.argv[ 1 ] )
+    #correct = correct[ correct[ "ssim" ] < 0.91 ]
+    
+    #save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
+    
+    
+    plot_single_set( "ref_edge_factor", "ssim", correct )
+    
 
 if __name__ == "__main__":
     run()
+
+    
+    

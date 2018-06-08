@@ -9,15 +9,25 @@ python image_damaging/noise.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/
 python image_damaging/transparent_watermark.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/watermarks/ Images/Watermark.png
 python image_damaging/wavelet_smooth.py DataSets/PSNR_data_set/bunkbed/ processed/ 5
 
-# classification scripts
+
+python image_damaging/edges.py D:\GolemData\images_database\good D:\GolemData\images_database\edges
+
+
+# analysis
 
 python classification/data_analysis.py Data/metrics_variance.csv
 python classification/data_analysis.py Data/metrics_variance.csv D:/GolemData/crops/reference D:/GolemData/crops/compared
 python classification/data_analysis.py Data/edge_metrics.csv
 
+python classification/data_analysis.py D:\GolemData\images_database\metrics/metrics_full.csv
+
+# classification scripts
+
 python classification/list_comparisions.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/
 python classification/extract_features.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/ ssim_psnr_variance.csv
-python classification/extract_features.py D:/GolemData/PSNR-Copy/ D:/GolemData/damaging_results/ Data/edge_metrics.csv
+python classification/extract_features.py D:/GolemData/PSNR-Copy/ D:/GolemData/damaging_results/ Data/Barcelona/edge_metrics.csv
+
+python classification/extract_features.py D:/GolemData/images_database/good/ D:/GolemData/images_database/damaging_results/ Data/FullSet/metrics.csv
 
 # metrics
 
