@@ -3,6 +3,7 @@ import matplotlib.pyplot
 import sys
 import os
 import PIL
+import pandas
 
 
 import extract_features
@@ -117,7 +118,11 @@ def save_filtered_dataset( dataset, reference_dir, compared_dir ):
 ##
 def save_filtered_csv( dataset, file_path ):
 
-    numpy.savetxt( file_path, dataset )
+    print( "Saving data to csv file [" + file_path + "]" )
+    
+    pandas_data = pandas.DataFrame( dataset )
+    pandas_data.to_csv( file_path )
+    
     
 ## ======================= ##
 ##
@@ -151,9 +156,7 @@ def plot_single_set( xlabel, ylabel, data ):
 def load_datasets( csv_file ):
 
     data_file = csv_file
-    data = numpy.recfromcsv( data_file, delimiter=',', names=True )
-
-    #data = data[ data[ "ref_edge_factor" ] > 20 ]
+    data = load_dataset( data_file )
     
     damage = data[ data[ "samples" ] == data[ "samples_reference" ] ]
     diffrent_sampling = data[ data[ "samples" ] != data[ "samples_reference" ] ] 
@@ -211,7 +214,7 @@ def run():
     #correct = correct[ correct[ "ssim" ] < 0.91 ]
     
     #save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
-    #save_filtered_csv( correct, sys.argv[ 2 ] )
+    save_filtered_csv( correct, sys.argv[ 2 ] )
     
     plot_single_set( "ref_edge_factor", "ssim", correct )
     
