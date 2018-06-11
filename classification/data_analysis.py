@@ -5,7 +5,7 @@ import os
 import PIL
 import pandas
 
-
+import loading
 import extract_features
 
 
@@ -156,7 +156,7 @@ def plot_single_set( xlabel, ylabel, data ):
 def load_datasets( csv_file ):
 
     data_file = csv_file
-    data = load_dataset( data_file )
+    data = loading.load_dataset( data_file )
     
     damage = data[ data[ "samples" ] == data[ "samples_reference" ] ]
     diffrent_sampling = data[ data[ "samples" ] != data[ "samples_reference" ] ] 
@@ -189,7 +189,7 @@ def load_correct_images( csv_file ):
     samples_treshold = 2000
     
     data_file = csv_file
-    data = load_dataset( data_file )
+    data = loading.load_dataset( data_file )
     
     print( "Filtering image comparisions with different number of samples." )
     correct_images = data[ data[ "samples" ] != data[ "samples_reference" ] ] 
