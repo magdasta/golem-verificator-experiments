@@ -50,3 +50,8 @@ python classification/data_filtering.py D:\GolemData\images_database\metrics/met
 # labeling
 
 python classification/data_labeling.py D:\GolemData\images_database\metrics/metrics_full.npy D:\GolemData\images_database\metrics/metrics_full_labels.npy
+
+# classification quality
+
+python classification/quality.py D:\GolemData\images_database\metrics/metrics_full_labels.npy
+

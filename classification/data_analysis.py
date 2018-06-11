@@ -214,9 +214,7 @@ def load_correct_images( csv_file ):
     
 ## ======================= ##
 ##
-def load_accepted_images( data_file ):
-
-    data = loading.load_dataset( data_file )
+def filter_accepted_images( data ):
 
     print( "Choosing samples labeled as TRUE." )
     correct_images = data[ data[ "label" ] == b'TRUE' ] 
@@ -225,17 +223,58 @@ def load_accepted_images( data_file ):
     
 ## ======================= ##
 ##
+def filter_damaged_images( data ):
+
+    print( "Choosing samples labeled as FALSE." )
+    damaged_images = data[ data[ "label" ] == b'FALSE' ] 
+    
+    return damaged_images
+    
+    
+## ======================= ##
+##
+def load_accepted_images( data_file ):
+
+    data = loading.load_dataset( data_file )
+    return filter_accepted_images( data )
+    
+    
+## ======================= ##
+##
+def load_damaged_images( data_file ):
+    
+    data = loading.load_dataset( data_file )
+    return filter_damaged_images( data )
+    
+## ======================= ##
+##
+def load_damaged_accepted_set( data_file ):
+
+    data = loading.load_dataset( data_file )
+    
+    damaged = filter_damaged_images( data )
+    accepted = filter_accepted_images( data )
+    
+    return ( damaged, accepted )
+
+    
+## ======================= ##
+##
 def run():
 
     #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
     #show_cropped_plot( "ref_edge_factor", "ssim" )
     
-    correct = load_accepted_images( sys.argv[ 1 ] )
+    ( damaged, correct ) = load_damaged_accepted_set( sys.argv[ 1 ] )
+    
     correct = correct[ correct[ "ref_edge_factor" ] > 25 ]
     correct = correct[ correct[ "ssim" ] < 0.92 ]
     
+    #damaged = damaged[ damaged[ "ref_edge_factor" ] > 25 ]
+    
+    
     #print( correct[ "ref_edge_factor" ] )
-    #save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
+    save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
     #save_filtered_csv( correct, sys.argv[ 2 ] )
     
     plot_single_set( "ref_edge_factor", "ssim", correct )
