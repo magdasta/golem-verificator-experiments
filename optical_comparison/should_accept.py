@@ -5,6 +5,7 @@ from sys import argv
 
 
 class ShouldAccept(Enum):
+    IGNORE = -1.
     FALSE = 0.
     DONT_KNOW = 0.5
     TRUE = 1.
@@ -100,8 +101,10 @@ def tell_from_samples(path_a, path_b):
 
     if lesser >= ok_thresholds[scene]:
         return ShouldAccept.TRUE
-    elif lesser <= not_ok_thresholds[scene]:
+    elif lesser <= not_ok_thresholds[scene] and greater >= ok_thresholds[scene]:
         return ShouldAccept.FALSE
+    elif greater <= not_ok_thresholds[scene]:
+        return ShouldAccept.IGNORE
     else:
         return ShouldAccept.DONT_KNOW
 
