@@ -167,7 +167,7 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
                 print( "    Error: " )
                 print( "        " + str( e ) )
                 
-                errors_list.append( ( reference, to_compare, str( e ) ) )
+                errors_list.append( ( reference, to_compare, str( e ), traceback.format_exc() ) )
                 
     if len( errors_list ) > 0:
     
@@ -177,6 +177,7 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
         for error in errors_list:
             print( "    [" + error[ 0 ] + "] and [" + error[ 1 ] + "]" )
             print( "     Message: " + error[ 2 ] )
+            print( error[ 3 ] )
     else:
         print( "\n## ===================================================== ##" )
         print( "Processing completed without errors." )
