@@ -57,14 +57,65 @@ def classification_quality( data_set, classifier, label ):
     
     return ( compute_error_matrix( results, expected, unique_labels ), unique_labels )
 
+    
+## ======================= ##
+##
+def compute_precision( error_matrix ):
 
+    num_samples = numpy.sum( error_matrix )
+    correct = 0;
+    
+    for idx in range( 0, error_matrix.shape[ 0 ] ):
+        correct = correct + error_matrix[ idx ][ idx ]
+    
+    return correct / num_samples
+    
+## ======================= ##
+##
+def compute_false_negatives( error_matrix, unique_labels ):
+    
+    num_samples = numpy.sum( error_matrix )
+    
+    true_idx = unique_labels.index( b'TRUE' )
+    false_idx = unique_labels.index( b'FALSE' )
+    
+    return error_matrix[ false_idx ][ true_idx ] / num_samples
+
+## ======================= ##
+##
+def compute_correct_rejection_rate( error_matrix, unique_labels ):
+    
+    true_idx = unique_labels.index( b'TRUE' )
+    false_idx = unique_labels.index( b'FALSE' )
+    
+    num_expected_false = numpy.sum( error_matrix, axis = 1 )[ false_idx ]
+    return error_matrix[ false_idx ][ false_idx ] / num_expected_false
+    
+## ======================= ##
+##
+def compute_incorrect_rejection_rate( error_matrix, unique_labels ):
+
+    true_idx = unique_labels.index( b'TRUE' )
+    false_idx = unique_labels.index( b'FALSE' )
+
+    num_expected_true = numpy.sum( error_matrix, axis = 1 )[ true_idx ]
+    return error_matrix[ true_idx ][ false_idx ] / num_expected_true
+    
+    
 ## ======================= ##
 ##
 def print_classification_results( error_matrix, unique_labels ):
 
+    print( "=================================================")
+    print( "Samples classified as:" )
     print( unique_labels )
     print( error_matrix )
     
+    print( "=================================================")
+    print( "Precision: " + str( compute_precision( error_matrix ) ) + " (% of correct classifications)" )
+    print( "False negatives: " + str( compute_false_negatives( error_matrix, unique_labels ) ) )
+    print( "Correct rejections rate: " + str( compute_correct_rejection_rate( error_matrix, unique_labels ) ) )
+    print( "False rejections rate: " + str( compute_incorrect_rejection_rate( error_matrix, unique_labels ) ) )
     
     
 ## ======================= ##
