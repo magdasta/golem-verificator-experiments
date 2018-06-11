@@ -100,7 +100,7 @@ def tell_from_samples(path_a, path_b):
 
     if lesser >= ok_thresholds[scene]:
         return ShouldAccept.TRUE
-    elif lesser <= not_ok_thresholds[scene] and greater >= ok_thresholds[scene]:
+    elif lesser <= not_ok_thresholds[scene]:
         return ShouldAccept.FALSE
     else:
         return ShouldAccept.DONT_KNOW
@@ -111,7 +111,8 @@ def should_accept(path_a, path_b):
         throw_shouldnt_be_compared_exception(path_a, path_b)
 
     if both_are_damaged(path_a, path_b):
-        throw_shouldnt_be_compared_exception(path_a, path_b)
+        #throw_shouldnt_be_compared_exception(path_a, path_b)
+        return ShouldAccept.FALSE
     elif both_are_not_damaged(path_a, path_b):
         return tell_from_samples(path_a, path_b)
     else:
