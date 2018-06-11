@@ -21,6 +21,11 @@ python classification/data_analysis.py Data/edge_metrics.csv
 
 python classification/data_analysis.py D:\GolemData\images_database\metrics/metrics_full.csv
 
+python classification/data_analysis.py D:\GolemData\images_database\metrics/metrics_full_labels.npy
+
+python classification/data_analysis.py D:\GolemData\images_database\metrics/metrics_full_labels.npy D:/GolemData/crops/reference D:/GolemData/crops/compared
+python classification/data_analysis.py D:\GolemData\images_database\metrics/metrics_full_labels.npy Data/Filtered/ssim_less0.92.csv
+
 # classification scripts
 
 python classification/list_comparisions.py D:/GolemData/PSNR/ D:/GolemData/damaging_results/

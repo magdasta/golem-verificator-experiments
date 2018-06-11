@@ -181,24 +181,45 @@ def show_cropped_plot( xlabel, ylabel ):
 
     plot_data( xlabel, ylabel, diffrent_sampling )
     matplotlib.pyplot.show()
-    
+  
+  
+## ======================= ##
+##
+def filter_correct( data ):
+
+    samples_treshold = 2000
+
+    print("Filtering image comparisions with different number of samples.")
+    correct_images = data[data["samples"] != data["samples_reference"]]
+
+    print("Filtering compared images with number of samples less then " + str(samples_treshold))
+    correct_images = correct_images[correct_images["samples"] > samples_treshold]
+
+    print("Filtering reference images with number of samples less then " + str(samples_treshold))
+    correct_images = correct_images[correct_images["samples_reference"] > samples_treshold]
+
+    return correct_images
+
 ## ======================= ##
 ##
 def load_correct_images( csv_file ):
-    
-    samples_treshold = 2000
-    
+
     data_file = csv_file
+    data = load_dataset( data_file )
+
+    correct_images = filter_correct( data )
+    
+    return correct_images
+    
+    
+## ======================= ##
+##
+def load_accepted_images( data_file ):
+
     data = loading.load_dataset( data_file )
-    
-    print( "Filtering image comparisions with different number of samples." )
-    correct_images = data[ data[ "samples" ] != data[ "samples_reference" ] ] 
-    
-    print( "Filtering compared images with number of samples less then " + str( samples_treshold ) )
-    correct_images = correct_images[ correct_images[ "samples" ] > samples_treshold ]
-    
-    print( "Filtering reference images with number of samples less then " + str( samples_treshold ) )
-    correct_images = correct_images[ correct_images[ "samples_reference" ] > samples_treshold ]
+
+    print( "Choosing samples labeled as TRUE." )
+    correct_images = data[ data[ "label" ] == b'TRUE' ] 
     
     return correct_images
     
@@ -209,12 +230,13 @@ def run():
     #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
     #show_cropped_plot( "ref_edge_factor", "ssim" )
     
-    correct = load_correct_images( sys.argv[ 1 ] )
+    correct = load_accepted_images( sys.argv[ 1 ] )
     correct = correct[ correct[ "ref_edge_factor" ] > 25 ]
-    #correct = correct[ correct[ "ssim" ] < 0.91 ]
+    correct = correct[ correct[ "ssim" ] < 0.92 ]
     
+    #print( correct[ "ref_edge_factor" ] )
     #save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
-    save_filtered_csv( correct, sys.argv[ 2 ] )
+    #save_filtered_csv( correct, sys.argv[ 2 ] )
     
     plot_single_set( "ref_edge_factor", "ssim", correct )
     
