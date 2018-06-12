@@ -109,7 +109,8 @@ def print_error_matrix( error_matrix, unique_labels ):
     corner = "#"
 
     print( "Rows are expected labels." )
-    print( "Columns are labels returned by classifier:\n" )
+    print( "Columns are labels returned by classifier:" )
+    print( "=================================================\n")
     print( '%012s %s' % ( corner, ' '.join( '%012s' % i for i in labels ) ) )
     
     for row_label, row in zip( labels, error_matrix ):
@@ -133,6 +134,7 @@ def print_classification_results( error_matrix, unique_labels ):
 
     print( "=================================================")
     print_error_matrix( error_matrix, unique_labels )
+
     
     print( "\n=================================================")
     print( "Precision:                  " + str( compute_precision( error_matrix ) ) + " (% of correct classifications)" )
