@@ -68,7 +68,7 @@ def compute_precision( error_matrix ):
     for idx in range( 0, error_matrix.shape[ 0 ] ):
         correct = correct + error_matrix[ idx ][ idx ]
     
-    return correct / num_samples
+    return 100 * correct / num_samples
     
 ## ======================= ##
 ##
@@ -79,7 +79,7 @@ def compute_false_negatives( error_matrix, unique_labels ):
     true_idx = unique_labels.index( b'TRUE' )
     false_idx = unique_labels.index( b'FALSE' )
     
-    return error_matrix[ false_idx ][ true_idx ] / num_samples
+    return 100 * error_matrix[ false_idx ][ true_idx ] / num_samples
 
 ## ======================= ##
 ##
@@ -89,7 +89,7 @@ def compute_correct_rejection_rate( error_matrix, unique_labels ):
     false_idx = unique_labels.index( b'FALSE' )
     
     num_expected_false = numpy.sum( error_matrix, axis = 1 )[ false_idx ]
-    return error_matrix[ false_idx ][ false_idx ] / num_expected_false
+    return 100 * error_matrix[ false_idx ][ false_idx ] / num_expected_false
     
 ## ======================= ##
 ##
@@ -99,7 +99,7 @@ def compute_incorrect_rejection_rate( error_matrix, unique_labels ):
     false_idx = unique_labels.index( b'FALSE' )
 
     num_expected_true = numpy.sum( error_matrix, axis = 1 )[ true_idx ]
-    return error_matrix[ true_idx ][ false_idx ] / num_expected_true
+    return 100 * error_matrix[ true_idx ][ false_idx ] / num_expected_true
     
 ## ======================= ##
 ##
@@ -109,13 +109,22 @@ def print_error_matrix( error_matrix, unique_labels ):
     corner = "#"
 
     print( "Rows are expected labels." )
-    print( "columns are labels returned by classifier:\n" )
+    print( "Columns are labels returned by classifier:\n" )
     print( '%012s %s' % ( corner, ' '.join( '%012s' % i for i in labels ) ) )
     
     for row_label, row in zip( labels, error_matrix ):
         print( '%012s [%s]' % ( row_label, ' '.join( '%012s' % i for i in row ) ) )
         
+## ======================= ##
+##
+def compute_dontknows_rate( error_matrix, unique_labels ):
     
+    dontknow_idx = unique_labels.index( b'DONT_KNOW' )
+    
+    num_samples = numpy.sum( error_matrix )
+    num_dontknows = numpy.sum( error_matrix, axis = 0 )[ dontknow_idx ]
+    
+    return 100 * num_dontknows / num_samples
     
     
 ## ======================= ##
@@ -126,10 +135,11 @@ def print_classification_results( error_matrix, unique_labels ):
     print_error_matrix( error_matrix, unique_labels )
     
     print( "\n=================================================")
-    print( "Precision: " + str( compute_precision( error_matrix ) ) + " (% of correct classifications)" )
-    #print( "False negatives: " + str( compute_false_negatives( error_matrix, unique_labels ) ) )
-    print( "Correct rejections rate: " + str( compute_correct_rejection_rate( error_matrix, unique_labels ) ) + " (% of incorrect images that were rejected)" )
-    print( "False rejections rate: " + str( compute_incorrect_rejection_rate( error_matrix, unique_labels ) ) + " (% of correct images that were falsely rejected)" )
+    print( "Precision:                  " + str( compute_precision( error_matrix ) ) + " (% of correct classifications)" )
+    #print( "False negatives:            " + str( compute_false_negatives( error_matrix, unique_labels ) ) )
+    print( "Correct rejections rate:    " + str( compute_correct_rejection_rate( error_matrix, unique_labels ) ) + " (% of incorrect images that were rejected)" )
+    print( "False rejections rate:      " + str( compute_incorrect_rejection_rate( error_matrix, unique_labels ) ) + " (% of correct images that were falsely rejected)" )
+    print( "% unclassified samples:     " + str( compute_dontknows_rate( error_matrix, unique_labels ) ) +  " (% of samples classified as DONT_KNOW)" )
     
     
 ## ======================= ##
@@ -137,6 +147,7 @@ def print_classification_results( error_matrix, unique_labels ):
 def load_and_classify( data_file, classifier, label ):
     
     data = loading.load_dataset( data_file )
+    data = data[ data[ "ref_edge_factor" ] > 25 ]
     ( error_matrix, unique_labels ) = classification_quality( data, classifier, label )
     
     print_classification_results( error_matrix, unique_labels )
