@@ -55,3 +55,7 @@ python classification/data_labeling.py D:\GolemData\images_database\metrics/metr
 
 python classification/quality.py D:\GolemData\images_database\metrics/metrics_full_labels.npy
 
+# teaching 
+
+python classification/teach_model.py D:\GolemData\images_database\metrics/metrics_full_labels.npy Data/Classifiers/tree.pdf
+
