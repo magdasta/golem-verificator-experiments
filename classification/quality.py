@@ -101,21 +101,35 @@ def compute_incorrect_rejection_rate( error_matrix, unique_labels ):
     num_expected_true = numpy.sum( error_matrix, axis = 1 )[ true_idx ]
     return error_matrix[ true_idx ][ false_idx ] / num_expected_true
     
+## ======================= ##
+##
+def print_error_matrix( error_matrix, unique_labels ):
+
+    labels = [ label.decode('UTF-8') for label in unique_labels ]
+    corner = "#"
+
+    print( "Rows are expected labels." )
+    print( "columns are labels returned by classifier:\n" )
+    print( '%012s %s' % ( corner, ' '.join( '%012s' % i for i in labels ) ) )
+    
+    for row_label, row in zip( labels, error_matrix ):
+        print( '%012s [%s]' % ( row_label, ' '.join( '%012s' % i for i in row ) ) )
+        
+    
+    
     
 ## ======================= ##
 ##
 def print_classification_results( error_matrix, unique_labels ):
 
     print( "=================================================")
-    print( "Samples classified as:" )
-    print( unique_labels )
-    print( error_matrix )
+    print_error_matrix( error_matrix, unique_labels )
     
-    print( "=================================================")
+    print( "\n=================================================")
     print( "Precision: " + str( compute_precision( error_matrix ) ) + " (% of correct classifications)" )
-    print( "False negatives: " + str( compute_false_negatives( error_matrix, unique_labels ) ) )
-    print( "Correct rejections rate: " + str( compute_correct_rejection_rate( error_matrix, unique_labels ) ) )
-    print( "False rejections rate: " + str( compute_incorrect_rejection_rate( error_matrix, unique_labels ) ) )
+    #print( "False negatives: " + str( compute_false_negatives( error_matrix, unique_labels ) ) )
+    print( "Correct rejections rate: " + str( compute_correct_rejection_rate( error_matrix, unique_labels ) ) + " (% of incorrect images that were rejected)" )
+    print( "False rejections rate: " + str( compute_incorrect_rejection_rate( error_matrix, unique_labels ) ) + " (% of correct images that were falsely rejected)" )
     
     
 ## ======================= ##
