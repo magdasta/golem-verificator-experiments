@@ -25,6 +25,8 @@ def label_row( row ):
         return "TRUE"
     elif label == labels.ShouldAccept.FALSE:
         return "FALSE"
+    elif label == labels.ShouldAccept.IGNORE:
+        return "IGNORE"
     else:
         return "DONT_KNOW"
     
