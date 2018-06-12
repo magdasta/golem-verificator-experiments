@@ -105,6 +105,8 @@ def tell_from_samples(path_a, path_b):
         return ShouldAccept.TRUE
     elif lesser <= not_ok_thresholds[scene] and greater >= ok_thresholds[scene]:
         return ShouldAccept.FALSE
+    elif greater <= not_ok_thresholds[scene]:
+        return ShouldAccept.IGNORE
     else:
         return ShouldAccept.DONT_KNOW
 
