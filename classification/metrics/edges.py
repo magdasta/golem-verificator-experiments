@@ -2,6 +2,8 @@ from PIL import Image, ImageFilter
 import numpy
 from skimage.measure import compare_ssim as compare_ssim
 from skimage.measure import compare_psnr as compare_psnr
+from skimage.measure import compare_mse as compare_mse
+
 
 import sys
 
@@ -26,17 +28,20 @@ class MetricEdgeFactor:
         
         ref_edge_factor = numpy.mean( np_image1 )
         comp_edge_factor = numpy.mean( np_image2 )
+
+        edge_factor = compare_mse( np_image1, np_image2 )
         
         result = dict()
         result[ "ref_edge_factor" ] = ref_edge_factor
         result[ "comp_edge_factor" ] = comp_edge_factor
-        
+        result[ "edge_difference" ] = edge_factor
+
         return result
     
     ## ======================= ##
     ##
     def get_labels( this ):
-        return [ "ref_edge_factor", "comp_edge_factor" ]
+        return [ "ref_edge_factor", "comp_edge_factor", "edge_difference" ]
     
 ## ======================= ##
 ##
