@@ -3,7 +3,9 @@ import sys
 import os
 
 from sklearn import tree
+from sklearn.externals import joblib
 import graphviz 
+import pickle
 
 import quality
 import loading
@@ -19,6 +21,13 @@ def save_graph( clf, file ):
     graph = graphviz.Source( dot_data ) 
     graph.render( file ) 
 
+## ======================= ##
+##
+def save_model( clf, file ):
+
+    str_model = joblib.dump( clf, file )
+
+    
 ## ======================= ##
 ##
 def label_to_int( label, unique_labels ):
@@ -54,7 +63,7 @@ def run():
     clf = tree.DecisionTreeClassifier()
     clf = clf.fit( samples, index_labels )
     
-    save_graph( clf, sys.argv[ 2 ] )
+    save_model( clf, sys.argv[ 2 ] )
     
 
 if __name__ == "__main__":
