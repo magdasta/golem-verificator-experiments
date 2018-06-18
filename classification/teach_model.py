@@ -9,6 +9,7 @@ import pickle
 
 import quality
 import loading
+import classifiers.decision_tree
 
 
 ## ======================= ##
@@ -25,7 +26,7 @@ def save_graph( clf, file ):
 ##
 def save_model( clf, file ):
 
-    str_model = joblib.dump( clf, file )
+    joblib.dump( clf, file )
 
     
 ## ======================= ##
@@ -59,11 +60,7 @@ def run():
     samples = data[ [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] ]
     samples = samples.view( numpy.float64 ).reshape( samples.shape + (-1,) )
     
-    print( "Teaching decision tree." )
-    clf = tree.DecisionTreeClassifier()
-    clf = clf.fit( samples, index_labels )
-    
-    save_model( clf, sys.argv[ 2 ] )
+    classifiers.decision_tree.DecisionTree.train_and_save( samples, index_labels, sys.argv[ 2 ] )
     
 
 if __name__ == "__main__":
