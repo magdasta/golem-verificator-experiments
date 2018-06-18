@@ -9,6 +9,7 @@ from PIL import Image
 
 import os
 import sys
+import traceback
 import csv
 
 
