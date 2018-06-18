@@ -35,6 +35,8 @@ class DecisionTree:
 
         print( "Teaching decision tree." )
         clf = sklearn.tree.DecisionTreeClassifier()
+        clf.max_depth = 5
+        
         clf = clf.fit( samples, index_labels )
         
         return clf
