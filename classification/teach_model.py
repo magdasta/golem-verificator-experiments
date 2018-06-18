@@ -7,20 +7,18 @@ from sklearn.externals import joblib
 import graphviz 
 import pickle
 
+
 import quality
 import loading
 import classifiers.decision_tree
 
 
+
 ## ======================= ##
 ##
-def save_graph( clf, file ):
-    
-    print( "Saving tree to file [" + file + "]" )
-    
-    dot_data = tree.export_graphviz( clf, out_file=None ) 
-    graph = graphviz.Source( dot_data ) 
-    graph.render( file ) 
+class Parameters:
+    pass
+
 
 ## ======================= ##
 ##
@@ -79,12 +77,19 @@ def run():
     print( "Filtering data." )
     data, index_labels = filter_ignores( data, index_labels )
     data, index_labels = filter_dontknows( data, index_labels )
+
+    features_labels = [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] 
     
-    print( "Extracting features from dataset." )
-    samples = data[ [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] ]
-    samples = samples.view( numpy.float64 ).reshape( samples.shape + (-1,) )
+    params = Parameters()
+    params.classes_weights = dict()
+    params.classes_weights[ unique_labels.index( b"TRUE" ) ] = 0.8
+    params.classes_weights[ unique_labels.index( b"FALSE" ) ] = 0.2
+    params.classes_weights[ unique_labels.index( b"DONT_KNOW" ) ] = 0.0
+    params.classes_weights[ unique_labels.index( b"IGNORE" ) ] = 0.0
     
-    classifiers.decision_tree.DecisionTree.train_and_save( samples, index_labels, sys.argv[ 2 ] )
+    
+    clf = classifiers.decision_tree.DecisionTree.train_and_save( data, index_labels, features_labels, params, sys.argv[ 2 ] )
+    clf.save_graph( sys.argv[ 3 ] )
     
 
 if __name__ == "__main__":

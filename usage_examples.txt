@@ -54,8 +54,9 @@ python classification/data_labeling.py D:\GolemData\images_database\metrics/metr
 
 # classification quality
 
-python classification/quality.py D:\GolemData\images_database\metrics/metrics_full_labels.npy
-python classification/quality.py D:\GolemData\images_database\metrics/metrics_full_labels.npy Data/Classifiers/tree.pkl
+python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy
+python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree.pkl
+python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted.pkl
 
 # teaching 
 
