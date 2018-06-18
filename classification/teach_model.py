@@ -40,9 +40,31 @@ def label_to_int( label, unique_labels ):
 def labels_to_int( data, label ):
 
     unique_labels = quality.compute_unique_labels( data, "label" )
-    index_labels = [ label_to_int( label, unique_labels ) for label in data[ label ] ]
+    index_labels = numpy.array( [ label_to_int( label, unique_labels ) for label in data[ label ] ] )
     
     return ( index_labels, unique_labels )
+  
+## ======================= ##
+##
+def filter_ignores( data, indexed_labels ):
+
+    filter_mask = data[ "label" ] != b'IGNORE'
+    
+    data = data[ filter_mask ]
+    indexed_labels = indexed_labels[ filter_mask ]
+    
+    return data, indexed_labels
+    
+## ======================= ##
+##
+def filter_dontknows( data, indexed_labels ):
+
+    filter_mask = data[ "label" ] != b'DONT_KNOW'
+
+    data = data[ filter_mask ]
+    indexed_labels = indexed_labels[ filter_mask ]
+    
+    return data, indexed_labels
   
     
 ## ======================= ##
@@ -50,11 +72,13 @@ def labels_to_int( data, label ):
 def run():
 
     data = loading.load_dataset( sys.argv[ 1 ] )
-    data = data[ data[ "label" ] != b'IGNORE' ]
-    data = data[ data[ "label" ] != b'DONT_KNOW' ]
     
     print( "Extracting labels data." )
     ( index_labels, unique_labels ) = labels_to_int( data, "label" )
+    
+    print( "Filtering data." )
+    data, index_labels = filter_ignores( data, index_labels )
+    data, index_labels = filter_dontknows( data, index_labels )
     
     print( "Extracting features from dataset." )
     samples = data[ [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] ]

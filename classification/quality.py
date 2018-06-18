@@ -6,6 +6,7 @@ import data_analysis
 import loading
 
 import classifiers.ssim_threshold
+import classifiers.decision_tree
 
     
 
@@ -35,8 +36,15 @@ def compute_error_matrix( results, expected, unique_labels ):
 def compute_unique_labels( data_set, label ):
 
     unique_labels = set( data_set[ label ] )
-    return list( unique_labels )
-
+    
+    labels_list = list( unique_labels )
+    labels_list.sort()
+    
+    #print( "Labels: " + str( labels_list ) )
+    
+    return labels_list
+  
+    
 ## ======================= ##
 ##
 def compute_expected_results( data_set, unique_labels, label ):
@@ -150,6 +158,7 @@ def load_and_classify( data_file, classifier, label ):
     
     data = loading.load_dataset( data_file )
     data = data[ data[ "ref_edge_factor" ] > 25 ]
+    
     ( error_matrix, unique_labels ) = classification_quality( data, classifier, label )
     
     print_classification_results( error_matrix, unique_labels )
@@ -160,7 +169,9 @@ def load_and_classify( data_file, classifier, label ):
 ##
 def run():
 
-    classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
+    #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
+    classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
+    classifier.set_features_labels( [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] )
     
     load_and_classify( sys.argv[ 1 ], classifier, "label" )
     

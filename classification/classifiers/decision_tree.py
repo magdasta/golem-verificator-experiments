@@ -22,7 +22,13 @@ class DecisionTree:
         clf = joblib.load( file )
         return DecisionTree( clf )
 
-
+    ## ======================= ##
+    ##
+    def set_features_labels( self, labels ):
+    
+        self.labels = labels
+        
+        
     ## ======================= ##
     ##
     def train( samples, index_labels ):
@@ -48,6 +54,13 @@ class DecisionTree:
     ##
     def classify( self, data_set, unique_labels ):
         
-        return self.clf.predict( data_set )
+        samples = data_set[ self.labels ]
+        samples = samples.view( numpy.float64 ).reshape( samples.shape + (-1,) )
+        
+        results = self.clf.predict( samples )
+        results = [ unique_labels[ label ] for label in results ]
+        
+        return numpy.array( results )
+        
         
         
