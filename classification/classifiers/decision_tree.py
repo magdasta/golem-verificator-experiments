@@ -1,6 +1,4 @@
 import numpy
-import sys
-import os
 
 import sklearn
 from sklearn.externals import joblib

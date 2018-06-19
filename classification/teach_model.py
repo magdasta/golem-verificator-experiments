@@ -1,11 +1,7 @@
 import numpy
 import sys
-import os
 
-from sklearn import tree
 from sklearn.externals import joblib
-import graphviz 
-import pickle
 
 
 import quality

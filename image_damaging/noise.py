@@ -1,6 +1,5 @@
 from PIL import Image, ImageMath
 import sys
-import os
 import helpers
 import numpy
 

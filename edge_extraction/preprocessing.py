@@ -1,6 +1,4 @@
 import itk
-import image_io as imio
-from sys import argv
 
 
 

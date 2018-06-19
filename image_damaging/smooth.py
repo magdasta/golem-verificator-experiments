@@ -1,6 +1,5 @@
-from PIL import Image, ImageFilter
+from PIL import ImageFilter
 import sys
-import os
 import helpers
 
 

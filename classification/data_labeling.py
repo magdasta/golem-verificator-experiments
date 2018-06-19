@@ -1,7 +1,5 @@
 import numpy
 import sys
-import os
-import pandas
 
 import optical_comparision.should_accept as labels
 import loading

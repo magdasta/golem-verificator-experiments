@@ -1,4 +1,3 @@
-from pywt import wavedec2
 import pywt
 import numpy
 from PIL import Image
