@@ -82,10 +82,10 @@ def run():
     
     params = Parameters()
     params.classes_weights = dict()
-    params.classes_weights[ unique_labels.index( b"TRUE" ) ] = 0.8
-    params.classes_weights[ unique_labels.index( b"FALSE" ) ] = 0.2
-    params.classes_weights[ unique_labels.index( b"DONT_KNOW" ) ] = 0.0
-    params.classes_weights[ unique_labels.index( b"IGNORE" ) ] = 0.0
+    params.classes_weights[ unique_labels.index( b"TRUE" ) ] = 30
+    params.classes_weights[ unique_labels.index( b"FALSE" ) ] = 1
+    #params.classes_weights[ unique_labels.index( b"DONT_KNOW" ) ] = 0.0
+    #params.classes_weights[ unique_labels.index( b"IGNORE" ) ] = 0.0
     
     
     clf = classifiers.decision_tree.DecisionTree.train_and_save( data, index_labels, features_labels, params, sys.argv[ 2 ] )

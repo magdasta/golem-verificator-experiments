@@ -49,7 +49,7 @@ class DecisionTree:
         print( "Teaching decision tree." )
         clf = sklearn.tree.DecisionTreeClassifier()
         clf.max_depth = 5
-        clf.class_names = params.classes_weights
+        clf.class_weight = params.classes_weights
         
         clf = clf.fit( samples, index_labels )
         

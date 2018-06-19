@@ -2,7 +2,6 @@ import numpy
 import sys
 import os
 
-import data_analysis
 import loading
 
 import classifiers.ssim_threshold
