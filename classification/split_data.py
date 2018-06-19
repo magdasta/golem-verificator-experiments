@@ -1,7 +1,6 @@
 import numpy
 import sys
 import os
-import random
 
 import loading
 

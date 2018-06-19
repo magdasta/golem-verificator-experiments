@@ -1,6 +1,6 @@
 import itk
 import image_io as imio
-from PIL import Image, ImageFilter
+from PIL import ImageFilter
 from sys import argv
 import os
 import preprocessing

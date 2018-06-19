@@ -1,7 +1,5 @@
-from PIL import Image
 import numpy
 from skimage.measure import compare_ssim as compare_ssim
-from skimage.measure import compare_psnr as compare_psnr
 
 import sys
 

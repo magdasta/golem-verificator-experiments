@@ -1,0 +1,10 @@
+itk
+matplotlib
+pandas
+pywt
+numpy
+sklearn
+pydot
+Pillow==5.1.0
+scikit-image
+

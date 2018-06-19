@@ -1,6 +1,5 @@
 import numpy
 import sys
-import os
 
 import loading
 
