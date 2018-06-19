@@ -3,7 +3,6 @@ import sys
 
 from sklearn.externals import joblib
 
-
 import quality
 import loading
 import classifiers.decision_tree
@@ -60,13 +59,10 @@ def filter_dontknows( data, indexed_labels ):
     
     return data, indexed_labels
   
-    
 ## ======================= ##
 ##
-def run():
+def teach_tree( data, features_labels, params, file ):
 
-    data = loading.load_dataset( sys.argv[ 1 ] )
-    
     print( "Extracting labels data." )
     ( index_labels, unique_labels ) = labels_to_int( data, "label" )
     
@@ -74,7 +70,19 @@ def run():
     data, index_labels = filter_ignores( data, index_labels )
     data, index_labels = filter_dontknows( data, index_labels )
 
-    features_labels = [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] 
+    clf = classifiers.decision_tree.DecisionTree.train_and_save( data, index_labels, features_labels, params, file )
+    return clf
+
+  
+## ======================= ##
+##
+def run():
+
+    data = loading.load_dataset( sys.argv[ 1 ] )
+    
+    ( index_labels, unique_labels ) = labels_to_int( data, "label" )
+    
+    features_labels = [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ]
     
     params = Parameters()
     params.classes_weights = dict()
@@ -84,7 +92,7 @@ def run():
     #params.classes_weights[ unique_labels.index( b"IGNORE" ) ] = 0.0
     
     
-    clf = classifiers.decision_tree.DecisionTree.train_and_save( data, index_labels, features_labels, params, sys.argv[ 2 ] )
+    clf = teach_tree( data, features_labels, params, sys.argv[ 2 ] )
     clf.save_graph( sys.argv[ 3 ] )
     
 

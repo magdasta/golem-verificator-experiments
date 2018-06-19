@@ -1,6 +1,6 @@
 import numpy
 
-import sklearn
+from sklearn import tree
 from sklearn.externals import joblib
 from sklearn.externals.six import StringIO
 import pydot
@@ -35,7 +35,7 @@ class DecisionTree:
         print( "Saving tree to file [" + file + "]" )
         
         dot_data = StringIO() 
-        sklearn.tree.export_graphviz( self.clf, out_file=dot_data, feature_names = self.labels, rounded = True, filled = True ) 
+        tree.export_graphviz( self.clf, out_file=dot_data, feature_names = self.labels, rounded = True, filled = True ) 
         graph = pydot.graph_from_dot_data( dot_data.getvalue() )
         graph[ 0 ].write_pdf( file ) 
         
@@ -45,7 +45,7 @@ class DecisionTree:
     def train( samples, index_labels, params ):
 
         print( "Teaching decision tree." )
-        clf = sklearn.tree.DecisionTreeClassifier()
+        clf = tree.DecisionTreeClassifier()
         clf.max_depth = 5
         clf.class_weight = params.classes_weights
         

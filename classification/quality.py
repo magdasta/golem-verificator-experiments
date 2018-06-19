@@ -155,7 +155,7 @@ def print_classification_results( error_matrix, unique_labels ):
 def load_and_classify( data_file, classifier, label ):
     
     data = loading.load_dataset( data_file )
-    data = data[ data[ "ref_edge_factor" ] > 25 ]
+    #data = data[ data[ "ref_edge_factor" ] > 25 ]
     
     ( error_matrix, unique_labels ) = classification_quality( data, classifier, label )
     
