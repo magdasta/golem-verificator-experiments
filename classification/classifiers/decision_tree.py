@@ -64,6 +64,7 @@ class DecisionTree:
         clf.class_weight = params.classes_weights
         clf.criterion = params.criterion
         clf.min_samples_leaf = params.min_samples_leaf
+        clf.min_impurity_decrease = params.min_impurity_decrease
         
         clf = clf.fit( samples, class_labels )
         

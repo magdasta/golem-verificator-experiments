@@ -24,14 +24,18 @@ def run():
     correct_rejections = list()
     incorrect_rejections = list()
     
-    for i in range( 0, 50 ):
+    weights = [ i * 10 + 1 for i in range( 0, 50 ) ]
+    
+    for weight in weights:
     
         params = teach_model.Parameters()
         params.classes_weights = dict()
-        params.classes_weights[ b"TRUE" ] = i * 10 + 1
+        params.classes_weights[ b"TRUE" ] = weight
         params.classes_weights[ b"FALSE" ] = 1    
-        params.criterion = "entropy"
-        params.max_depth = 5
+        params.criterion = "gini"
+        params.max_depth = 7
+        params.min_samples_leaf = 4000
+        params.min_impurity_decrease = 0.0
         
         classifier = teach_model.teach_tree( train_set, features_labels, params, sys.argv[ 3 ] )
 
@@ -44,10 +48,11 @@ def run():
     print( correct_rejections )
     print( incorrect_rejections )
 
-    matplotlib.pyplot.plot( correct_rejections, incorrect_rejections )
+    matplotlib.pyplot.plot( weights, correct_rejections )
+    matplotlib.pyplot.plot( weights, incorrect_rejections )
 
-    matplotlib.pyplot.xlabel( "False rejections rate" )
-    matplotlib.pyplot.ylabel( "Correct rejections rate" )
+    matplotlib.pyplot.xlabel( "TRUE label weight" )
+    matplotlib.pyplot.ylabel( "Quality" )
     
     matplotlib.pyplot.show()
 

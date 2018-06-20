@@ -89,8 +89,9 @@ def run():
     params.classes_weights[ b"TRUE" ] = 130
     params.classes_weights[ b"FALSE" ] = 1    
     params.criterion = "gini"
-    params.max_depth = 7
+    params.max_depth = 8
     params.min_samples_leaf = 4000
+    params.min_impurity_decrease = 0.0
     
     clf = teach_tree( data, features_labels, params, sys.argv[ 2 ] )
     clf.save_graph( sys.argv[ 3 ] )
