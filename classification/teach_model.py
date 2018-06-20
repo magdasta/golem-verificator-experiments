@@ -70,7 +70,7 @@ def teach_tree( data, features_labels, params, file ):
     data, index_labels = filter_ignores( data, index_labels )
     data, index_labels = filter_dontknows( data, index_labels )
 
-    clf = classifiers.decision_tree.DecisionTree.train_and_save( data, index_labels, features_labels, params, file )
+    clf = classifiers.decision_tree.DecisionTree.train_and_save( data, "label", features_labels, params, file )
     return clf
 
   
@@ -86,11 +86,8 @@ def run():
     
     params = Parameters()
     params.classes_weights = dict()
-    params.classes_weights[ unique_labels.index( b"TRUE" ) ] = 30
-    params.classes_weights[ unique_labels.index( b"FALSE" ) ] = 1
-    #params.classes_weights[ unique_labels.index( b"DONT_KNOW" ) ] = 0.0
-    #params.classes_weights[ unique_labels.index( b"IGNORE" ) ] = 0.0
-    
+    params.classes_weights[ b"TRUE" ] = 130
+    params.classes_weights[ b"FALSE" ] = 1    
     
     clf = teach_tree( data, features_labels, params, sys.argv[ 2 ] )
     clf.save_graph( sys.argv[ 3 ] )

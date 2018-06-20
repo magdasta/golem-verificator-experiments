@@ -58,7 +58,7 @@ def classification_quality( data_set, classifier, label ):
 
     unique_labels = compute_unique_labels( data_set, label )
     
-    results = classifier.classify( data_set, unique_labels )
+    results = classifier.classify( data_set )
     expected = compute_expected_results( data_set, unique_labels, label )
     
     return ( compute_error_matrix( results, expected, unique_labels ), unique_labels )

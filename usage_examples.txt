@@ -61,7 +61,7 @@ python classification/quality.py D:\GolemData\images_database\datasets/metrics_f
 # teaching 
 
 python classification/teach_model.py D:\GolemData\images_database\metrics/metrics_full_labels.npy Data/Classifiers/tree.pkl
-python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_train.npy Data/Classifiers/tree_weighted.pkl
+python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_train.npy Data/Classifiers/tree_weighted.pkl Data/Classifiers/tree_weighted.pdf
 
 # optimizing classifier
 

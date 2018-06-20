@@ -42,14 +42,14 @@ class DecisionTree:
         
     ## ======================= ##
     ##
-    def train( samples, index_labels, params ):
+    def train( samples, class_labels, params ):
 
         print( "Teaching decision tree." )
         clf = tree.DecisionTreeClassifier()
         clf.max_depth = 5
         clf.class_weight = params.classes_weights
         
-        clf = clf.fit( samples, index_labels )
+        clf = clf.fit( samples, class_labels )
         
         return clf
 
@@ -63,10 +63,12 @@ class DecisionTree:
         
     ## ======================= ##
     ##
-    def train_and_save( data, index_labels, features_labels, params, file ):
+    def train_and_save( data, class_label, features_labels, params, file ):
         
         samples = DecisionTree.extract_features( data, features_labels )
-        clf = DecisionTree.train( samples, index_labels, params )
+        class_labels = data[ class_label ]
+        
+        clf = DecisionTree.train( samples, class_labels, params )
         
         print( "Saving tree to file: " + file )
         joblib.dump( clf, file )
@@ -79,13 +81,12 @@ class DecisionTree:
         
     ## ======================= ##
     ##
-    def classify( self, data_set, unique_labels ):
+    def classify( self, data_set ):
         
         samples = data_set[ self.labels ]
         samples = samples.view( numpy.float64 ).reshape( samples.shape + (-1,) )
         
         results = self.clf.predict( samples )
-        results = [ unique_labels[ label ] for label in results ]
         
         return numpy.array( results )
         
