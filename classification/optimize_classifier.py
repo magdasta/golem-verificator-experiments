@@ -28,8 +28,10 @@ def run():
     
         params = teach_model.Parameters()
         params.classes_weights = dict()
-        params.classes_weights[ unique_labels.index( b"TRUE" ) ] = i * 10 + 1
-        params.classes_weights[ unique_labels.index( b"FALSE" ) ] = 1
+        params.classes_weights[ b"TRUE" ] = i * 10 + 1
+        params.classes_weights[ b"FALSE" ] = 1    
+        params.criterion = "entropy"
+        params.max_depth = 5
         
         classifier = teach_model.teach_tree( train_set, features_labels, params, sys.argv[ 3 ] )
 
