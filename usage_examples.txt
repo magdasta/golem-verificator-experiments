@@ -57,11 +57,13 @@ python classification/data_labeling.py D:\GolemData\images_database\metrics/metr
 python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy
 python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree.pkl
 python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted.pkl
+python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted_best.pkl
 
 # teaching 
 
 python classification/teach_model.py D:\GolemData\images_database\metrics/metrics_full_labels.npy Data/Classifiers/tree.pkl
 python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_train.npy Data/Classifiers/tree_weighted.pkl Data/Classifiers/tree_weighted.pdf
+python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_train.npy Data/Classifiers/tree_edgefactor25.pkl Data/Classifiers/tree_edgefactor25.pdf
 
 # optimizing classifier
 
@@ -69,3 +71,12 @@ python classification/optimize_classifier.py D:\GolemData\images_database\datase
 
 # adding to dataset column with image sizes
 python classification/add_image_sizes_to_dataset.py data.npy output.npy /home/magda/Network/Techno/Programista/golem-verification/images_database/
+
+# classification analysis
+
+python classification/classification_analysis.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted_best.pkl D:/GolemData/crops/reference D:/GolemData/crops/compared
+
+
+
+
+
