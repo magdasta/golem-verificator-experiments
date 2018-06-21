@@ -153,26 +153,56 @@ def print_classification_results( error_matrix, unique_labels ):
 ## ======================= ##
 ##
 def load_and_classify( data_file, classifier, label ):
-    
+
     data = loading.load_dataset( data_file )
     #data = data[ data[ "ref_edge_factor" ] > 25 ]
-    
+
+    classify_and_print( data, classifier, label )
+
+
+## ======================= ##
+##
+def classify_and_print( data, classifier, label ):
     ( error_matrix, unique_labels ) = classification_quality( data, classifier, label )
     
     print_classification_results( error_matrix, unique_labels )
 
-    
-    
+
+## ======================= ##
+##
+def classify_and_print_only_rate( data, classifier, label, filter ):
+    (error_matrix, unique_labels) = classification_quality( data, classifier, "label" )
+    rate = str(compute_correct_rejection_rate(error_matrix, unique_labels))
+    print( "Correct rejections rate for " + filter + ": " + rate + " (dataset size: " + str( len( data ) ) + ")" )
+
+
 ## ======================= ##
 ##
 def run():
 
+    filters = [ "blured", "watermark", "noise", "noise_colored", "noise_peak", "enhancedcolor", "enhancedcontrast", "enhancedbrightness", "randomobjects", "wavelet_denoise", "channelsswitched", "smoothed", "sharpened" ]
+
     #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
     classifier.set_features_labels( [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] )
-    
-    load_and_classify( sys.argv[ 1 ], classifier, "label" )
-    
+
+    data = loading.load_dataset( sys.argv[ 1 ] )
+
+    label = "label"
+
+    # print_scenes( data )
+
+    # print( data.dtype.names )
+
+    # load_and_classify( sys.argv[1], classifier, label  )
+    classify_and_print( data, classifier, label )
+
+    for filter in filters:
+        filtered_data = data[ data[ filter ] == True ]
+        classify_and_print_only_rate( filtered_data, classifier, label, filter )
+
+    filtered_data = data[ (data["samples"] != data["samples_reference"]) & (data["label"] == b"FALSE") ]
+    classify_and_print_only_rate(filtered_data, classifier, label, "different samples")
 
 if __name__ == "__main__":
     run()
