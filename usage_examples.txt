@@ -67,3 +67,5 @@ python classification/teach_model.py D:\GolemData\images_database\datasets/metri
 
 python classification/optimize_classifier.py D:\GolemData\images_database\datasets/metrics_full_labels_train.npy D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted_step.pkl
 
+# adding to dataset column with image sizes
+python classification/add_image_sizes_to_dataset.py data.npy output.npy /home/magda/Network/Techno/Programista/golem-verification/images_database/
