@@ -2,6 +2,7 @@ import os
 from enum import Enum
 import re
 from sys import argv
+import numpy
 
 
 class ShouldAccept(Enum):
@@ -125,12 +126,11 @@ def should_accept(row):
     if get_scene_name(path_a) != get_scene_name(path_b):
         throw_shouldnt_be_compared_exception(path_a, path_b)
 
+    if row["psnr"] > 50:
+        psnred = psnred + 1
+        return ShouldAccept.TRUE
     if one_is_damaged(path_a, path_b):
-        if row[ "psnr" ] > 50:
-            psnred = psnred + 1
-            return ShouldAccept.TRUE
-        else:
-            return ShouldAccept.FALSE
+        return ShouldAccept.FALSE
     elif both_are_not_damaged(path_a, path_b):
         return tell_from_samples(path_a, path_b)
     else: #should not get here anymore

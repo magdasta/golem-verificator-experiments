@@ -31,8 +31,8 @@ def label_data( src_file, dest_file ):
 
     data = loading.load_dataset( src_file )
 
-    for i in range(1,100):
-        print( data[i]["psnr"] )
+    # for i in range(1,100):
+    #     print( data[i]["psnr"] )
 
     print( "Creating new array" )
     new_dtype = numpy.dtype( data.dtype.descr + [('label', 'S9')] )
