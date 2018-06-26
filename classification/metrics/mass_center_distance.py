@@ -31,7 +31,6 @@ class MetricMassCenterDistance:
         pixels = image.load()
         width, height = image.size
         results = dict()
-        print(pixels)
         for channel_index in range(len(pixels[0, 0])):
             mass_center_x = 0
             mass_center_y = 0
