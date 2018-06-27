@@ -27,21 +27,17 @@ class MetricMassCenterDistance:
         return ["max_x_mass_center_distance", "max_y_mass_center_distance"]
 
     @staticmethod
-    def get_at_x_y(pixels, width, x, y):
-        return pixels[width * y + x]
-
-    @staticmethod
     def compute_mass_centers(image):
-        pixels = image.getdata()
+        pixels = image.load()
         width, height = image.size
         results = dict()
-        for channel_index in range(len(pixels[0])):
+        for channel_index in range(len(pixels[0, 0])):
             mass_center_x = 0
             mass_center_y = 0
             total_mass = 0
             for x in range(width):
                 for y in range(height):
-                    mass = MetricMassCenterDistance.get_at_x_y(pixels, width, x, y)[channel_index]
+                    mass = pixels[x, y][channel_index]
                     mass_center_x += mass * x
                     mass_center_y += mass * y
                     total_mass += mass
