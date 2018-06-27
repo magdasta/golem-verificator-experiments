@@ -134,6 +134,7 @@ def should_accept(row):
     elif both_are_not_damaged(path_a, path_b):
         return tell_from_samples(path_a, path_b)
     else: #should not get here anymore
+        assert False
         return ShouldAccept.FALSE
 
 
