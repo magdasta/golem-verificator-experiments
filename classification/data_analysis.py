@@ -7,6 +7,7 @@ import pandas
 
 import loading
 import extract_features
+import optical_comparision.should_accept as should_accept
 
 
 ## ======================= ##
@@ -65,7 +66,7 @@ def gen_file_name( file_path, row ):
     
     if row[ "is_cropped" ]:
         ( file, extension ) = os.path.splitext( flattened )
-        return file + "[crop_x=" + str( row[ "crop_x" ] ) + "][crop_y=" + str( row[ "crop_y" ] ) + "]" + extension
+        return file + "[crop_x=" + str( row[ "crop_x" ] ) + "][crop_y=" + str( row[ "crop_y" ] ) + "][psnr_diff=" + str( row[ "psnr" ] ) + "]" + extension
     else:
         return flattened
     
@@ -257,27 +258,50 @@ def load_damaged_accepted_set( data_file ):
     
     return ( damaged, accepted )
 
+
+## ======================= ##
+##
+def analyze_wavelets( data ):
+    mask = [ should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) == "glass_material" for row in data]
+    filtered = data[ mask ]
+    filtered = filtered[ filtered[ "is_cropped" ] == True ]
+    filtered = filtered[ filtered[ "crop_x" ] >= 1 ]
+    filtered = filtered[ filtered[ "crop_x" ] <= 1 ]
+    filtered = filtered[ filtered[ "crop_y" ] >= 4 ]
+    filtered = filtered[ filtered[ "crop_y" ] <= 4 ]
+    
+    filtered = filtered[ filtered["samples"] != filtered["samples_reference"] ]
+    filtered = filtered[ filtered["samples_reference"] == 8325 ]
+    
+    plot_data( "samples", "wavelet_high", filtered )
+    plot_data( "samples", "wavelet_low", filtered )
+    plot_data( "samples", "wavelet_mid", filtered )
+    
+    matplotlib.pyplot.show()
     
 ## ======================= ##
 ##
 def run():
 
-    #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
-    #show_cropped_plot( "ref_edge_factor", "ssim" )
+    data = loading.load_dataset( sys.argv[ 1 ] )
+    analyze_wavelets( data )
+
+    # #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
+    # #show_cropped_plot( "ref_edge_factor", "ssim" )
     
-    ( damaged, correct ) = load_damaged_accepted_set( sys.argv[ 1 ] )
+    # ( damaged, correct ) = load_damaged_accepted_set( sys.argv[ 1 ] )
     
-    correct = correct[ correct[ "ref_edge_factor" ] > 25 ]
-    correct = correct[ correct[ "ssim" ] < 0.92 ]
+    # correct = correct[ correct[ "ref_edge_factor" ] > 25 ]
+    # correct = correct[ correct[ "ssim" ] < 0.92 ]
     
-    #damaged = damaged[ damaged[ "ref_edge_factor" ] > 25 ]
+    # #damaged = damaged[ damaged[ "ref_edge_factor" ] > 25 ]
     
     
-    #print( correct[ "ref_edge_factor" ] )
-    save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
-    #save_filtered_csv( correct, sys.argv[ 2 ] )
+    # #print( correct[ "ref_edge_factor" ] )
+    # save_filtered_dataset( correct, sys.argv[ 2 ], sys.argv[ 3 ] )
+    # #save_filtered_csv( correct, sys.argv[ 2 ] )
     
-    plot_single_set( "ref_edge_factor", "ssim", correct )
+    # plot_single_set( "ref_edge_factor", "ssim", correct )
     
 
 if __name__ == "__main__":
