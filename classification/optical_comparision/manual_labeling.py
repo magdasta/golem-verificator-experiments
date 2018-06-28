@@ -59,10 +59,10 @@ def mouse_select( event, x, y, flags, param ):
         
         if selected_crops[ tile_x ][ tile_y ]:
             selected_crops[ tile_x ][ tile_y ] = False
-            print( "Selected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
+            print( "Deselected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
         else:
             selected_crops[ tile_x ][ tile_y ] = True
-            print( "Deselected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
+            print( "Selected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
   
   
 ## ======================= ##
