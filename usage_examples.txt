@@ -59,11 +59,15 @@ python classification/quality.py D:\GolemData\images_database\datasets/metrics_f
 python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted.pkl
 python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted_best.pkl
 
+python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_test.npy Data/Classifiers/tree_psnred.pkl
+
 # teaching 
 
 python classification/teach_model.py D:\GolemData\images_database\metrics/metrics_full_labels.npy Data/Classifiers/tree.pkl
 python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_train.npy Data/Classifiers/tree_weighted.pkl Data/Classifiers/tree_weighted.pdf
 python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_train.npy Data/Classifiers/tree_edgefactor25.pkl Data/Classifiers/tree_edgefactor25.pdf
+
+python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_train.npy Data/Classifiers/tree_psnred.pkl Data/Classifiers/tree_psnred.pdf
 
 # optimizing classifier
 
@@ -76,6 +80,12 @@ python classification/add_image_sizes_to_dataset.py data.npy output.npy /home/ma
 
 python classification/classification_analysis.py D:\GolemData\images_database\datasets/metrics_full_labels_test.npy Data/Classifiers/tree_weighted_best.pkl D:/GolemData/crops/reference D:/GolemData/crops/compared
 
+python classification/classification_analysis.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70_test.npy Data/Classifiers/tree_psnred_70.pkl D:/GolemData/crops/reference D:/GolemData/crops/compared
+
+
+# split datset
+
+python classification/split_data.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_50.npy D:\GolemData\images_database\datasets/
 
 
 
