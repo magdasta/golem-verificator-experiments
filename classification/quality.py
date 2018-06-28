@@ -1,5 +1,6 @@
 import numpy
 import sys
+import os
 
 import loading
 
@@ -176,6 +177,15 @@ def classify_and_print_only_rate( data, classifier, label, filter ):
     print( "Correct rejections rate for " + filter + ": " + rate + " (dataset size: " + str( len( data ) ) + ")" )
 
 
+def print_scenes( data ):
+    dirs = set()
+    for row in data:
+        reference = row[ "reference_image" ]
+        dirs.add( os.path.dirname( reference ) )
+    print( dirs )
+
+
+
 ## ======================= ##
 ##
 def run():
@@ -190,7 +200,7 @@ def run():
 
     label = "label"
 
-    # print_scenes( data )
+    print_scenes( data )
 
     # print( data.dtype.names )
 
