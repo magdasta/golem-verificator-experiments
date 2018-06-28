@@ -88,5 +88,9 @@ python classification/classification_analysis.py D:\GolemData\images_database\da
 python classification/split_data.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_50.npy D:\GolemData\images_database\datasets/
 
 
+# manual labeling of crops
+
+python classification/optical_comparision/manual_labeling.py TestImages/image_[samples=6125]_[blured]_[kernel=1].png
+
 
 
