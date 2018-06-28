@@ -107,8 +107,54 @@ def all_combinations( files ):
             combintations.append( ( files[ first ], files[ second ] ) )
     
     return combintations
+
+
+## ======================= ##
+##
+def match_diff_seeds( files1, files2 ):
+
+    pairs = []
     
+    for file in files1:
+        if file in files2:
+            pairs.extend( ( file, file ) )
+            
+    return pairs
+    
+## ======================= ##
+##
+def list_different_seeds( directory1, directory2 ):
+
+    # consists of pairs of files to compare
+    comparision_list = []
+
+    for root, dirs, files in os.walk( directory1 ):
+    
+        relative_directory1 = os.path.relpath( root, directory1 )
+        reference_path = os.path.join( directory2, relative_directory1 )
         
+        print( "Processing directory: [" + root + "]" )
+        print( "    Looking for reference images in [" + reference_path + "]")
+        
+        reference_files = list_files( reference_path )
+        
+        if reference_files is None or files is None:
+            continue
+
+        # get rid of non-image files.
+        reference_files = [ file for file in reference_files if is_valid_image_file( file ) ]
+        files = [ file for file in files if is_valid_image_file( file ) ]
+        
+        pairs = match_diff_seeds( files, reference_files )
+        pairs = [ ( make_relative( root, pair[ 0 ] ), make_relative( reference_path, pair[ 1 ] ) ) for pair in pairs ]
+                
+        comparision_list.extend( pairs )
+        
+        print( "    Found " + str( len( pairs ) ) + " pairs of files to compare." )
+    
+    return comparision_list     
+                
+    
 ## ======================= ##
 ##
 def list_all_combinations_comparisions( directory ):
@@ -180,7 +226,8 @@ def run():
 
     #print( list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] ) )
     #list = list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] )
-    list = list_all( reference_dir, compare_dir_parent )
+    #list = list_all( reference_dir, compare_dir_parent )
+    list = list_different_seeds( reference_dir, compare_dir_parent )
     
     file = open("list.txt","w") 
     file.write( str( list ) )
