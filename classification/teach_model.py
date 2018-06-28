@@ -93,6 +93,9 @@ def run():
     params.min_samples_leaf = 4000
     params.min_impurity_decrease = 0.0
     
+    print( "Teaching: number True labels: " + str( len( data[ data[ "label" ] == b"TRUE" ] ) ) )
+    print( "Teaching: number False labels: " + str( len( data[ data[ "label" ] == b"FALSE" ] ) ) )
+    
     clf = teach_tree( data, features_labels, params, sys.argv[ 2 ] )
     clf.save_graph( sys.argv[ 3 ] )
     
