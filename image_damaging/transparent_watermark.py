@@ -1,6 +1,7 @@
 from PIL import Image, ImageMath
 import sys
 import helpers
+import math
 
 
 ## ======================= ##
@@ -27,8 +28,8 @@ def add_watermark( image, parameters ):
     width_excess = parameters.watermark.width - width
     height_excess = parameters.watermark.height - height
 
-    left = width_excess / 2
-    top = height_excess / 2
+    left = math.floor(width_excess / 2)
+    top = math.floor(height_excess / 2)
     right = left + width
     bottom = top + height
     
