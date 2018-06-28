@@ -11,6 +11,7 @@ tiles = 10
 selected_crops = numpy.zeros( ( tiles, tiles ), numpy.uint8 )
 screen = None
 mask = None
+show_mask =  True
 
 
 ## ======================= ##
@@ -81,10 +82,18 @@ def apply_mask( image, selected_crops ):
                 
     
     alpha = 0.6
-    masked_image = cv2.addWeighted( mask, alpha, masked_image, 1 - alpha, 0 )
+    
+    if show_mask:
+        masked_image = cv2.addWeighted( mask, alpha, masked_image, 1 - alpha, 0 )
     
     return masked_image
 
+    
+## ======================= ##
+##
+def show_hide_mask():
+    global show_mask
+    show_mask = not show_mask
     
     
 ## ======================= ##
@@ -103,7 +112,11 @@ def main_loop( image_path ):
         screen = apply_mask( image, selected_crops )
     
         cv2.imshow( 'Crops labeling', screen )
-        if cv2.waitKey(20) & 0xFF == 27:
+        
+        key = cv2.waitKey( 20 )
+        if key == ord( 'm' ):
+            show_hide_mask()
+        elif key == 27:
             break
 
     cv2.destroyAllWindows()
