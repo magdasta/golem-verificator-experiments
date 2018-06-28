@@ -278,13 +278,39 @@ def analyze_wavelets( data ):
     plot_data( "samples", "wavelet_mid", filtered )
     
     matplotlib.pyplot.show()
-    
+
+def save_all_crops( data, compared_dir, reference_dir ):
+    data = data[ data[ "is_cropped" ] == True ]
+
+    num_crops = 10
+
+    for scene in should_accept.ok_thresholds:
+        filtered = data[ data[ "samples" ] == should_accept.ok_thresholds[ scene ] ]
+        filtered = filtered[ filtered[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ] ]
+        for row in filtered:
+            if should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ):
+                reference_file = os.path.normpath(row["reference_image"].decode('UTF-8'))
+                compared_file = os.path.normpath(row["image"].decode('UTF-8'))
+
+                print("Processing files: reference [" + reference_file + "] and compared [" + compared_file + "].")
+
+                (reference_image, compared_image) = load_images(reference_file, compared_file)
+
+                (cropped_image, cropped_reference) = extract_features.crop_image(row["crop_x"], row["crop_y"], num_crops, compared_image, reference_image)
+
+                cropped_image.save(os.path.join(compared_dir, gen_file_name(compared_file, row)), "PNG")
+                cropped_reference.save(os.path.join(reference_dir, gen_file_name(reference_file, row)), "PNG")
+
+
 ## ======================= ##
 ##
 def run():
 
     data = loading.load_dataset( sys.argv[ 1 ] )
-    analyze_wavelets( data )
+    save_all_crops( data, sys.argv[ 2 ], sys.argv[ 3 ] )
+
+
+    # analyze_wavelets( data )
 
     # #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
     # #show_cropped_plot( "ref_edge_factor", "ssim" )
