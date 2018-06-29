@@ -196,6 +196,18 @@ def load_previous_row( data, full_images ):
     
 ## ======================= ##
 ##
+def print_help():
+
+    print( "Help:" )
+    print( "Key h - Print help." )
+    print( "Key a - load image from previous row." )
+    print( "Key d - load image from next row." )
+    print( "Key m - Show/Hide labels." )
+    print( "Press Escape to exit." )
+
+    
+## ======================= ##
+##
 def main_loop( data_path ):
     global screen
 
@@ -222,6 +234,8 @@ def main_loop( data_path ):
             load_next_row( data, full_images )
         elif key == ord( 'a' ):
             load_previous_row( data, full_images )            
+        elif key == ord( "h" ):
+            print_help()
         elif key == 27:
             break
 
