@@ -1,6 +1,7 @@
 # takes two images and creates a new one consisting of their fragments
 # from data_from_filename_extractor import extract_number_of_samples
 import os
+import numpy
 from PIL import Image
 from sys import argv
 
@@ -76,9 +77,14 @@ def make_chessboard_and_save(scene_folder, first_file_name, second_file_name, re
     chessboard.save(result_path)
 
 
+def image_to_numpy( image ):          
+    b, g, r = image.split()
+    return numpy.array( Image.merge( "RGB", (r, g, b) ) )
+    
+    
 def chessboard_from_csv( row ):
     csv_dir = "D:\\GolemData"
-    local_dir = "e:\\golem"
+    local_dir = "D:\\GolemData"
 
     first_path = os.path.normpath(row["reference_image"].decode('UTF-8'))
     second_path = os.path.normpath(row["image"].decode('UTF-8'))
@@ -88,7 +94,7 @@ def chessboard_from_csv( row ):
 
     chessboard = mix( first_path, second_path, 20 )
 
-    return chessboard
+    return image_to_numpy( chessboard )
 
 
 def run(source_images_directory, results_directory):

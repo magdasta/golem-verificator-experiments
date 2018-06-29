@@ -5,6 +5,7 @@ import math
 import sys
 
 import loading
+import optical_comparision.chessboard as chessboard
 
 
 
@@ -148,7 +149,6 @@ def fill_crops_selections( crop_rows ):
         tile_y = row[ "crop_y" ]
         
         selected_crops[ tile_x ][ tile_y ] = get_label( row )
-        
     
 ## ======================= ##
 ##
@@ -164,7 +164,7 @@ def load_row( data, row ):
     fill_crops_selections( crop_rows )
     
     # load image
-    image = cv2.imread( row[ "image" ].decode('UTF-8'), cv2.IMREAD_COLOR )
+    image = chessboard.chessboard_from_csv( row )
     
     
 ## ======================= ##
