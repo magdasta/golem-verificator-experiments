@@ -88,7 +88,7 @@ def chessboard_from_csv( row ):
 
     chessboard = mix( first_path, second_path, 20 )
 
-    chessboard.save( "output.png" )
+    return chessboard
 
 
 def run(source_images_directory, results_directory):
