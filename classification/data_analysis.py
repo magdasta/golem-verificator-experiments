@@ -8,7 +8,7 @@ import pandas
 import loading
 import extract_features
 import optical_comparision.should_accept as should_accept
-
+import optical_comparision.chessboard as chessboard
 
 ## ======================= ##
 ##
@@ -314,7 +314,10 @@ def save_all_crops( data, compared_dir, reference_dir ):
 def run():
 
     data = loading.load_dataset( sys.argv[ 1 ] )
-    save_all_crops( data, sys.argv[ 2 ], sys.argv[ 3 ] )
+    data = data[ data["samples"] == 1 ]
+    data = data[ data["samples_reference"] == 801 ]
+    chessboard.chessboard_from_csv( data[ 0 ] )
+    # save_all_crops( data, sys.argv[ 2 ], sys.argv[ 3 ] )
 
 
     # analyze_wavelets( data )
@@ -340,5 +343,4 @@ def run():
 if __name__ == "__main__":
     run()
 
-    
     
