@@ -33,6 +33,7 @@ mask = None
 
 # Configuration
 show_mask =  True
+show_grid = False
 
 
 ## ======================= ##
@@ -113,6 +114,22 @@ def apply_mask( image, selected_crops ):
     
     return masked_image
 
+## ======================= ##
+##
+def draw_grid_lines( image ):
+
+    if show_grid:
+        
+        # vertical
+        for tile in range( 1, tiles ):
+            box = crop_to_box( tile, 0 )
+            cv2.line( image, ( box[ 0 ], 0 ), ( box[ 0 ], image.shape[ 0 ] ), ( 255, 255, 255 ) )
+            
+        # horizontal
+        for tile in range( 1, tiles ):
+            box = crop_to_box( 0, tile )
+            cv2.line( image, ( 0, box[ 1 ] ), ( image.shape[ 1 ], box[ 1 ] ), ( 255, 255, 255 ) )
+
     
 ## ======================= ##
 ##
@@ -120,7 +137,13 @@ def show_hide_mask():
     global show_mask
     show_mask = not show_mask
 
-
+## ======================= ##
+##
+def show_grid_lines():
+    global show_grid
+    show_grid = not show_grid
+    
+    
 ## ======================= ##
 ##
 def get_label( row ):
@@ -202,6 +225,7 @@ def print_help():
     print( "Key a - load image from previous row." )
     print( "Key d - load image from next row." )
     print( "Key m - Show/Hide labels." )
+    print( "Key l - Show/Hide grid lines." )
     print( "Press Escape to exit." )
 
     
@@ -223,6 +247,7 @@ def main_loop( data_path ):
     while(1):
     
         screen = apply_mask( image, selected_crops )
+        draw_grid_lines( screen )
     
         cv2.imshow( 'Crops labeling', screen )
         
@@ -235,6 +260,8 @@ def main_loop( data_path ):
             load_previous_row( data, full_images )            
         elif key == ord( "h" ):
             print_help()
+        elif key == ord( "l" ):
+            show_grid_lines()
         elif key == 27:
             break
 
