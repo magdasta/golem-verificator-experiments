@@ -23,6 +23,9 @@ FalseColor = ( 255, 0, 0 )
 DontKnowColor = ( 0, 200, 200 )
 IgnoreColor = ( 0, 0, 255 )
 
+
+current_row = -1
+
 # Images
 screen = None
 mask = None
@@ -79,7 +82,7 @@ def mouse_select( event, x, y, flags, param ):
             print( "Deselected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
         else:
             selected_crops[ tile_x ][ tile_y ] = True
-            print( "Selected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
+            print( "Selected crop:   [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
   
   
 ## ======================= ##
@@ -151,6 +154,7 @@ def fill_crops_selections( crop_rows ):
 ## ======================= ##
 ##
 def load_row( data, row ):
+    global image
     
     print( "Selected comparision:" )
     print( "    " + row[ "reference_image" ].decode('UTF-8')  )
@@ -158,9 +162,37 @@ def load_row( data, row ):
     
     # Find all crops rows
     crop_rows = data[ ( data[ "reference_image" ] == row[ "reference_image" ] ) & ( data[ "image" ] == row[ "image" ] ) ]
-    
     fill_crops_selections( crop_rows )
     
+    # load image
+    image = cv2.imread( row[ "image" ].decode('UTF-8'), cv2.IMREAD_COLOR )
+    
+    
+## ======================= ##
+##
+def load_next_row( data, full_images ):
+    global current_row
+
+    current_row = current_row + 1
+    if current_row >= len( full_images ):
+        current_row = 0
+
+    first_row = full_images[ current_row ]
+    load_row( data, first_row )
+
+    
+## ======================= ##
+##
+def load_previous_row( data, full_images ):
+    global current_row
+
+    current_row = current_row - 1
+    if current_row < 0:
+        current_row = len( full_images ) - 1
+
+    first_row = full_images[ current_row ]
+    load_row( data, first_row )
+
     
 ## ======================= ##
 ##
@@ -169,11 +201,9 @@ def main_loop( data_path ):
 
     data = loading.load_dataset( data_path )
     full_images = data[ data[ "is_cropped" ] == False ]
-    first_row = full_images[ 0 ]
     
-    load_row( data, first_row )
-    
-    image = cv2.imread( first_row[ "image" ].decode('UTF-8'), cv2.IMREAD_COLOR )
+    load_next_row( data, full_images )
+
     screen = numpy.zeros( image.shape, numpy.uint8 )
     
     cv2.namedWindow( 'Crops labeling' )
@@ -188,6 +218,10 @@ def main_loop( data_path ):
         key = cv2.waitKey( 20 )
         if key == ord( 'm' ):
             show_hide_mask()
+        elif key == ord( 'd' ):
+            load_next_row( data, full_images )
+        elif key == ord( 'a' ):
+            load_previous_row( data, full_images )            
         elif key == 27:
             break
 
