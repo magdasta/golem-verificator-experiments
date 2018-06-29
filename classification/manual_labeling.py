@@ -77,11 +77,11 @@ def mouse_select( event, x, y, flags, param ):
         
         ( tile_x, tile_y ) = position_to_crop( x, y )
         
-        if selected_crops[ tile_x ][ tile_y ]:
-            selected_crops[ tile_x ][ tile_y ] = False
+        if selected_crops[ tile_x ][ tile_y ] != FalseLabel:
+            selected_crops[ tile_x ][ tile_y ] = FalseLabel
             print( "Deselected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
         else:
-            selected_crops[ tile_x ][ tile_y ] = True
+            selected_crops[ tile_x ][ tile_y ] = IgnoreLabel
             print( "Selected crop:   [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
   
   
@@ -92,23 +92,22 @@ def apply_mask( image, selected_crops ):
     masked_image = image.copy();
     mask = image.copy();
     
-    for tile_x in range( 0, selected_crops.shape[ 0 ] ):
-        for tile_y in range( 0, selected_crops.shape[ 1 ] ):
-        
-            box = crop_to_box( tile_x, tile_y )
-            
-            if selected_crops[ tile_x ][ tile_y ] == FalseLabel:
-                cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), FalseColor, thickness = cv2.FILLED )
-            elif selected_crops[ tile_x ][ tile_y ] == TrueLabel:
-                cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), TrueColor, thickness = cv2.FILLED )
-            elif selected_crops[ tile_x ][ tile_y ] == DontKnowLabel:
-                cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), DontKnowColor, thickness = cv2.FILLED )
-            elif selected_crops[ tile_x ][ tile_y ] == IgnoreLabel:
-                cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), IgnoreColor, thickness = cv2.FILLED )
-    
-    alpha = 0.6
-    
     if show_mask:
+        for tile_x in range( 0, selected_crops.shape[ 0 ] ):
+            for tile_y in range( 0, selected_crops.shape[ 1 ] ):
+            
+                box = crop_to_box( tile_x, tile_y )
+                
+                if selected_crops[ tile_x ][ tile_y ] == FalseLabel:
+                    cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), FalseColor, thickness = cv2.FILLED )
+                elif selected_crops[ tile_x ][ tile_y ] == TrueLabel:
+                    cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), TrueColor, thickness = cv2.FILLED )
+                elif selected_crops[ tile_x ][ tile_y ] == DontKnowLabel:
+                    cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), DontKnowColor, thickness = cv2.FILLED )
+                elif selected_crops[ tile_x ][ tile_y ] == IgnoreLabel:
+                    cv2.rectangle( mask, ( box[ 0 ], box[ 1 ] ), ( box[ 2 ], box[ 3 ] ), IgnoreColor, thickness = cv2.FILLED )
+        
+        alpha = 0.6
         masked_image = cv2.addWeighted( mask, alpha, masked_image, 1 - alpha, 0 )
     
     return masked_image
