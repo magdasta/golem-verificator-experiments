@@ -87,6 +87,16 @@ def crop_image( tile_x, tile_y, tiles, image, reference ):
     
     crop_x = tile_x * crop_width
     crop_y = tile_y * crop_height
+
+    if crop_width < 8:
+        crop_width = 8
+    if crop_height < 8:
+        crop_height = 8
+        
+    if crop_x + crop_width > width:
+        crop_x = width - crop_width
+    if crop_y + crop_height > height:
+        crop_y = height - crop_height
     
     box = ( crop_x, crop_y, crop_x + crop_width, crop_y + crop_height )
     
@@ -100,7 +110,7 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
     create_directory_if_doesnt_exist( os.path.dirname( csv_file ) )
     
     errors_list = []
-    num_crops = 10      # In one dimmension
+    num_crops = 100      # In one dimmension
     
     compare_list = list_comparisions.list_all( reference_dir, compare_dir_parent )
     
@@ -183,6 +193,8 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
             print( "    [" + error[ 0 ] + "] and [" + error[ 1 ] + "]" )
             print( "     Message: " + error[ 2 ] )
             print( error[ 3 ] )
+            
+        print( str( len( errors_list ) ) + " errors occured." )
     else:
         print( "\n## ===================================================== ##" )
         print( "Processing completed without errors." )
@@ -195,7 +207,9 @@ def run():
     compare_dir_parent = sys.argv[ 2 ]
     csv_file = sys.argv[ 3 ]
     
-    features = [    metrics.ssim.MetricSSIM()  ]
+    features = [    metrics.ssim.MetricSSIM(),
+                    metrics.edges.MetricEdgeFactor(),
+                    metrics.wavelet.MetricWavelet() ]
 
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
         
