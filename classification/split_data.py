@@ -3,7 +3,24 @@ import sys
 import os
 
 import loading
+import optical_comparision.should_accept as accept
 
+
+
+## ======================= ##
+##
+test_set = { "metal", "mug", "toughship", "breakfast_room", "plushy", "glass_material" }
+
+
+## ======================= ##
+##
+def split_by_scenes( data, scenes ):
+    
+    test_set = [ row for row in data if accept.get_scene_name( row[ "image" ].decode('UTF-8') ) in scenes ]
+    train_set = [ row for row in data if accept.get_scene_name( row[ "image" ].decode('UTF-8') ) not in scenes ]
+    
+    return train_set, test_set
+    
 
 ## ======================= ##
 ##
@@ -23,11 +40,11 @@ def split_set( data, proportion ):
 
 ## ======================= ##
 ##
-def split_train_test_set( data_file, output_dir, proportion ):
+def split_train_test_set( data_file, output_dir, split_fun, params ):
 
     data = loading.load_dataset( data_file )
 
-    train_set, test_set = split_set( data, proportion )
+    train_set, test_set = split_fun( data, params )
     
     basename = os.path.basename( data_file )
     (name, ext) = os.path.splitext( basename )
@@ -43,7 +60,8 @@ def split_train_test_set( data_file, output_dir, proportion ):
 ##
 def run():
 
-    split_train_test_set( sys.argv[ 1 ], sys.argv[ 2 ], 0.7 )
+    #split_train_test_set( sys.argv[ 1 ], sys.argv[ 2 ], split_set, 0.7 )
+    split_train_test_set( sys.argv[ 1 ], sys.argv[ 2 ], split_by_scenes, test_set )
     
     
 
