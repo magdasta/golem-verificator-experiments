@@ -100,7 +100,7 @@ def list_reference_comparisions( images_dir, reference_dir ):
         reference_files = [ file for file in reference_files if is_valid_image_file( file ) ]
         files = [ file for file in files if is_valid_image_file( file ) ]
         
-        files = find_max_sample_image(files)
+        reference_files = find_max_sample_image( reference_files )
 
         pairs = pair_image_with_reference( files, reference_files )
         pairs = [ make_relative_path( pair, relative_directory ) for pair in pairs ]
