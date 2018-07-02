@@ -126,7 +126,7 @@ def should_accept(row):
     if get_scene_name(path_a) != get_scene_name(path_b):
         throw_shouldnt_be_compared_exception(path_a, path_b)
 
-    if row["psnr"] > 50:
+    if row["psnr"] > 70:
         psnred = psnred + 1
         return ShouldAccept.TRUE
     if one_is_damaged(path_a, path_b):
