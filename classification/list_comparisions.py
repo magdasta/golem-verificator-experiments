@@ -1,6 +1,6 @@
 import sys
 import os
-
+from extract_params import extract_params
 
 
 ## ======================= ##
@@ -16,6 +16,20 @@ def list_files( directory ):
 
     for ( dirpath, dirnames, filenames ) in os.walk( directory ):
         return filenames
+
+def find_max_sample_image(files):
+    current_max = 0
+    current_max_file = ''
+    for file in files:
+        params = extract_params(file)
+        try:
+            if int(params[0][1]) > current_max:
+                current_max_file = file
+                current_max = int(params[0][1])
+        except:
+            print("Broken image name found")
+            continue
+    return [current_max_file]
 
 ## ======================= ##
 ##
@@ -86,6 +100,8 @@ def list_reference_comparisions( images_dir, reference_dir ):
         reference_files = [ file for file in reference_files if is_valid_image_file( file ) ]
         files = [ file for file in files if is_valid_image_file( file ) ]
         
+        files = find_max_sample_image(files)
+
         pairs = pair_image_with_reference( files, reference_files )
         pairs = [ make_relative_path( pair, relative_directory ) for pair in pairs ]
         
