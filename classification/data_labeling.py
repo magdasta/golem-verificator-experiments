@@ -4,7 +4,6 @@ import sys
 import optical_comparision.should_accept as labels
 import loading
 
-
 ## ======================= ##
 ##
 def save_binary( data, file_path ):
@@ -15,10 +14,7 @@ def save_binary( data, file_path ):
 ##
 def label_row( row ):
     
-    reference_path = row[ "reference_image" ].decode( 'UTF-8' )
-    compared_path = row[ "image" ].decode( 'UTF-8' )
-    
-    label = labels.should_accept( reference_path, compared_path )
+    label = labels.should_accept( row )
     if label == labels.ShouldAccept.TRUE:
         return "TRUE"
     elif label == labels.ShouldAccept.FALSE:
@@ -34,7 +30,10 @@ def label_row( row ):
 def label_data( src_file, dest_file ):
 
     data = loading.load_dataset( src_file )
-    
+
+    # for i in range(1,100):
+    #     print( data[i]["psnr"] )
+
     print( "Creating new array" )
     new_dtype = numpy.dtype( data.dtype.descr + [('label', 'S9')] )
     labeled_data = numpy.zeros( data.shape, dtype=new_dtype )
@@ -55,8 +54,10 @@ def label_data( src_file, dest_file ):
 ##
 def run():
 
+    print( "psnred: " + str( labels.get_psnred() ) )
     label_data( sys.argv[ 1 ], sys.argv[ 2 ] )
-    
+    print( "psnred: " + str( labels.get_psnred() ) )
+
     
 
 if __name__ == "__main__":
