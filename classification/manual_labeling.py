@@ -6,8 +6,15 @@ import sys
 
 import loading
 import optical_comparision.chessboard as chessboard
+import optical_comparision.should_accept as should_accept
 
 
+
+## ======================= ##
+##
+class Config:
+    pass
+    
 
 ## ======================= ##
 ##
@@ -25,7 +32,8 @@ DontKnowColor = ( 0, 200, 200 )
 IgnoreColor = ( 0, 0, 255 )
 
 
-current_row = -1
+current_row_idx = -1
+current_row = None
 
 # Images
 screen = None
@@ -188,31 +196,32 @@ def load_row( data, row ):
     
     # load image
     image = chessboard.chessboard_from_csv( row )
+    current_row = row
     
     
 ## ======================= ##
 ##
 def load_next_row( data, full_images ):
-    global current_row
+    global current_row_idx
 
-    current_row = current_row + 1
-    if current_row >= len( full_images ):
-        current_row = 0
+    current_row_idx = current_row_idx + 1
+    if current_row_idx >= len( full_images ):
+        current_row_idx = 0
 
-    first_row = full_images[ current_row ]
+    first_row = full_images[ current_row_idx ]
     load_row( data, first_row )
 
     
 ## ======================= ##
 ##
 def load_previous_row( data, full_images ):
-    global current_row
+    global current_row_idx
 
-    current_row = current_row - 1
-    if current_row < 0:
-        current_row = len( full_images ) - 1
+    current_row_idx = current_row_idx - 1
+    if current_row_idx < 0:
+        current_row_idx = len( full_images ) - 1
 
-    first_row = full_images[ current_row ]
+    first_row = full_images[ current_row_idx ]
     load_row( data, first_row )
 
     
@@ -229,13 +238,40 @@ def print_help():
     print( "Press Escape to exit." )
 
     
+# ## ======================= ##
+# ##
+# def select_scenes_with_threshold( data ):
+    
+    # print( "Selecting scenes on subsampling threshold." )
+    
+    # for i, scene in enumerate( should_accept.ok_thresholds ):
+        
+        # not_ok_mask = ( data[ "samples" ] == should_accept.not_ok_thresholds[ scene ] ) | ( data[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ] )
+        # ok_mask = ( data[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) | ( data[ "samples" ] == should_accept.ok_thresholds[ scene ] )
+
+        # filtered = 
+        
+        
+    
 ## ======================= ##
 ##
-def main_loop( data_path ):
+def select_rows( data, config ):
+
+    full_images = data[ data[ "is_cropped" ] == False ]
+
+    if config.subsampling:
+        return full_images[ full_images[ "samples_reference" ] != full_images[ "samples" ] ]
+    else:
+        return full_images
+
+    
+## ======================= ##
+##
+def main_loop( config ):
     global screen
 
-    data = loading.load_dataset( data_path )
-    full_images = data[ data[ "is_cropped" ] == False ]
+    data = loading.load_dataset( config.dataset )
+    full_images = select_rows( data, config )
     
     load_next_row( data, full_images )
 
@@ -267,12 +303,25 @@ def main_loop( data_path ):
 
     cv2.destroyAllWindows()
 
-
+    
+## ======================= ##
+##
+def parse_configuration():
+    
+    config = Config()
+    config.dataset = sys.argv[ 1 ]
+    config.subsampling = "-subsampling" in sys.argv
+    
+    
+    return config
+    
+    
 ## ======================= ##
 ##
 def run():
 
-    main_loop( sys.argv[ 1 ] )
+    config = parse_configuration()
+    main_loop( config )
 
         
         
