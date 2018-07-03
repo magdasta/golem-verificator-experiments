@@ -180,11 +180,65 @@ def fill_crops_selections( crop_rows ):
         tile_y = row[ "crop_y" ]
         
         selected_crops[ tile_x ][ tile_y ] = get_label( row )
+
+## ======================= ##
+##
+def get_label_string( label ):
+    if label == TrueLabel:
+        return b"TRUE"
+    elif label == FalseLabel:
+        return b"FALSE"
+    elif label == DontKnowLabel:
+        return b"DONT_KNOW"
+    elif label == IgnoreLabel:
+        return b"IGNORE"
+    else:
+        assert False
+
+## ======================= ##
+##
+def compute_row_and_crops_idx( data ):
+
+    print( current_row )
+
+    mask = ( data[ "reference_image" ] == current_row[ "reference_image" ] ) & ( data[ "image" ] == current_row[ "image" ] )
+    return numpy.where( mask )[ 0 ]
+        
+## ======================= ##
+##
+def compute_current_row_idx( data ):
+
+    indicies = compute_row_and_crops_idx( data )
+    for idx in indicies:
+        if data[ idx ][ "is_cropped" ] == False:
+            return idx
+
+    assert False, "Can't find fullscreen image."
+    return -1
+        
+        
+## ======================= ##
+##
+def update_crops_selection( data ):
     
+    indicies = compute_row_and_crops_idx( data )
+    
+    for idx in indicies:
+        
+        row = data[ idx ]
+        if row[ "is_cropped" ]:
+        
+            tile_x = row[ "crop_x" ]
+            tile_y = row[ "crop_y" ]
+            
+            data[ idx ][ "label" ] = get_label_string( selected_crops[ tile_x ][ tile_y ] )
+
+
 ## ======================= ##
 ##
 def load_row( data, row ):
     global image
+    global current_row
     
     print( "Selected comparision:" )
     print( "    " + row[ "reference_image" ].decode('UTF-8')  )
@@ -291,9 +345,11 @@ def main_loop( config ):
         if key == ord( 'm' ):
             show_hide_mask()
         elif key == ord( 'd' ):
+            update_crops_selection( data )
             load_next_row( data, full_images )
         elif key == ord( 'a' ):
-            load_previous_row( data, full_images )            
+            update_crops_selection( data )
+            load_previous_row( data, full_images )
         elif key == ord( "h" ):
             print_help()
         elif key == ord( "l" ):
