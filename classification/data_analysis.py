@@ -8,7 +8,7 @@ import pandas
 import loading
 import extract_features
 import optical_comparision.should_accept as should_accept
-
+import optical_comparision.chessboard as chessboard
 
 ## ======================= ##
 ##
@@ -60,13 +60,16 @@ def flatten_path( path ):
 
 ## ======================= ##
 ##
-def gen_file_name( file_path, row ):
+def gen_file_name( file_path, row, add_psnr = True ):
     
     flattened = flatten_path( file_path )
     
     if row[ "is_cropped" ]:
         ( file, extension ) = os.path.splitext( flattened )
-        return file + "[crop_x=" + str( row[ "crop_x" ] ) + "][crop_y=" + str( row[ "crop_y" ] ) + "][psnr_diff=" + str( row[ "psnr" ] ) + "]" + extension
+        filename = file + "[crop_x=" + str( row[ "crop_x" ] ) + "][crop_y=" + str( row[ "crop_y" ] ) + "]"
+        if add_psnr:
+            filename = filename + "[psnr_diff=" + str( row[ "psnr" ] ) + "]"
+        return filename + extension
     else:
         return flattened
     
@@ -278,13 +281,46 @@ def analyze_wavelets( data ):
     plot_data( "samples", "wavelet_mid", filtered )
     
     matplotlib.pyplot.show()
-    
+
+def save_all_crops( data, compared_dir, reference_dir ):
+    data = data[ data[ "is_cropped" ] == True ]
+
+    num_crops = 10
+
+    for i, scene in enumerate( should_accept.ok_thresholds ):
+        print( "Scene number: " + str( i ) + ", name: " + scene )
+        filtered = data[ data[ "samples" ] == should_accept.not_ok_thresholds[ scene ] ]
+        filtered = filtered[ filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ]
+        for row in filtered:
+            if should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) == scene:
+                reference_file = os.path.normpath(row["reference_image"].decode('UTF-8'))
+                compared_file = os.path.normpath(row["image"].decode('UTF-8'))
+
+                reference_file = reference_file.replace( "D:\\GolemData", "e:\\golem" )
+                compared_file = compared_file.replace( "D:\\GolemData", "e:\\golem" )
+
+                print("Processing files: reference [" + reference_file + "] and compared [" + compared_file + "].")
+
+                (reference_image, compared_image) = load_images(reference_file, compared_file)
+
+                (cropped_image, cropped_reference) = extract_features.crop_image(row["crop_x"], row["crop_y"], num_crops, compared_image, reference_image)
+
+                cropped_image.save(os.path.join(compared_dir, gen_file_name(compared_file, row, False)), "PNG")
+                cropped_reference.save(os.path.join(reference_dir, gen_file_name(reference_file, row, False)), "PNG")
+
+
 ## ======================= ##
 ##
 def run():
 
     data = loading.load_dataset( sys.argv[ 1 ] )
-    analyze_wavelets( data )
+    data = data[ data["samples"] == 1 ]
+    data = data[ data["samples_reference"] == 801 ]
+    chessboard.chessboard_from_csv( data[ 0 ] )
+    # save_all_crops( data, sys.argv[ 2 ], sys.argv[ 3 ] )
+
+
+    # analyze_wavelets( data )
 
     # #save_filtered_dataset( load_datasets( sys.argv[ 1 ] )[ 0 ], sys.argv[ 2 ], sys.argv[ 3 ] )
     # #show_cropped_plot( "ref_edge_factor", "ssim" )
@@ -307,5 +343,4 @@ def run():
 if __name__ == "__main__":
     run()
 
-    
     
