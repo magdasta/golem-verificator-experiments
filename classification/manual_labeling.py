@@ -181,6 +181,8 @@ def fill_crops_selections( crop_rows ):
         
         selected_crops[ tile_x ][ tile_y ] = get_label( row )
 
+## ======================= ##
+##
 def get_label_string( label ):
     if label == TrueLabel:
         return b"TRUE"
@@ -193,17 +195,50 @@ def get_label_string( label ):
     else:
         assert False
 
+## ======================= ##
+##
+def compute_row_and_crops_idx( data ):
+
+    print( current_row )
+
+    mask = ( data[ "reference_image" ] == current_row[ "reference_image" ] ) & ( data[ "image" ] == current_row[ "image" ] )
+    return numpy.where( mask )
+        
+## ======================= ##
+##
+def compute_current_row_idx( data ):
+
+    indicies = compute_row_and_crops_idx( data )
+    for idx in indicies:
+        if data[ idx ][ "is_cropped" ] == False:
+            return idx
+
+    assert False, "Can't find fullscreen image."
+    return -1
+        
+        
+## ======================= ##
+##
 def update_crops_selection( data ):
-    index = current_row_idx + 1
-    for y in range( tiles ):
-        for x in range( tiles ):
-            data[ index ][ "label" ] = get_label_string( selected_crops[ y ][ x ] )
-            index = index + 1
+    
+    indicies = compute_row_and_crops_idx( data )
+    
+    for idx in indicies[ 0 ]:
+        
+        row = data[ idx ]
+        if row[ "is_cropped" ]:
+        
+            tile_x = row[ "crop_x" ]
+            tile_y = row[ "crop_y" ]
+            
+            data[ idx ][ "label" ] = get_label_string( selected_crops[ tile_x ][ tile_y ] )
+
 
 ## ======================= ##
 ##
 def load_row( data, row ):
     global image
+    global current_row
     
     print( "Selected comparision:" )
     print( "    " + row[ "reference_image" ].decode('UTF-8')  )
