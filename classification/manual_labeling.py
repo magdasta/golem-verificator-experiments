@@ -292,6 +292,29 @@ def print_help():
     print( "Press Escape to exit." )
 
     
+## ======================= ##
+##
+def print_row( row ):
+    
+    feature_max_len = 40
+    
+    names = row.dtype.names
+    for name in names:
+        
+        length = len( name )
+        num_spaces = feature_max_len - length
+        spaces_str = " " * num_spaces
+        
+        print( name + spaces_str + str( row[ name ] ) )
+    
+    
+## ======================= ##
+##
+def print_current_row():
+
+    print_row( current_row )
+    
+    
 # ## ======================= ##
 # ##
 # def select_scenes_with_threshold( data ):
