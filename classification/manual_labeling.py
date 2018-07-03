@@ -202,7 +202,7 @@ def compute_row_and_crops_idx( data ):
     print( current_row )
 
     mask = ( data[ "reference_image" ] == current_row[ "reference_image" ] ) & ( data[ "image" ] == current_row[ "image" ] )
-    return numpy.where( mask )
+    return numpy.where( mask )[ 0 ]
         
 ## ======================= ##
 ##
@@ -223,7 +223,7 @@ def update_crops_selection( data ):
     
     indicies = compute_row_and_crops_idx( data )
     
-    for idx in indicies[ 0 ]:
+    for idx in indicies:
         
         row = data[ idx ]
         if row[ "is_cropped" ]:
