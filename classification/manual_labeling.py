@@ -180,7 +180,26 @@ def fill_crops_selections( crop_rows ):
         tile_y = row[ "crop_y" ]
         
         selected_crops[ tile_x ][ tile_y ] = get_label( row )
-    
+
+def get_label_string( label ):
+    if label == TrueLabel:
+        return b"TRUE"
+    elif label == FalseLabel:
+        return b"FALSE"
+    elif label == DontKnowLabel:
+        return b"DONT_KNOW"
+    elif label == IgnoreLabel:
+        return b"IGNORE"
+    else:
+        assert False
+
+def update_crops_selection( data ):
+    index = current_row_idx + 1
+    for y in range( tiles ):
+        for x in range( tiles ):
+            data[ index ][ "label" ] = get_label_string( selected_crops[ y ][ x ] )
+            index = index + 1
+
 ## ======================= ##
 ##
 def load_row( data, row ):
@@ -291,9 +310,11 @@ def main_loop( config ):
         if key == ord( 'm' ):
             show_hide_mask()
         elif key == ord( 'd' ):
+            update_crops_selection( data )
             load_next_row( data, full_images )
         elif key == ord( 'a' ):
-            load_previous_row( data, full_images )            
+            update_crops_selection( data )
+            load_previous_row( data, full_images )
         elif key == ord( "h" ):
             print_help()
         elif key == ord( "l" ):
