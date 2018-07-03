@@ -1,11 +1,14 @@
 import numpy
 import sys
+import math
 
 from sklearn.externals import joblib
 
 import quality
 import loading
 import classifiers.decision_tree
+
+import manual_labeling
 
 
 
@@ -79,10 +82,11 @@ def teach_tree( data, features_labels, params, file ):
 def run():
 
     data = loading.load_dataset( sys.argv[ 1 ] )
+    data = data[ data[ "is_cropped" ] == True ]
     
     ( index_labels, unique_labels ) = labels_to_int( data, "label" )
     
-    features_labels = [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ]
+    features_labels = [ "ssim", "max_x_mass_center_distance", "histograms_correlation", "max_y_mass_center_distance", "edge_difference", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ]
     
     params = Parameters()
     params.classes_weights = dict()
@@ -90,7 +94,7 @@ def run():
     params.classes_weights[ b"FALSE" ] = 1    
     params.criterion = "gini"
     params.max_depth = 8
-    params.min_samples_leaf = 4000
+    params.min_samples_leaf = 3000
     params.min_impurity_decrease = 0.0
     
     print( "Teaching: number True labels: " + str( len( data[ data[ "label" ] == b"TRUE" ] ) ) )

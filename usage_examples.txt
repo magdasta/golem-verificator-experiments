@@ -94,6 +94,7 @@ python classification/split_data.py D:\GolemData\images_database\datasets/metric
 # manual labeling of crops
 
 python classification/manual_labeling.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70.npy
+python classification/manual_labeling.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70.npy -filter_threshold
 
 
 

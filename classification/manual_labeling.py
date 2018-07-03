@@ -199,8 +199,6 @@ def get_label_string( label ):
 ##
 def compute_row_and_crops_idx( data ):
 
-    print( current_row )
-
     mask = ( data[ "reference_image" ] == current_row[ "reference_image" ] ) & ( data[ "image" ] == current_row[ "image" ] )
     return numpy.where( mask )[ 0 ]
         
@@ -315,19 +313,34 @@ def print_current_row():
     print_row( current_row )
     
     
-# ## ======================= ##
-# ##
-# def select_scenes_with_threshold( data ):
+## ======================= ##
+##
+def select_scenes_with_threshold( data ):
     
-    # print( "Selecting scenes on subsampling threshold." )
+    print( "Selecting scenes on subsampling threshold." )
     
-    # for i, scene in enumerate( should_accept.ok_thresholds ):
+    filtered = data[ data[ "samples" ] != data[ "samples_reference" ] ]
+    
+    # Create mask with all values False
+    mask = filtered[ "samples" ] == 0
+    
+    scene_names = [ should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) for row in filtered ]
+    
+    for i, scene in enumerate( should_accept.ok_thresholds ):
         
-        # not_ok_mask = ( data[ "samples" ] == should_accept.not_ok_thresholds[ scene ] ) | ( data[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ] )
-        # ok_mask = ( data[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) | ( data[ "samples" ] == should_accept.ok_thresholds[ scene ] )
+        print( "Finding images on threshold for scene: " + scene )
+        
+        not_ok_mask = ( filtered[ "samples" ] == should_accept.not_ok_thresholds[ scene ] ) & ( filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] )
+        ok_mask = ( filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples" ] == should_accept.not_ok_thresholds[ scene ] )
 
-        # filtered = 
+        scene_mask = [ scene_name == scene for scene_name in scene_names ]
         
+        threshold_mask = ( not_ok_mask | ok_mask )
+        scene_threshold_mask = ( threshold_mask & scene_mask )
+        
+        mask = mask | scene_threshold_mask
+        
+    return filtered[ mask ]
         
     
 ## ======================= ##
@@ -338,6 +351,8 @@ def select_rows( data, config ):
 
     if config.subsampling:
         return full_images[ full_images[ "samples_reference" ] != full_images[ "samples" ] ]
+    elif config.filter_threshold:
+        return select_scenes_with_threshold( full_images )
     else:
         return full_images
 
@@ -390,6 +405,7 @@ def parse_configuration():
     config = Config()
     config.dataset = sys.argv[ 1 ]
     config.subsampling = "-subsampling" in sys.argv
+    config.filter_threshold = "-filter_threshold" in sys.argv
     
     
     return config
