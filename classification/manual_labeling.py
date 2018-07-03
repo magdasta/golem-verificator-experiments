@@ -7,6 +7,7 @@ import sys
 import loading
 import optical_comparision.chessboard as chessboard
 import optical_comparision.should_accept as should_accept
+import data_filtering
 
 
 
@@ -287,6 +288,7 @@ def print_help():
     print( "Key d - load image from next row." )
     print( "Key m - Show/Hide labels." )
     print( "Key l - Show/Hide grid lines." )
+    print( "Key Enter - Save dataset labeling.")
     print( "Press Escape to exit." )
 
     
@@ -303,7 +305,7 @@ def print_row( row ):
         num_spaces = feature_max_len - length
         spaces_str = " " * num_spaces
         
-        print( name + spaces_str + str( row[ name ] ) )
+        print(name + spaces_str + str(row[name]))
     
     
 ## ======================= ##
@@ -356,11 +358,14 @@ def select_rows( data, config ):
     else:
         return full_images
 
-    
+
+esc_pressed = False
+
 ## ======================= ##
 ##
 def main_loop( config ):
     global screen
+    global esc_pressed
 
     data = loading.load_dataset( config.dataset )
     full_images = select_rows( data, config )
@@ -392,8 +397,24 @@ def main_loop( config ):
             print_help()
         elif key == ord( "l" ):
             show_grid_lines()
+        elif key == ord( "\r" ):
+            update_crops_selection( data )
+            data_filtering.save_binary( data, config.dataset )
+        elif key == ord( "y" ):
+            if esc_pressed:
+                update_crops_selection(data)
+                data_filtering.save_binary(data, config.dataset)
+                break
+            else:
+                pass
+        elif key == ord( "n" ):
+            if esc_pressed:
+                break
+            else:
+                pass
         elif key == 27:
-            break
+            print( "Do you want to save your dataset labeling? (y/n)")
+            esc_pressed = True
 
     cv2.destroyAllWindows()
 
