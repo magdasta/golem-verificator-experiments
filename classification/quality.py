@@ -196,7 +196,7 @@ def run():
 
     #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
-    classifier.set_features_labels( [ "ssim", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ] )
+    classifier.set_features_labels( features )
 
     data = loading.load_dataset( sys.argv[ 1 ] )
     data = data[ data[ "is_cropped" ] == True ]
