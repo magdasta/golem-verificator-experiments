@@ -332,12 +332,12 @@ def select_scenes_with_threshold( data ):
         
         print( "Finding images on threshold for scene: " + scene )
         
-        not_ok_mask = ( filtered[ "samples" ] == should_accept.not_ok_thresholds[ scene ] ) & ( filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] )
-        ok_mask = ( filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples" ] == should_accept.not_ok_thresholds[ scene ] )
+        compared_ok_mask = ( filtered[ "samples" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ] )
+        reference_ok_mask = ( filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples" ] == should_accept.not_ok_thresholds[ scene ] )
 
         scene_mask = [ scene_name == scene for scene_name in scene_names ]
         
-        threshold_mask = ( not_ok_mask | ok_mask )
+        threshold_mask = ( compared_ok_mask | reference_ok_mask )
         scene_threshold_mask = ( threshold_mask & scene_mask )
         
         mask = mask | scene_threshold_mask
