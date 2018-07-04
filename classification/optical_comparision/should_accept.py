@@ -5,10 +5,10 @@ from sys import argv
 
 
 class ShouldAccept(Enum):
-    IGNORE = -1.
-    FALSE = 0.
-    DONT_KNOW = 0.5
-    TRUE = 1.
+    IGNORE = 3
+    FALSE = 1
+    DONT_KNOW = 2
+    TRUE = 0
 
 
 ok_thresholds = {
@@ -74,7 +74,7 @@ def extract_number_of_samples(filename):
 def get_scene_name(path):
     scene = os.path.basename(os.path.dirname(path))
     if scene not in ok_thresholds.keys():
-        raise Exception("Unknown scene '" + scene + "'")
+        raise Exception("Unknown scene '" + str( scene ) + "'")
     return scene
 
 

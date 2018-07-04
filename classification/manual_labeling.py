@@ -196,13 +196,20 @@ def get_label_string( label ):
     else:
         assert False
 
+scene_names = None
+
 ## ======================= ##
 ##
 def compute_row_and_crops_idx( data ):
 
-    mask = ( data[ "reference_image" ] == current_row[ "reference_image" ] ) & ( data[ "image" ] == current_row[ "image" ] )
-    return numpy.where( mask )[ 0 ]
-        
+    filtered_mask = data["samples"] != data["samples_reference"]
+
+    scene = should_accept.get_scene_name( current_row[ "image" ].decode('UTF-8') )
+
+    scene_mask = [scene_name == scene for scene_name in scene_names]
+
+    return numpy.where( filtered_mask & scene_mask )[ 0 ]
+
 ## ======================= ##
 ##
 def compute_current_row_idx( data ):
@@ -221,7 +228,9 @@ def compute_current_row_idx( data ):
 def update_crops_selection( data ):
     
     indicies = compute_row_and_crops_idx( data )
-    
+
+    scene = should_accept.get_scene_name( current_row[ "image" ].decode('UTF-8') )
+
     for idx in indicies:
         
         row = data[ idx ]
@@ -229,9 +238,16 @@ def update_crops_selection( data ):
         
             tile_x = row[ "crop_x" ]
             tile_y = row[ "crop_y" ]
-            
-            data[ idx ][ "label" ] = get_label_string( selected_crops[ tile_x ][ tile_y ] )
 
+            label = selected_crops[ tile_x ][ tile_y ]
+            if label == FalseLabel:
+                data[ idx ][ "label" ] = get_label_string( should_accept.tell_from_samples( row[ "image" ].decode('UTF-8'), row[ "reference_image"].decode('UTF-8') ).value )
+            else:
+                threshold = should_accept.not_ok_thresholds[ scene ]
+                if row[ "samples"] > threshold and row[ "samples_reference" ] > threshold:
+                    data[ idx ][ "label" ] = b"TRUE"
+                else:
+                    data[ idx ][ "label" ] = b"IGNORE"
 
 ## ======================= ##
 ##
@@ -321,11 +337,10 @@ def print_current_row():
 
     print_row( current_row )
     
-    
+
 ## ======================= ##
 ##
 def select_scenes_with_threshold( data ):
-    
     print( "Selecting scenes on subsampling threshold." )
     
     filtered = data[ data[ "samples" ] != data[ "samples_reference" ] ]
@@ -333,7 +348,7 @@ def select_scenes_with_threshold( data ):
     # Create mask with all values False
     mask = filtered[ "samples" ] == 0
     
-    scene_names = [ should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) for row in filtered ]
+    scene_names_filtered = [ should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) for row in filtered ]
     
     for i, scene in enumerate( should_accept.ok_thresholds ):
         
@@ -342,13 +357,13 @@ def select_scenes_with_threshold( data ):
         compared_ok_mask = ( filtered[ "samples" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ] )
         reference_ok_mask = ( filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples" ] == should_accept.not_ok_thresholds[ scene ] )
 
-        scene_mask = [ scene_name == scene for scene_name in scene_names ]
+        scene_mask = [ scene_name == scene for scene_name in scene_names_filtered ]
         
         threshold_mask = ( compared_ok_mask | reference_ok_mask )
         scene_threshold_mask = ( threshold_mask & scene_mask )
         
         mask = mask | scene_threshold_mask
-        
+
     return filtered[ mask ]
         
     
@@ -373,10 +388,13 @@ esc_pressed = False
 def main_loop( config ):
     global screen
     global esc_pressed
+    global scene_names
 
     data = loading.load_dataset( config.dataset )
     full_images = select_rows( data, config )
     
+    scene_names = [ should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) for row in data ]
+
     load_next_row( data, full_images )
 
     screen = numpy.zeros( image.shape, numpy.uint8 )
