@@ -282,7 +282,14 @@ def load_previous_row( data, full_images ):
 ##
 def print_help():
 
-    print( "Help:" )
+    print( "Help:\n" )
+    
+    print( "Labeling:" )
+    print( "Green       - TRUE" )
+    print( "Blue        - FALSE" )
+    print( "Yellow      - DONT_KNOW" )
+    print( "Red         - IGNORE\n" )
+    
     print( "Key h - Print help." )
     print( "Key a - load image from previous row." )
     print( "Key d - load image from next row." )
