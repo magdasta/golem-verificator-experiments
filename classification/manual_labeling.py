@@ -200,7 +200,14 @@ scene_names = None
 
 ## ======================= ##
 ##
-def compute_row_and_crops_idx( data ):
+def compute_row_and_same_samples_crops_idx( data ):
+
+    mask = ( data[ "reference_image" ] == current_row[ "reference_image" ] ) & ( data[ "image" ] == current_row[ "image" ] )
+    return numpy.where( mask )[ 0 ]
+
+## ======================= ##
+##
+def compute_row_and_all_crops_idx( data ):
 
     filtered_mask = data["samples"] != data["samples_reference"]
 
@@ -225,9 +232,11 @@ def compute_current_row_idx( data ):
         
 ## ======================= ##
 ##
-def update_crops_selection( data ):
-    
-    indicies = compute_row_and_crops_idx( data )
+def update_crops_selection( data, config ):
+    if config.filter_threshold:
+        indicies = compute_row_and_all_crops_idx( data )
+    else:
+        indicies = compute_row_and_same_samples_crops_idx( data )
 
     scene = should_accept.get_scene_name( current_row[ "image" ].decode('UTF-8') )
 
@@ -413,22 +422,22 @@ def main_loop( config ):
         if key == ord( 'm' ):
             show_hide_mask()
         elif key == ord( 'd' ):
-            update_crops_selection( data )
+            update_crops_selection( data, config )
             load_next_row( data, full_images )
         elif key == ord( 'a' ):
-            update_crops_selection( data )
+            update_crops_selection( data, config )
             load_previous_row( data, full_images )
         elif key == ord( "h" ):
             print_help()
         elif key == ord( "l" ):
             show_grid_lines()
         elif key == ord( "\r" ):
-            update_crops_selection( data )
+            update_crops_selection( data, config )
             data_filtering.save_binary( data, config.dataset )
         elif key == ord( "y" ):
             if esc_pressed:
-                update_crops_selection(data)
-                data_filtering.save_binary(data, config.dataset)
+                update_crops_selection( data, config )
+                data_filtering.save_binary( data, config.dataset )
                 break
             else:
                 pass
