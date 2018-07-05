@@ -36,7 +36,7 @@ def label_data( src_file, dest_file ):
     data = loading.load_dataset( src_file )
     
     print( "Creating new array" )
-    new_dtype = numpy.dtype( data.dtype.descr + [('label', 'S9')] )
+    new_dtype = numpy.dtype( [('scene', 'S17')] + data.dtype.descr + [('label', 'S9')] )
     labeled_data = numpy.zeros( data.shape, dtype=new_dtype )
     
     print( "Coping content to new array" )
@@ -46,6 +46,10 @@ def label_data( src_file, dest_file ):
     print( "Labeling data" )
     labels = [ label_row( row ) for row in data ]
     labeled_data[ "label" ] = labels
+
+    print( "Sceneing data" )
+    scene_names = [ labels.get_scene_name( row[ "image" ].decode('UTF-8') ) for row in data ]
+    labeled_data[ "scene" ] = scene_names
     
     print( "Saving file [" + dest_file + "]" )
     save_binary( labeled_data, dest_file )
