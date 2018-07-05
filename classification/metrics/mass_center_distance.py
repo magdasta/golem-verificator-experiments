@@ -4,7 +4,8 @@ import sys
 
 class MetricMassCenterDistance:
 
-    def compute_metrics(self, image1, image2):
+    @staticmethod
+    def compute_metrics(image1, image2):
         if image1.size != image2.size:
             raise Exception("Image sizes differ")
         mass_centers_1 = MetricMassCenterDistance.compute_mass_centers(image1)
@@ -23,7 +24,8 @@ class MetricMassCenterDistance:
             "max_y_mass_center_distance": max_y_distance
                 }
 
-    def get_labels(self):
+    @staticmethod
+    def get_labels():
         return ["max_x_mass_center_distance", "max_y_mass_center_distance"]
 
     @staticmethod

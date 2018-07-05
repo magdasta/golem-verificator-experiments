@@ -11,7 +11,8 @@ class MetricSSIM:
 
     ## ======================= ##
     ##
-    def compute_metrics( this, image1, image2 ):
+    @staticmethod
+    def compute_metrics( image1, image2 ):
 
         image1 = image1.convert("RGB")
         image2 = image2.convert("RGB")
@@ -28,7 +29,8 @@ class MetricSSIM:
     
     ## ======================= ##
     ##
-    def get_labels( this ):
+    @staticmethod
+    def get_labels():
         return [ "ssim" ]
     
 ## ======================= ##
