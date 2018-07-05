@@ -2,6 +2,7 @@ import os
 from enum import Enum
 import re
 from sys import argv
+import numpy
 
 
 class ShouldAccept(Enum):
@@ -78,9 +79,9 @@ def get_scene_name(path):
     return scene
 
 
-def both_are_damaged(path_a, path_b):
+def one_is_damaged(path_a, path_b):
     damaging_results = "damaging_results"
-    return damaging_results in path_a and damaging_results in path_b
+    return damaging_results in path_a or damaging_results in path_b
 
 
 def both_are_not_damaged(path_a, path_b):
@@ -111,18 +112,31 @@ def tell_from_samples(path_a, path_b):
         return ShouldAccept.DONT_KNOW
 
 
-def should_accept(path_a, path_b):
+psnred = 0
+
+def get_psnred():
+    # global psnred
+    return psnred
+
+def should_accept(row):
+    global psnred
+    path_a = row["reference_image"].decode('UTF-8')
+    path_b = row["image"].decode('UTF-8')
+
     if get_scene_name(path_a) != get_scene_name(path_b):
         throw_shouldnt_be_compared_exception(path_a, path_b)
 
-    if both_are_damaged(path_a, path_b):
-        #throw_shouldnt_be_compared_exception(path_a, path_b)
+    if row["psnr"] > 70:
+        psnred = psnred + 1
+        return ShouldAccept.TRUE
+    if one_is_damaged(path_a, path_b):
         return ShouldAccept.FALSE
     elif both_are_not_damaged(path_a, path_b):
         return tell_from_samples(path_a, path_b)
-    else:
+    else: #should not get here anymore
+        assert False
         return ShouldAccept.FALSE
 
 
-if __name__ == "__main__":
-    print(should_accept(argv[1], argv[2]))
+# if __name__ == "__main__":
+#     print(should_accept(argv[1], argv[2]))
