@@ -1,7 +1,7 @@
 import numpy
 import sys
 
-import optical_comparision.should_accept as labels
+import optical_comparision.should_accept as should_accept
 import loading
 
 ## ======================= ##
@@ -14,12 +14,12 @@ def save_binary( data, file_path ):
 ##
 def label_row( row ):
     
-    label = labels.should_accept( row )
-    if label == labels.ShouldAccept.TRUE:
+    label = should_accept.should_accept( row )
+    if label == should_accept.ShouldAccept.TRUE:
         return "TRUE"
-    elif label == labels.ShouldAccept.FALSE:
+    elif label == should_accept.ShouldAccept.FALSE:
         return "FALSE"
-    elif label == labels.ShouldAccept.IGNORE:
+    elif label == should_accept.ShouldAccept.IGNORE:
         return "IGNORE"
     else:
         return "DONT_KNOW"
@@ -41,15 +41,15 @@ def label_data( src_file, dest_file ):
     print( "Coping content to new array" )
     for name in data.dtype.names:
         labeled_data[ name ] = data[ name ]
-    
+
+    print("Sceneing data")
+    scene_names = [ should_accept.get_scene_name(row["image"].decode('UTF-8')) for row in data ]
+    labeled_data["scene"] = scene_names
+
     print( "Labeling data" )
     labels = [ label_row( row ) for row in data ]
     labeled_data[ "label" ] = labels
 
-    print( "Sceneing data" )
-    scene_names = [ labels.get_scene_name( row[ "image" ].decode('UTF-8') ) for row in data ]
-    labeled_data[ "scene" ] = scene_names
-    
     print( "Saving file [" + dest_file + "]" )
     save_binary( labeled_data, dest_file )
     
@@ -58,9 +58,9 @@ def label_data( src_file, dest_file ):
 ##
 def run():
 
-    print( "psnred: " + str( labels.get_psnred() ) )
+    print( "psnred: " + str( should_accept.get_psnred() ) )
     label_data( sys.argv[ 1 ], sys.argv[ 2 ] )
-    print( "psnred: " + str( labels.get_psnred() ) )
+    print( "psnred: " + str( should_accept.get_psnred() ) )
 
     
 
