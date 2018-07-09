@@ -18,7 +18,7 @@ def run():
     
     ( index_labels, unique_labels ) = teach_model.labels_to_int( train_set, "label" )
     
-    features_labels = ft.get_feature_labels()
+    features_labels = ft.get_train_feature_labels()
     
     correct_rejections = list()
     incorrect_rejections = list()

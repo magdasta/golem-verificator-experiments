@@ -4,7 +4,6 @@ import sys
 import classifiers.decision_tree
 
 import data_analysis
-import features as ft
 
 
 ## ======================= ##
@@ -12,7 +11,6 @@ import features as ft
 def run():
 
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
-    classifier.set_features_labels( ft.get_feature_labels() )
     
     data = loading.load_dataset( sys.argv[ 1 ] )
     results = classifier.classify( data )

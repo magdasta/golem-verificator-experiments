@@ -86,7 +86,9 @@ def run():
     
     ( index_labels, unique_labels ) = labels_to_int( data, "label" )
     
-    features_labels = ft.get_feature_labels()
+    features_labels = [ "ssim", "max_x_mass_center_distance", "histograms_correlation",
+        "max_y_mass_center_distance", "edge_difference", "comp_edge_factor",
+        "wavelet_mid", "wavelet_low", "wavelet_high" ]
     
     params = Parameters()
     params.classes_weights = dict()

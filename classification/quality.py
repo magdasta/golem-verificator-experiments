@@ -193,11 +193,8 @@ def run():
 
     filters = [ "blured", "watermark", "noise", "noise_colored", "noise_peak", "enhancedcolor", "enhancedcontrast", "enhancedbrightness", "randomobjects", "wavelet_denoise", "channelsswitched", "smoothed", "sharpened" ]
     
-    features = ft.get_feature_labels()
-
     #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
-    classifier.set_features_labels( features )
 
     data = loading.load_dataset( sys.argv[ 1 ] )
     data = data[ data[ "is_cropped" ] == True ]

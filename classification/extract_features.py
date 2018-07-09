@@ -217,7 +217,7 @@ def run():
                     metrics.histograms_correlation.MetricHistogramsCorrelation(),
                     metrics.mass_center_distance.MetricMassCenterDistance()  ]
 
-    ft.set_feature_labels(features)
+    ft.save_all_feature_labels(features)
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
     
     convert_to_npy( csv_file )
