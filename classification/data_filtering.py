@@ -44,7 +44,7 @@ def save_binary( data, file_path ):
 def convert_to_binary( src_file, target_file ):
 
     print( "Loading file [" + src_file + "]" )
-    data = numpy.recfromcsv( sys.argv[ 1 ], delimiter=',', names=True )
+    data = numpy.recfromcsv( src_file, delimiter=',', names=True )
     
     save_binary( data, target_file )
     

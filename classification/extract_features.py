@@ -16,6 +16,8 @@ import metrics.histograms_correlation
 import metrics.mass_center_distance
 import features as ft
 
+import data_filtering
+
 
 ## ======================= ##
 ##
@@ -186,7 +188,19 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
     else:
         print( "\n## ===================================================== ##" )
         print( "Processing completed without errors." )
+
+## ======================= ##
+##
+def convert_to_npy( csv_file ):
+
+    print( "Converting .csv to binary file." )
     
+    ( file, ext ) = os.path.splitext( csv_file )
+    npy_file = file + ".npy"
+
+    data_filtering.convert_to_binary( csv_file, npy_file )
+
+        
 ## ======================= ##
 ##
 def run():
@@ -205,6 +219,8 @@ def run():
 
     ft.set_feature_labels(features)
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
+    
+    convert_to_npy( csv_file )
         
         
 if __name__ == "__main__":
