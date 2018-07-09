@@ -6,6 +6,7 @@ import loading
 
 import classifiers.ssim_threshold
 import classifiers.decision_tree
+import features as ft
 
     
 
@@ -192,7 +193,7 @@ def run():
 
     filters = [ "blured", "watermark", "noise", "noise_colored", "noise_peak", "enhancedcolor", "enhancedcontrast", "enhancedbrightness", "randomobjects", "wavelet_denoise", "channelsswitched", "smoothed", "sharpened" ]
     
-    features = [ "ssim", "max_x_mass_center_distance", "histograms_correlation", "max_y_mass_center_distance", "edge_difference", "comp_edge_factor", "wavelet_mid", "wavelet_low", "wavelet_high" ]
+    features = ft.get_feature_labels()
 
     #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )

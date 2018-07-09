@@ -1,3 +1,10 @@
+import os
+import sys
+import traceback
+import csv
+
+from PIL import Image
+
 import extract_params as extr
 import list_comparisions
 import metrics.ssim
@@ -7,12 +14,7 @@ import metrics.edges
 import metrics.wavelet
 import metrics.histograms_correlation
 import metrics.mass_center_distance
-from PIL import Image
-
-import os
-import sys
-import traceback
-import csv
+import features as ft
 
 
 ## ======================= ##
@@ -201,6 +203,7 @@ def run():
                     metrics.histograms_correlation.MetricHistogramsCorrelation(),
                     metrics.mass_center_distance.MetricMassCenterDistance()  ]
 
+    ft.set_feature_labels(features)
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
         
         
