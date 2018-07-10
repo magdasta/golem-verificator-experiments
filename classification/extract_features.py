@@ -106,7 +106,7 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
     errors_list = []
     num_crops = 10      # In one dimmension
     
-    compare_list = list_comparisions.list_all( reference_dir, compare_dir_parent )
+    compare_list = list_comparisions.list_different_seeds( reference_dir, compare_dir_parent )
     
     params = list( unique_params( compare_list ) )
     labels = list()
@@ -173,6 +173,7 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
             
                 print( "    Error: " )
                 print( "        " + str( e ) )
+                print( traceback.format_exc() )
                 
                 errors_list.append( ( reference, to_compare, str( e ), traceback.format_exc() ) )
                 
@@ -215,9 +216,10 @@ def run():
                     metrics.edges.MetricEdgeFactor(),
                     metrics.wavelet.MetricWavelet(),
                     metrics.histograms_correlation.MetricHistogramsCorrelation(),
-                    metrics.mass_center_distance.MetricMassCenterDistance()  ]
+                    metrics.mass_center_distance.MetricMassCenterDistance()
+               ]
 
-    ft.save_all_feature_labels(features)
+    #ft.save_all_feature_labels(features)
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
     
     convert_to_npy( csv_file )
