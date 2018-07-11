@@ -220,11 +220,11 @@ def run():
                ]
 
     #ft.save_all_feature_labels(features)
-    #compare_images( reference_dir, compare_dir_parent, csv_file, features )
-    compare_list = list_comparisions.list_different_seeds( reference_dir, compare_dir_parent )
+    compare_images( reference_dir, compare_dir_parent, csv_file, features )
+    #compare_list = list_comparisions.list_different_seeds( reference_dir, compare_dir_parent )
     #print( compare_list )
     
-    #convert_to_npy( csv_file )
+    convert_to_npy( csv_file )
         
         
 if __name__ == "__main__":

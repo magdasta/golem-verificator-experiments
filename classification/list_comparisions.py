@@ -117,7 +117,7 @@ def match_diff_seeds( files1, files2 ):
     
     for file in files1:
         if file in files2:
-            matches.extend( file )
+            matches.append( file )
             
     return matches
     
@@ -149,7 +149,6 @@ def list_different_seeds( directory1, directory2 ):
         pairs = [ ( os.path.join( root, match ), os.path.join( reference_path, match ) ) for match in matches ]
                 
         comparision_list.extend( pairs )
-        print( pairs )
         
         print( "    Found " + str( len( pairs ) ) + " pairs of files to compare." )
     
