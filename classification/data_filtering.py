@@ -1,7 +1,8 @@
 import numpy
 import sys
 import pandas
-
+import optical_comparision.should_accept as should_accept
+import loading
 
 ## ======================= ##
 ##
@@ -41,12 +42,15 @@ def save_binary( data, file_path ):
     
 ## ======================= ##
 ##
-def convert_to_binary( src_file, target_file ):
+def convert_to_binary( src_file, target_file, scenes_to_remove = [] ):
 
     print( "Loading file [" + src_file + "]" )
-    data = numpy.recfromcsv( src_file, delimiter=',', names=True )
-    
-    save_binary( data, target_file )
+    data = loading.load_dataset( src_file )
+    # data = numpy.recfromcsv( src_file, delimiter=',', names=True )
+
+    filtered = [ row for row in data if not should_accept.get_scene_name( row[ "image" ].decode('UTF-8') ) in scenes_to_remove ]
+
+    save_binary( filtered, target_file )
     
 ## ======================= ##
 ##
@@ -63,8 +67,9 @@ def remove_names_from_data( src_file, target_file ):
 def run():
 
     #remove_names_from_data( sys.argv[ 1 ], sys.argv[ 2 ] )
-    convert_to_binary( sys.argv[ 1 ], sys.argv[ 2 ] )
-    
+    scenes_to_remove = sys.argv[ 3: ]
+    convert_to_binary( sys.argv[ 1 ], sys.argv[ 2 ], scenes_to_remove )
+
     
 
 if __name__ == "__main__":
