@@ -19,7 +19,7 @@ class ThresholdSSIM:
         
     ## ======================= ##
     ##
-    def classify( self, data_set, unique_labels ):
+    def classify( self, data_set ):
         
         return numpy.array( [ self.compute_label( row ) for row in data_set ] )
     
