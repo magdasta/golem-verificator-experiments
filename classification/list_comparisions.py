@@ -113,13 +113,13 @@ def all_combinations( files ):
 ##
 def match_diff_seeds( files1, files2 ):
 
-    pairs = []
+    matches = []
     
     for file in files1:
         if file in files2:
-            pairs.extend( ( file, file ) )
+            matches.extend( file )
             
-    return pairs
+    return matches
     
 ## ======================= ##
 ##
@@ -145,10 +145,11 @@ def list_different_seeds( directory1, directory2 ):
         reference_files = [ file for file in reference_files if is_valid_image_file( file ) ]
         files = [ file for file in files if is_valid_image_file( file ) ]
         
-        pairs = match_diff_seeds( files, reference_files )
-        pairs = [ ( make_relative( root, pair[ 0 ] ), make_relative( reference_path, pair[ 1 ] ) ) for pair in pairs ]
+        matches = match_diff_seeds( files, reference_files )
+        pairs = [ ( os.path.join( root, match ), os.path.join( reference_path, match ) ) for match in matches ]
                 
         comparision_list.extend( pairs )
+        print( pairs )
         
         print( "    Found " + str( len( pairs ) ) + " pairs of files to compare." )
     
