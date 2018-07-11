@@ -12,6 +12,11 @@ def calculate_size( coeff ):
     return shape[ 0 ] * shape[ 1 ]
 
 def calculate_mse( coeff1, coeff2, low, high ):
+    if low == high:
+        if low == 0:
+            high = low + 1
+        else:
+            low = high - 1
     suma = 0
     num = 0
     for i in range( low, high ):
