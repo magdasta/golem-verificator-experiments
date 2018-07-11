@@ -309,14 +309,32 @@ def save_all_crops( data, compared_dir, reference_dir ):
                 cropped_reference.save(os.path.join(reference_dir, gen_file_name(reference_file, row, False)), "PNG")
 
 
+# >> import classification.loading
+# >>> import classification.loading as loading
+def print_funked_scenes( data ):
+    subsampling = data[data["samples"] != data["samples_reference"]]
+    # scene_names = [ should_accept.get_scene_name( row("image").decode('UTF-8') ) for row in data ]
+    for scene in should_accept.ok_thresholds:
+
+        filtered_ok = subsampling[ (subsampling[ "samples" ] == should_accept.ok_thresholds[ scene ]) | (subsampling[ "samples_reference" ] == should_accept.ok_thresholds[ scene ]) ]
+        filtered_ok_not_ok = filtered_ok[ (filtered_ok[ "samples" ] == should_accept.not_ok_thresholds[ scene ]) | (filtered_ok[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ]) ]
+
+        if scene == "atom":
+            for row in filtered_ok_not_ok:
+                if should_accept.get_scene_name( row["image"].decode('UTF-8') ) == scene:
+                    # print ( str( row["crop_x"] ) + ", " + str( row["crop_y"] ) )
+                    print( row )
+
+        rows = sum( 1 for row in filtered_ok_not_ok if should_accept.get_scene_name( row["image"].decode('UTF-8') ) == scene )
+        print( "Scene: " + scene + ", rows: " + str( rows ) )
+
 ## ======================= ##
 ##
 def run():
 
     data = loading.load_dataset( sys.argv[ 1 ] )
-    data = data[ data["samples"] == 1 ]
-    data = data[ data["samples_reference"] == 801 ]
-    chessboard.chessboard_from_csv( data[ 0 ] )
+    print_funked_scenes( data )
+    # chessboard.chessboard_from_csv( data[ 0 ] )
     # save_all_crops( data, sys.argv[ 2 ], sys.argv[ 3 ] )
 
 

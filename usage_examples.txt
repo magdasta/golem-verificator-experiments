@@ -46,11 +46,15 @@ python classification/metrics/edges.py D:/GolemData/PSNR/barcelona/barcelona_[sa
 
 python classification/data_filtering.py Data/edge_metrics.csv Data/edge_metrics_nameless.csv
 python classification/data_filtering.py Data/edge_metrics.csv Data/edge_metrics_nameless.csv
-python classification/data_filtering.py D:\GolemData\images_database\metrics/metrics_full.csv D:\GolemData\images_database\metrics/metrics_full.npy
+python classification/data_filtering.py D:\GolemData\images_database\metrics/metrics_full_new.csv D:\GolemData\images_database\metrics/metrics_full_new.npy
+python classification/data_filtering.py D:\GolemData\images_database\metrics/metrics_small_crops_barcelona.csv D:\GolemData\images_database\metrics/metrics_small_crops_barcelona.npy
 
 # labeling
 
 python classification/data_labeling.py D:\GolemData\images_database\metrics/metrics_full.npy D:\GolemData\images_database\metrics/metrics_full_labels.npy
+python classification/data_labeling.py D:\GolemData\images_database\metrics/metrics_full_new.npy D:\GolemData\images_database\datasets/metrics_new_labels_psnred_70.npy
+python classification/data_labeling.py D:\GolemData\images_database\metrics/metrics_small_crops_barcelona.npy D:\GolemData\images_database\datasets/serie2/metrics_small_crops_barcelona_labels.npy
+
 
 # classification quality
 
@@ -62,6 +66,9 @@ python classification/quality.py D:\GolemData\images_database\datasets/metrics_f
 python classification/quality.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_test.npy Data/Classifiers/tree_psnred.pkl
 python classification/quality.py D:\GolemData\images_database\datasets/metrics_psnred_70_scenesplit_test.npy Data/Classifiers/tree_scenesplit.pkl
 
+python classification/quality.py D:\GolemData\images_database\datasets/serie2/metrics_labels_psnred_70_test.npy Data/Classifiers/iteration2/tree_first.pkl
+python classification/quality.py D:\GolemData\images_database\datasets/serie2/metrics_labels_psnred_70_test.npy Data/Classifiers/iteration2/tree_new_metrics.pkl
+
 # teaching 
 
 python classification/teach_model.py D:\GolemData\images_database\metrics/metrics_full_labels.npy Data/Classifiers/tree.pkl
@@ -70,6 +77,8 @@ python classification/teach_model.py D:\GolemData\images_database\datasets/metri
 
 python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_train.npy Data/Classifiers/tree_psnred.pkl Data/Classifiers/tree_psnred.pdf
 python classification/teach_model.py D:\GolemData\images_database\datasets/metrics_psnred_70_scenesplit_train.npy Data/Classifiers/tree_scenesplit.pkl Data/Classifiers/tree_scenesplit.pdf
+
+python classification/teach_model.py D:\GolemData\images_database\datasets/serie2/metrics_labels_psnred_70_train.npy Data/Classifiers/iteration2/tree_first.pkl Data/Classifiers/iteration2/tree_first.pdf
 
 # optimizing classifier
 
@@ -89,11 +98,14 @@ python classification/classification_analysis.py D:\GolemData\images_database\da
 
 python classification/split_data.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70.npy D:\GolemData\images_database\datasets/
 python classification/split_data.py D:\GolemData\images_database\datasets/metrics_psnred_70.npy D:\GolemData\images_database\datasets/
+python classification/split_data.py D:\GolemData\images_database\datasets/metrics_new_labels_psnred_70.npy D:\GolemData\images_database\datasets/
+python classification/split_data.py D:\GolemData\images_database\datasets/serie2/metrics_small_crops_barcelona_labels.npy D:\GolemData\images_database\datasets/serie2/
 
 
 # manual labeling of crops
 
 python classification/manual_labeling.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70.npy
+python classification/manual_labeling.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70.npy -filter_threshold
 
 
 

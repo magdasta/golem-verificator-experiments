@@ -7,6 +7,7 @@ import sys
 import loading
 import optical_comparision.chessboard as chessboard
 import optical_comparision.should_accept as should_accept
+import data_filtering
 
 
 
@@ -181,6 +182,8 @@ def fill_crops_selections( crop_rows ):
         
         selected_crops[ tile_x ][ tile_y ] = get_label( row )
 
+## ======================= ##
+##
 def get_label_string( label ):
     if label == TrueLabel:
         return b"TRUE"
@@ -193,17 +196,73 @@ def get_label_string( label ):
     else:
         assert False
 
-def update_crops_selection( data ):
-    index = current_row_idx + 1
-    for y in range( tiles ):
-        for x in range( tiles ):
-            data[ index ][ "label" ] = get_label_string( selected_crops[ y ][ x ] )
-            index = index + 1
+scene_names = None
+
+## ======================= ##
+##
+def compute_row_and_same_samples_crops_idx( data ):
+
+    mask = ( data[ "reference_image" ] == current_row[ "reference_image" ] ) & ( data[ "image" ] == current_row[ "image" ] )
+    return numpy.where( mask )[ 0 ]
+
+## ======================= ##
+##
+def compute_row_and_all_crops_idx( data ):
+
+    filtered_mask = data["samples"] != data["samples_reference"]
+
+    scene = should_accept.get_scene_name( current_row[ "image" ].decode('UTF-8') )
+
+    scene_mask = [scene_name == scene for scene_name in scene_names]
+
+    return numpy.where( filtered_mask & scene_mask )[ 0 ]
+
+## ======================= ##
+##
+def compute_current_row_idx( data ):
+
+    indicies = compute_row_and_crops_idx( data )
+    for idx in indicies:
+        if data[ idx ][ "is_cropped" ] == False:
+            return idx
+
+    assert False, "Can't find fullscreen image."
+    return -1
+        
+        
+## ======================= ##
+##
+def update_crops_selection( data, config ):
+    if config.filter_threshold:
+        indicies = compute_row_and_all_crops_idx( data )
+    else:
+        indicies = compute_row_and_same_samples_crops_idx( data )
+
+    scene = should_accept.get_scene_name( current_row[ "image" ].decode('UTF-8') )
+
+    for idx in indicies:
+        
+        row = data[ idx ]
+        if row[ "is_cropped" ]:
+        
+            tile_x = row[ "crop_x" ]
+            tile_y = row[ "crop_y" ]
+
+            label = selected_crops[ tile_x ][ tile_y ]
+            if label == FalseLabel:
+                data[ idx ][ "label" ] = get_label_string( should_accept.tell_from_samples( row[ "image" ].decode('UTF-8'), row[ "reference_image"].decode('UTF-8') ).value )
+            else:
+                threshold = should_accept.not_ok_thresholds[ scene ]
+                if row[ "samples"] > threshold and row[ "samples_reference" ] > threshold:
+                    data[ idx ][ "label" ] = b"TRUE"
+                else:
+                    data[ idx ][ "label" ] = b"IGNORE"
 
 ## ======================= ##
 ##
 def load_row( data, row ):
     global image
+    global current_row
     
     print( "Selected comparision:" )
     print( "    " + row[ "reference_image" ].decode('UTF-8')  )
@@ -248,28 +307,73 @@ def load_previous_row( data, full_images ):
 ##
 def print_help():
 
-    print( "Help:" )
+    print( "Help:\n" )
+    
+    print( "Labeling:" )
+    print( "Green       - TRUE" )
+    print( "Blue        - FALSE" )
+    print( "Yellow      - DONT_KNOW" )
+    print( "Red         - IGNORE\n" )
+    
     print( "Key h - Print help." )
     print( "Key a - load image from previous row." )
     print( "Key d - load image from next row." )
     print( "Key m - Show/Hide labels." )
     print( "Key l - Show/Hide grid lines." )
+    print( "Key Enter - Save dataset labeling.")
     print( "Press Escape to exit." )
 
     
-# ## ======================= ##
-# ##
-# def select_scenes_with_threshold( data ):
+## ======================= ##
+##
+def print_row( row ):
     
-    # print( "Selecting scenes on subsampling threshold." )
+    feature_max_len = 40
     
-    # for i, scene in enumerate( should_accept.ok_thresholds ):
+    names = row.dtype.names
+    for name in names:
         
-        # not_ok_mask = ( data[ "samples" ] == should_accept.not_ok_thresholds[ scene ] ) | ( data[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ] )
-        # ok_mask = ( data[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) | ( data[ "samples" ] == should_accept.ok_thresholds[ scene ] )
+        length = len( name )
+        num_spaces = feature_max_len - length
+        spaces_str = " " * num_spaces
+        
+        print(name + spaces_str + str(row[name]))
+    
+    
+## ======================= ##
+##
+def print_current_row():
 
-        # filtered = 
+    print_row( current_row )
+    
+
+## ======================= ##
+##
+def select_scenes_with_threshold( data ):
+    print( "Selecting scenes on subsampling threshold." )
+    
+    filtered = data[ data[ "samples" ] != data[ "samples_reference" ] ]
+    
+    # Create mask with all values False
+    mask = filtered[ "samples" ] == 0
+    
+    scene_names_filtered = [ should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) for row in filtered ]
+    
+    for i, scene in enumerate( should_accept.ok_thresholds ):
         
+        print( "Finding images on threshold for scene: " + scene )
+        
+        compared_ok_mask = ( filtered[ "samples" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ] )
+        reference_ok_mask = ( filtered[ "samples_reference" ] == should_accept.ok_thresholds[ scene ] ) & ( filtered[ "samples" ] == should_accept.not_ok_thresholds[ scene ] )
+
+        scene_mask = [ scene_name == scene for scene_name in scene_names_filtered ]
+        
+        threshold_mask = ( compared_ok_mask | reference_ok_mask )
+        scene_threshold_mask = ( threshold_mask & scene_mask )
+        
+        mask = mask | scene_threshold_mask
+
+    return filtered[ mask ]
         
     
 ## ======================= ##
@@ -280,18 +384,26 @@ def select_rows( data, config ):
 
     if config.subsampling:
         return full_images[ full_images[ "samples_reference" ] != full_images[ "samples" ] ]
+    elif config.filter_threshold:
+        return select_scenes_with_threshold( full_images )
     else:
         return full_images
 
-    
+
+esc_pressed = False
+
 ## ======================= ##
 ##
 def main_loop( config ):
     global screen
+    global esc_pressed
+    global scene_names
 
     data = loading.load_dataset( config.dataset )
     full_images = select_rows( data, config )
     
+    scene_names = [ should_accept.get_scene_name( row[ "image" ].decode( 'UTF-8' ) ) for row in data ]
+
     load_next_row( data, full_images )
 
     screen = numpy.zeros( image.shape, numpy.uint8 )
@@ -310,17 +422,33 @@ def main_loop( config ):
         if key == ord( 'm' ):
             show_hide_mask()
         elif key == ord( 'd' ):
-            update_crops_selection( data )
+            update_crops_selection( data, config )
             load_next_row( data, full_images )
         elif key == ord( 'a' ):
-            update_crops_selection( data )
+            update_crops_selection( data, config )
             load_previous_row( data, full_images )
         elif key == ord( "h" ):
             print_help()
         elif key == ord( "l" ):
             show_grid_lines()
+        elif key == ord( "\r" ):
+            update_crops_selection( data, config )
+            data_filtering.save_binary( data, config.dataset )
+        elif key == ord( "y" ):
+            if esc_pressed:
+                update_crops_selection( data, config )
+                data_filtering.save_binary( data, config.dataset )
+                break
+            else:
+                pass
+        elif key == ord( "n" ):
+            if esc_pressed:
+                break
+            else:
+                pass
         elif key == 27:
-            break
+            print( "Do you want to save your dataset labeling? (y/n)")
+            esc_pressed = True
 
     cv2.destroyAllWindows()
 
@@ -332,6 +460,7 @@ def parse_configuration():
     config = Config()
     config.dataset = sys.argv[ 1 ]
     config.subsampling = "-subsampling" in sys.argv
+    config.filter_threshold = "-filter_threshold" in sys.argv
     
     
     return config

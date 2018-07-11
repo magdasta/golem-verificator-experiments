@@ -77,7 +77,8 @@ def make_chessboard_and_save(scene_folder, first_file_name, second_file_name, re
     chessboard.save(result_path)
 
 
-def image_to_numpy( image ):          
+def image_to_numpy( image ):
+    image = image.convert("RGB")
     b, g, r = image.split()
     return numpy.array( Image.merge( "RGB", (r, g, b) ) )
     
