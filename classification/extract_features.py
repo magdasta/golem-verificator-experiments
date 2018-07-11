@@ -224,8 +224,13 @@ def run():
     csv_file = sys.argv[ 3 ]
     
     features = [    metrics.ssim.MetricSSIM(),
+                    metrics.psnr.MetricPSNR(),
+                    metrics.variance.ImageVariance(),
                     metrics.edges.MetricEdgeFactor(),
-                    metrics.wavelet.MetricWavelet() ]
+                    metrics.wavelet.MetricWavelet(),
+                    metrics.histograms_correlation.MetricHistogramsCorrelation(),
+                    metrics.mass_center_distance.MetricMassCenterDistance()
+               ]
 
     ft.save_all_feature_labels(features)
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
