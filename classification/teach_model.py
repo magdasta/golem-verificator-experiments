@@ -90,7 +90,7 @@ def run():
         "max_y_mass_center_distance", "edge_difference", "comp_edge_factor",
         "wavelet_mid", "wavelet_low", "wavelet_high" ]
     
-    params = Parameters()
+    params = classifiers.decision_tree.Parameters()
     params.classes_weights = dict()
     params.classes_weights[ b"TRUE" ] = 130
     params.classes_weights[ b"FALSE" ] = 1    
@@ -104,6 +104,8 @@ def run():
     
     clf = teach_tree( data, features_labels, params, sys.argv[ 2 ] )
     clf.save_graph( sys.argv[ 3 ] )
+    
+    clf.print_info()
     
 
 if __name__ == "__main__":

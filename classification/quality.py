@@ -183,7 +183,10 @@ def print_scenes( data ):
     for row in data:
         reference = row[ "reference_image" ]
         dirs.add( os.path.dirname( reference ) )
-    print( dirs )
+    
+    print( "Scenes:" )
+    for scene in dirs:
+        print( scene )
 
 
 
@@ -195,6 +198,7 @@ def run():
     
     #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
+    classifier.print_info()
 
     data = loading.load_dataset( sys.argv[ 1 ] )
     data = data[ data[ "is_cropped" ] == True ]
