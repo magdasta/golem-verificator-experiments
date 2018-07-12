@@ -139,7 +139,7 @@ class DecisionTree:
             
             print( "Split criterion         -       " + params.criterion )
             print( "Max tree depth          -       " + str( params.max_depth ) )
-            print( "Max samples in leaf     -       " + str( params.min_samples_leaf ) )
+            print( "Min samples in leaf     -       " + str( params.min_samples_leaf ) )
             print( "Min impurity decrease   -       " + str( params.min_impurity_decrease ) )
             
             print( "\nLabels weights:" )
