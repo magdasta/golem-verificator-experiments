@@ -84,14 +84,17 @@ def image_to_numpy( image ):
     
     
 def chessboard_from_csv( row ):
-    csv_dir = "D:\\GolemData"
-    local_dir = "D:\\GolemData"
+    csv_dir = "D:/GolemData"
+    local_dir = "/home/magda/Documents/"
 
     first_path = os.path.normpath(row["reference_image"].decode('UTF-8'))
     second_path = os.path.normpath(row["image"].decode('UTF-8'))
 
     first_path = first_path.replace( csv_dir, local_dir )
+    first_path = first_path.replace( "\\", "/" )
+
     second_path = second_path.replace( csv_dir, local_dir )
+    second_path = second_path.replace( "\\", "/" )
 
     chessboard = mix( first_path, second_path, 20 )
 

@@ -72,10 +72,14 @@ def extract_number_of_samples(filename):
     return int(match.group(0)[8:])
 
 
+def fix_windows_paths(path):
+    return path.replace( "\\", "/" )
+
 def get_scene_name(path):
+    path = fix_windows_paths( path )
     scene = os.path.basename(os.path.dirname(path))
     if scene not in ok_thresholds.keys():
-        raise Exception("Unknown scene '" + str( scene ) + "'")
+        raise Exception("Unknown scene '" + str( scene ) + "' (from path: " + str(path) + ")")
     return scene
 
 
