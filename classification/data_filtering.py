@@ -42,11 +42,20 @@ def save_binary( data, file_path ):
     
 ## ======================= ##
 ##
-def convert_to_binary( src_file, target_file, scenes_to_remove = [] ):
+def convert_to_binary( src_file, target_file ):
 
-    print( "Loading file [" + src_file + "]" )
     data = loading.load_dataset( src_file )
-    # data = numpy.recfromcsv( src_file, delimiter=',', names=True )
+    save_binary( data, target_file )
+    
+## ======================= ##
+##
+def convert_to_binary_remove_scenes( src_file, target_file, scenes_to_remove = [] ):
+
+    print( "Scenes to remove:" )
+    for scene in scenes_to_remove:
+        print( scene )
+
+    data = loading.load_dataset( src_file )
 
     filtered = [ row for row in data if not should_accept.get_scene_name( row[ "image" ].decode('UTF-8') ) in scenes_to_remove ]
 
@@ -67,8 +76,12 @@ def remove_names_from_data( src_file, target_file ):
 def run():
 
     #remove_names_from_data( sys.argv[ 1 ], sys.argv[ 2 ] )
-    scenes_to_remove = sys.argv[ 3: ]
-    convert_to_binary( sys.argv[ 1 ], sys.argv[ 2 ], scenes_to_remove )
+    
+    if len( sys.argv ) > 3:
+        scenes_to_remove = sys.argv[ 3: ]
+        convert_to_binary_remove_scenes( sys.argv[ 1 ], sys.argv[ 2 ], scenes_to_remove )
+    else:
+        convert_to_binary( sys.argv[ 1 ], sys.argv[ 2 ] )
 
     
 
