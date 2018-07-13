@@ -73,12 +73,14 @@ class DecisionTree:
     def train( samples, class_labels, params ):
 
         print( "Teaching decision tree." )
+        
         clf = tree.DecisionTreeClassifier()
-        clf.max_depth = params.max_depth
-        clf.class_weight = params.classes_weights
-        clf.criterion = params.criterion
-        clf.min_samples_leaf = params.min_samples_leaf
-        clf.min_impurity_decrease = params.min_impurity_decrease
+        
+        clf.max_depth = params[ "max_depth" ]
+        clf.class_weight = params[ "classes_weights" ]
+        clf.criterion = params[ "criterion" ]
+        clf.min_samples_leaf = params[ "min_samples_leaf" ]
+        clf.min_impurity_decrease = params[ "min_impurity_decrease" ]
         
         clf = clf.fit( samples, class_labels )
         
@@ -108,7 +110,7 @@ class DecisionTree:
         
         decision_tree = DecisionTree( clf )
         decision_tree.set_features_labels( features_labels )
-        features.save_train_feature_list(features_labels)
+        features.save_train_feature_list( features_labels )
         decision_tree.labels = DecisionTree.compute_unique_labels( class_labels )
         decision_tree.creation_parameters = params
         
@@ -137,14 +139,14 @@ class DecisionTree:
             
             print( "Parameters used to create this tree:" )
             
-            print( "Split criterion         -       " + params.criterion )
-            print( "Max tree depth          -       " + str( params.max_depth ) )
-            print( "Min samples in leaf     -       " + str( params.min_samples_leaf ) )
-            print( "Min impurity decrease   -       " + str( params.min_impurity_decrease ) )
+            print( "Split criterion         -       " + params[ "criterion" ] )
+            print( "Max tree depth          -       " + str( params[ "max_depth" ] ) )
+            print( "Min samples in leaf     -       " + str( params[ "min_samples_leaf" ] ) )
+            print( "Min impurity decrease   -       " + str( params[ "min_impurity_decrease" ] ) )
             
             print( "\nLabels weights:" )
-            print( "TRUE    -   " + str( params.classes_weights[ b"TRUE" ] ) )
-            print( "FALSE   -   " + str( params.classes_weights[ b"FALSE" ] ) )
+            print( "TRUE    -   " + str( params[ "classes_weights" ][ b"TRUE" ] ) )
+            print( "FALSE   -   " + str( params[ "classes_weights" ][ b"FALSE" ] ) )
             
         else:
             print( "Creation parameters are not set in classifier." )

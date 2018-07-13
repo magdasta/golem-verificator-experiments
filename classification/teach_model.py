@@ -90,14 +90,15 @@ def run():
         "max_y_mass_center_distance", "edge_difference", "comp_edge_factor",
         "wavelet_mid", "wavelet_low", "wavelet_high" ]
     
-    params = classifiers.decision_tree.Parameters()
-    params.classes_weights = dict()
-    params.classes_weights[ b"TRUE" ] = 130
-    params.classes_weights[ b"FALSE" ] = 1    
-    params.criterion = "gini"
-    params.max_depth = 8
-    params.min_samples_leaf = 3000
-    params.min_impurity_decrease = 0.0
+    params = dict()
+    params[ "criterion" ] = "gini"
+    params[ "max_depth" ] = 8
+    params[ "min_samples_leaf" ] = 3000
+    params[ "min_impurity_decrease" ] = 0.0
+    
+    params[ "classes_weights" ] = dict()
+    params[ "classes_weights" ][ b"TRUE" ] = 10
+    params[ "classes_weights" ][ b"FALSE" ] = 1
     
     print( "Teaching: number True labels: " + str( len( data[ data[ "label" ] == b"TRUE" ] ) ) )
     print( "Teaching: number False labels: " + str( len( data[ data[ "label" ] == b"FALSE" ] ) ) )
