@@ -119,6 +119,7 @@ def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
     compare_list = list_comparisions.list_all( reference_dir, compare_dir_parent )
     
     print("Comparison count %r" % len(compare_list))
+    print( "Number of crops: " + str( num_crops ) + "x" + str( num_crops ) )
 
     params = list( unique_params( compare_list ) )
     labels = list()
