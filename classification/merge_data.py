@@ -16,8 +16,8 @@ def merge_datasets( data1, data2 ):
 
     data = numpy.zeros(masked.shape, dtype=masked.dtype)
 
-    for i, row in enumerate(masked):
-        data[i] = row
+    for name in masked.dtype.names:
+        data[ name ] = masked[ name ]
 
     return data
 

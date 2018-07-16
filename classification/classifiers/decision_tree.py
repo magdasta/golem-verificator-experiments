@@ -9,6 +9,12 @@ import features
 
 ## ======================= ##
 ##
+class Parameters:
+    pass
+
+
+## ======================= ##
+##
 class DecisionTree:
     
     ## ======================= ##
@@ -23,6 +29,10 @@ class DecisionTree:
         data = joblib.load( file )
         tree = DecisionTree( data[0] )
         tree.set_features_labels(data[1])
+        
+        if len( data ) > 2:
+            tree.creation_parameters = data[ 2 ]
+            
         return tree
     ## ======================= ##
     ##
@@ -63,12 +73,14 @@ class DecisionTree:
     def train( samples, class_labels, params ):
 
         print( "Teaching decision tree." )
+        
         clf = tree.DecisionTreeClassifier()
-        clf.max_depth = params.max_depth
-        clf.class_weight = params.classes_weights
-        clf.criterion = params.criterion
-        clf.min_samples_leaf = params.min_samples_leaf
-        clf.min_impurity_decrease = params.min_impurity_decrease
+        
+        clf.max_depth = params[ "max_depth" ]
+        clf.class_weight = params[ "classes_weights" ]
+        clf.criterion = params[ "criterion" ]
+        clf.min_samples_leaf = params[ "min_samples_leaf" ]
+        clf.min_impurity_decrease = params[ "min_impurity_decrease" ]
         
         clf = clf.fit( samples, class_labels )
         
@@ -94,12 +106,13 @@ class DecisionTree:
         clf = DecisionTree.train( samples, class_labels, params )
         
         print( "Saving tree to file: " + file )
-        joblib.dump( [clf, features_labels], file )
+        joblib.dump( [clf, features_labels, params ], file )
         
         decision_tree = DecisionTree( clf )
         decision_tree.set_features_labels( features_labels )
-        features.save_train_feature_list(features_labels)
+        features.save_train_feature_list( features_labels )
         decision_tree.labels = DecisionTree.compute_unique_labels( class_labels )
+        decision_tree.creation_parameters = params
         
         return decision_tree
         
@@ -116,4 +129,46 @@ class DecisionTree:
         return numpy.array( results )
         
         
+    ## ======================= ##
+    ##
+    def print_creation_parameters( self ):
+        
+        if self.creation_parameters is not None:
+        
+            params = self.creation_parameters
+            
+            print( "Parameters used to create this tree:" )
+            
+            print( "Split criterion         -       " + params[ "criterion" ] )
+            print( "Max tree depth          -       " + str( params[ "max_depth" ] ) )
+            print( "Min samples in leaf     -       " + str( params[ "min_samples_leaf" ] ) )
+            print( "Min impurity decrease   -       " + str( params[ "min_impurity_decrease" ] ) )
+            
+            print( "\nLabels weights:" )
+            print( "TRUE    -   " + str( params[ "classes_weights" ][ b"TRUE" ] ) )
+            print( "FALSE   -   " + str( params[ "classes_weights" ][ b"FALSE" ] ) )
+            
+        else:
+            print( "Creation parameters are not set in classifier." )
+    
+    ## ======================= ##
+    ##
+    def print_features( self ):
+        
+        if self.features_labels is not None:
+            
+            print( "\nFeatures labels:" )
+            for feature in self.features_labels:
+                print( feature )
+    
+    ## ======================= ##
+    ##
+    def print_info( self ):
+    
+        print( "======================================" )
+        print( "Tree info\n" )
+    
+        self.print_creation_parameters()
+        self.print_features()
+        print( "======================================" )
         

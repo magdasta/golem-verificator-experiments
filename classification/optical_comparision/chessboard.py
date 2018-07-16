@@ -87,10 +87,10 @@ def correct_path( path ):
     local_dir = "e:\golem\\images_database"
     for csv_dir in csv_dirs:
         path = path.replace( csv_dir, local_dir )
+	path = path.replace( "\\", "/" )
     return path
     
 def chessboard_from_csv( row ):
-
     first_path = os.path.normpath(row["reference_image"].decode('UTF-8'))
     second_path = os.path.normpath(row["image"].decode('UTF-8'))
 
