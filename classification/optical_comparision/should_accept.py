@@ -129,13 +129,13 @@ def should_accept(row):
     if row["psnr"] > 70:
         psnred = psnred + 1
         return ShouldAccept.TRUE
-    if one_is_damaged(path_a, path_b):
-        return ShouldAccept.FALSE
     elif both_are_not_damaged(path_a, path_b):
         return tell_from_samples(path_a, path_b)
-    else: #should not get here anymore
-        assert False
+    else: #one_is_damaged(path_a, path_b):
         return ShouldAccept.FALSE
+    # else: #should not get here anymore
+    #     assert False
+    #     return ShouldAccept.FALSE
 
 
 # if __name__ == "__main__":
