@@ -53,8 +53,11 @@ class MetricWavelet:
         result["wavelet_high"] = 0
 
         for i in range(0,3):
-            coeff1 = pywt.wavedec2( np_image1[...,i], "db4" )
-            coeff2 = pywt.wavedec2( np_image2[...,i], "db4" )
+            coeff1 = pywt.wavedec2( np_image1[...,i], "haar" )
+            coeff2 = pywt.wavedec2( np_image2[...,i], "haar" )
+
+            for l in range( len( coeff1 ) ):
+                print( '({}, {}): {}'.format( str( i ), str( l ), calculate_mse( coeff1, coeff2, l, l+1 ) ) )
 
             len_div_3 = int( len( coeff1 ) / 3 )
             len_two_thirds = int( len( coeff1 ) * 2 / 3 )
@@ -82,6 +85,42 @@ def run():
     ssim = MetricWavelet()
 
     print(ssim.compute_metrics(first_img, second_img))
+
+    print("croping...")
+
+    middle = [ int( 0.5 * s ) for s in first_img.size ]
+
+    first_crop = first_img.crop( [ 0, 0, middle[0], middle[1] ])
+    second_crop = second_img.crop( [ 0, 0, middle[0], middle[1] ])
+
+    print(ssim.compute_metrics(first_crop, second_crop))
+
+
+    # print( "halving...")
+    #
+    # filter = Image.BILINEAR
+    #
+    # first_img = first_img.resize( [ int( 0.5 * s ) for s in first_img.size ], filter )
+    # second_img = second_img.resize( [ int( 0.5 * s ) for s in second_img.size ], filter )
+    # # first_img = first_img.resize( 0.5 * first_img.size )
+    #
+    # print(ssim.compute_metrics(first_img, second_img))
+    #
+    # print( "halving...")
+    #
+    # first_img = first_img.resize( [ int( 0.5 * s ) for s in first_img.size ], filter )
+    # second_img = second_img.resize( [ int( 0.5 * s ) for s in second_img.size ], filter )
+    # # first_img = first_img.resize( 0.5 * first_img.size )
+    #
+    # print(ssim.compute_metrics(first_img, second_img))
+    #
+    # print( "halving...")
+    #
+    # first_img = first_img.resize( [ int( 0.5 * s ) for s in first_img.size ], filter )
+    # second_img = second_img.resize( [ int( 0.5 * s ) for s in second_img.size ], filter )
+    # # first_img = first_img.resize( 0.5 * first_img.size )
+    #
+    # print(ssim.compute_metrics(first_img, second_img))
 
 
 if __name__ == "__main__":
