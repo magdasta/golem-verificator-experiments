@@ -24,9 +24,10 @@ def calculate_mse( coeff1, coeff2, low, high ):
             suma += calculate_sum( coeff1[ i ][ 0 ] - coeff2[ i ][ 0 ] )
             suma += calculate_sum( coeff1[ i ][ 1 ] - coeff2[ i ][ 1 ] )
             suma += calculate_sum( coeff1[ i ][ 2 ] - coeff2[ i ][ 2 ] )
+            num += 3 * len( coeff1[ i ][ 0 ] )
         else:
             suma += calculate_sum(coeff1[i] - coeff2[i] )
-        num += len( coeff1[ i ] )
+            num += len( coeff1[ i ] )
     if( num == 0 ):
         return 0
     else:
@@ -86,26 +87,26 @@ def run():
 
     print(ssim.compute_metrics(first_img, second_img))
 
-    print("croping...")
-
-    middle = [ int( 0.5 * s ) for s in first_img.size ]
-
-    first_crop = first_img.crop( [ 0, 0, middle[0], middle[1] ])
-    second_crop = second_img.crop( [ 0, 0, middle[0], middle[1] ])
-
-    print(ssim.compute_metrics(first_crop, second_crop))
-
-
-    # print( "halving...")
+    # print("croping...")
     #
-    # filter = Image.BILINEAR
+    # middle = [ int( 0.5 * s ) for s in first_img.size ]
     #
-    # first_img = first_img.resize( [ int( 0.5 * s ) for s in first_img.size ], filter )
-    # second_img = second_img.resize( [ int( 0.5 * s ) for s in second_img.size ], filter )
-    # # first_img = first_img.resize( 0.5 * first_img.size )
+    # first_crop = first_img.crop( [ 0, 0, middle[0], middle[1] ])
+    # second_crop = second_img.crop( [ 0, 0, middle[0], middle[1] ])
     #
-    # print(ssim.compute_metrics(first_img, second_img))
-    #
+    # print(ssim.compute_metrics(first_crop, second_crop))
+
+
+    print( "halving...")
+
+    filter = Image.BILINEAR
+
+    first_img = first_img.resize( [ int( 0.5 * s ) for s in first_img.size ], filter )
+    second_img = second_img.resize( [ int( 0.5 * s ) for s in second_img.size ], filter )
+    # first_img = first_img.resize( 0.5 * first_img.size )
+
+    print(ssim.compute_metrics(first_img, second_img))
+
     # print( "halving...")
     #
     # first_img = first_img.resize( [ int( 0.5 * s ) for s in first_img.size ], filter )
