@@ -24,9 +24,10 @@ def calculate_mse( coeff1, coeff2, low, high ):
             suma += calculate_sum( coeff1[ i ][ 0 ] - coeff2[ i ][ 0 ] )
             suma += calculate_sum( coeff1[ i ][ 1 ] - coeff2[ i ][ 1 ] )
             suma += calculate_sum( coeff1[ i ][ 2 ] - coeff2[ i ][ 2 ] )
+            num += 3 * coeff1[ i ][ 0 ].size
         else:
             suma += calculate_sum(coeff1[i] - coeff2[i] )
-        num += len( coeff1[ i ] )
+            num += coeff1[ i ].size
     if( num == 0 ):
         return 0
     else:
