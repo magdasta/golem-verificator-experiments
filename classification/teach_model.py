@@ -88,7 +88,7 @@ def run():
     
     features_labels = [ "ssim", "max_x_mass_center_distance", "histograms_correlation",
         "max_y_mass_center_distance", "edge_difference", "comp_edge_factor",
-        "wavelet_mid", "wavelet_low", "wavelet_high" ]
+        "wavelet_mid", "wavelet_low", "wavelet_high", "variance_difference" ]
     
     params = dict()
     params[ "criterion" ] = "gini"
