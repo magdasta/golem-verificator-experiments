@@ -18,6 +18,7 @@ import features as ft
 
 import data_filtering
 import extract_features
+import loading
 
 
 ## ======================= ##
@@ -25,7 +26,7 @@ import extract_features
 def compute_metrics_list( metrics_dict ):
     
     metrics_list = list()
-    for metric, features in metrics_list.items():
+    for metric, features in metrics_dict.items():
         metrics_list.append( metric )
         
     return metrics_list
@@ -74,8 +75,8 @@ def overwrite_features_impl( data, metrics_dict ):
         
         if reference_file != row[ "reference_image" ] and compared_file != row[ "image" ]:
         
-            reference_file = row[ "reference_image" ]
-            compared_file = row[ "image" ]
+            reference_file = row[ "reference_image" ].decode('UTF-8')
+            compared_file = row[ "image" ].decode('UTF-8')
             
             print( "Overwriting features for images: " )
             print( "    [" + reference_file + "] and: ")
@@ -89,7 +90,7 @@ def overwrite_features_impl( data, metrics_dict ):
             features_dict = None
             if row[ "is_cropped" ]:
                 
-                ( cropped_image, cropped_reference ) = crop_image( row[ "crop_x" ], row[ "crop_y" ], num_crops, image_to_compare, reference_image )
+                ( cropped_image, cropped_reference ) = extract_features.crop_image( row[ "crop_x" ], row[ "crop_y" ], num_crops, image_to_compare, reference_image )
                 features_dict = extract_features.compute_metrics( cropped_reference, cropped_image, metrics_list )
             else:
                 features_dict = extract_features.compute_metrics( reference_image, image_to_compare, metrics_list )
@@ -102,7 +103,7 @@ def overwrite_features_impl( data, metrics_dict ):
             print( "    Error: " )
             print( "        " + str( e ) )
             
-            errors_list.append( ( reference, to_compare, str( e ), traceback.format_exc() ) )
+            errors_list.append( ( reference_file, compared_file, str( e ), traceback.format_exc() ) )
             
     if len( errors_list ) > 0:
     
@@ -133,10 +134,12 @@ def run():
     
     data_file = sys.argv[ 1 ]
     target_file = sys.argv[ 2 ]
+    features = sys.argv[ 3: ]
     
     data = loading.load_dataset( data_file )
     
-    features = [    metrics.ssim.MetricSSIM,
+    
+    metrics_obj = [    metrics.ssim.MetricSSIM,
                     metrics.psnr.MetricPSNR,
                     metrics.variance.ImageVariance,
                     metrics.edges.MetricEdgeFactor,
@@ -145,7 +148,7 @@ def run():
                     metrics.mass_center_distance.MetricMassCenterDistance  ]
 
 
-    data = overwrite_features( data, features )
+    data = overwrite_features( data, metrics_obj, features )
     
     loading.save_binary( data, target_file )
         
