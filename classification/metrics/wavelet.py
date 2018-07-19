@@ -35,6 +35,16 @@ def calculate_mse( coeff1, coeff2, low, high ):
 
 ## ======================= ##
 ##
+def calculate_frequencies( coeff1, coeff2 ):
+
+    num_levels = len( coeff1 )
+    
+
+    return ( 0, 0, 0 )
+        
+        
+## ======================= ##
+##
 class MetricWavelet:
 
     ## ======================= ##
@@ -65,6 +75,21 @@ class MetricWavelet:
             result[ "wavelet_mid" ] = result[ "wavelet_mid" ] + calculate_mse( coeff1, coeff2, len_div_3, len_two_thirds )
             result[ "wavelet_high" ] = result[ "wavelet_high" ] + calculate_mse( coeff1, coeff2, len_two_thirds, len_total )
 
+        # Frequency metrics based on haar wavlets
+        result[ "wavelet_haar_freq_x1" ] = 0
+        result[ "wavelet_haar_freq_x2" ] = 0
+        result[ "wavelet_haar_freq_x3" ] = 0
+            
+        for i in range(0,3):
+            coeff1 = pywt.wavedec2( np_image1[...,i], "haar" )
+            coeff2 = pywt.wavedec2( np_image2[...,i], "haar" )  
+            
+            freqs = calculate_frequencies( coeff1, coeff2 )
+            
+            result[ "wavelet_haar_freq_x1" ] = freqs[ 0 ]
+            result[ "wavelet_haar_freq_x2" ] = freqs[ 1 ]
+            result[ "wavelet_haar_freq_x3" ] = freqs[ 2 ]
+            
         return result
 
     ## ======================= ##
