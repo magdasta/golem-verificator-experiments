@@ -147,7 +147,7 @@ class MetricWavelet:
     ##
     @staticmethod
     def get_labels():
-        return [ "wavelet_sym2_base", "wavelet_sym2_low", "wavelet_sym2_mid", "wavelet_sym2_high", "wavelet_low", "wavelet_mid", "wavelet_high", "wavelet_haar_base", "wavelet_haar_low", "wavelet_haar_mid", "wavelet_haar_high", "wavelet_haar_freq_x1", "wavelet_haar_freq_x2", "wavelet_haar_freq_x3" ]
+        return [ "wavelet_sym2_base", "wavelet_sym2_low", "wavelet_sym2_mid", "wavelet_sym2_high", "wavelet_db4_base", "wavelet_db4_low", "wavelet_db4_mid", "wavelet_db4_high", "wavelet_haar_base", "wavelet_haar_low", "wavelet_haar_mid", "wavelet_haar_high", "wavelet_haar_freq_x1", "wavelet_haar_freq_x2", "wavelet_haar_freq_x3" ]
 
 
 ## ======================= ##
