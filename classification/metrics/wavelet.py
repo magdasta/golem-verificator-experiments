@@ -38,9 +38,24 @@ def calculate_mse( coeff1, coeff2, low, high ):
 def calculate_frequencies( coeff1, coeff2 ):
 
     num_levels = len( coeff1 )
+    start_level = num_levels - 3
+    
+    freq_list = list()
+    
+    for i in range( start_level, num_levels ):
+        
+        abs_coeff1 = numpy.absolute( coeff1[ i ] )
+        abs_coeff2 = numpy.absolute( coeff2[ i ] )
+        
+        sum_coeffs1 = sum( sum( sum( abs_coeff1 ) ) )
+        sum_coeffs2 = sum( sum( sum( abs_coeff2 ) ) )
+        
+        diff = numpy.absolute( sum_coeffs2 - sum_coeffs1 ) / ( 3 * coeff1[ i ][ 0 ].size )
+        
+        freq_list = [ diff ] + freq_list
     
 
-    return ( 0, 0, 0 )
+    return freq_list
         
         
 ## ======================= ##
@@ -86,9 +101,9 @@ class MetricWavelet:
             
             freqs = calculate_frequencies( coeff1, coeff2 )
             
-            result[ "wavelet_haar_freq_x1" ] = freqs[ 0 ]
-            result[ "wavelet_haar_freq_x2" ] = freqs[ 1 ]
-            result[ "wavelet_haar_freq_x3" ] = freqs[ 2 ]
+            result[ "wavelet_haar_freq_x1" ] = result[ "wavelet_haar_freq_x1" ] + freqs[ 0 ]
+            result[ "wavelet_haar_freq_x2" ] = result[ "wavelet_haar_freq_x2" ] + freqs[ 1 ]
+            result[ "wavelet_haar_freq_x3" ] = result[ "wavelet_haar_freq_x3" ] + freqs[ 2 ]
             
         return result
 
@@ -96,7 +111,7 @@ class MetricWavelet:
     ##
     @staticmethod
     def get_labels():
-        return [ "wavelet_low", "wavelet_mid", "wavelet_high" ]
+        return [ "wavelet_low", "wavelet_mid", "wavelet_high", "wavelet_haar_freq_x1", "wavelet_haar_freq_x2", "wavelet_haar_freq_x3" ]
 
 
 ## ======================= ##
