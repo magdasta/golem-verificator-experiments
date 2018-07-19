@@ -81,6 +81,7 @@ class DecisionTree:
         clf.criterion = params[ "criterion" ]
         clf.min_samples_leaf = params[ "min_samples_leaf" ]
         clf.min_impurity_decrease = params[ "min_impurity_decrease" ]
+        clf.splitter = params[ "splitter" ]
         
         clf = clf.fit( samples, class_labels )
         
@@ -140,6 +141,7 @@ class DecisionTree:
             print( "Parameters used to create this tree:" )
             
             print( "Split criterion         -       " + params[ "criterion" ] )
+            print( "Split strategy          -       " + params[ "splitter" ] )
             print( "Max tree depth          -       " + str( params[ "max_depth" ] ) )
             print( "Min samples in leaf     -       " + str( params[ "min_samples_leaf" ] ) )
             print( "Min impurity decrease   -       " + str( params[ "min_impurity_decrease" ] ) )

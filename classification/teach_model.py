@@ -86,12 +86,13 @@ def run():
     
     ( index_labels, unique_labels ) = labels_to_int( data, "label" )
     
-    features_labels = [ "ssim", "max_x_mass_center_distance", "histograms_correlation",
+    features_labels = [ "ssim", "psnr", "max_x_mass_center_distance", "histograms_correlation",
         "max_y_mass_center_distance", "edge_difference", "comp_edge_factor",
-        "wavelet_mid", "wavelet_low", "wavelet_high", "variance_difference" ]
+        "wavelet_mid", "wavelet_low", "wavelet_high" ]
     
     params = dict()
     params[ "criterion" ] = "gini"
+    params[ "splitter" ] = "best"
     params[ "max_depth" ] = 8
     params[ "min_samples_leaf" ] = 3000
     params[ "min_impurity_decrease" ] = 0.0
