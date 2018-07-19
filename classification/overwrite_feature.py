@@ -73,7 +73,7 @@ def overwrite_features_impl( data, metrics_dict ):
     
     for row in data:
         
-        if reference_file != row[ "reference_image" ] and compared_file != row[ "image" ]:
+        if reference_file != row[ "reference_image" ].decode('UTF-8') and compared_file != row[ "image" ].decode('UTF-8'):
         
             reference_file = row[ "reference_image" ].decode('UTF-8')
             compared_file = row[ "image" ].decode('UTF-8')
