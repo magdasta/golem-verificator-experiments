@@ -74,10 +74,10 @@ class MetricWavelet:
         np_image2 = numpy.array(image2)
 
         result = dict()
-        result["wavelet_base"] = 0
-        result["wavelet_low"] = 0
-        result["wavelet_mid"] = 0
-        result["wavelet_high"] = 0
+        result["wavelet_db4_base"] = 0
+        result["wavelet_db4_low"] = 0
+        result["wavelet_db4_mid"] = 0
+        result["wavelet_db4_high"] = 0
 
         for i in range(0,3):
             coeff1 = pywt.wavedec2( np_image1[...,i], "db4" )
@@ -87,11 +87,31 @@ class MetricWavelet:
             len_div_3 = int( len_total / 3 )
             len_two_thirds = int( len_total * 2 / 3 )
 
-            result[ "wavelet_base" ] += calculate_mse( coeff1, coeff2, 0, 1 )
-            result[ "wavelet_low" ] = result[ "wavelet_low" ] + calculate_mse( coeff1, coeff2, 1, 1 + len_div_3 )
-            result[ "wavelet_mid" ] = result[ "wavelet_mid" ] + calculate_mse( coeff1, coeff2, 1 + len_div_3, 1 + len_two_thirds )
-            result[ "wavelet_high" ] = result[ "wavelet_high" ] + calculate_mse( coeff1, coeff2, 1 + len_two_thirds, 1 + len_total )
+            result[ "wavelet_db4_base" ] += calculate_mse( coeff1, coeff2, 0, 1 )
+            result[ "wavelet_db4_low" ] = result[ "wavelet_db4_low" ] + calculate_mse( coeff1, coeff2, 1, 1 + len_div_3 )
+            result[ "wavelet_db4_mid" ] = result[ "wavelet_db4_mid" ] + calculate_mse( coeff1, coeff2, 1 + len_div_3, 1 + len_two_thirds )
+            result[ "wavelet_db4_high" ] = result[ "wavelet_db4_high" ] + calculate_mse( coeff1, coeff2, 1 + len_two_thirds, 1 + len_total )
 
+        #
+        result["wavelet_sym2_base"] = 0
+        result["wavelet_sym2_low"] = 0
+        result["wavelet_sym2_mid"] = 0
+        result["wavelet_sym2_high"] = 0
+
+        for i in range(0,3):
+            coeff1 = pywt.wavedec2( np_image1[...,i], "sym2" )
+            coeff2 = pywt.wavedec2( np_image2[...,i], "sym2" )
+
+            len_total = len( coeff1 ) - 1
+            len_div_3 = int( len_total / 3 )
+            len_two_thirds = int( len_total * 2 / 3 )
+
+            result[ "wavelet_sym2_base" ] += calculate_mse( coeff1, coeff2, 0, 1 )
+            result[ "wavelet_sym2_low" ] = result[ "wavelet_sym2_low" ] + calculate_mse( coeff1, coeff2, 1, 1 + len_div_3 )
+            result[ "wavelet_sym2_mid" ] = result[ "wavelet_sym2_mid" ] + calculate_mse( coeff1, coeff2, 1 + len_div_3, 1 + len_two_thirds )
+            result[ "wavelet_sym2_high" ] = result[ "wavelet_sym2_high" ] + calculate_mse( coeff1, coeff2, 1 + len_two_thirds, 1 + len_total )
+            
+            
         # Frequency metrics based on haar wavlets
         result[ "wavelet_haar_freq_x1" ] = 0
         result[ "wavelet_haar_freq_x2" ] = 0
@@ -127,7 +147,7 @@ class MetricWavelet:
     ##
     @staticmethod
     def get_labels():
-        return [ "wavelet_low", "wavelet_mid", "wavelet_high", "wavelet_haar_freq_x1", "wavelet_haar_freq_x2", "wavelet_haar_freq_x3" ]
+        return [ "wavelet_sym2_base", "wavelet_sym2_low", "wavelet_sym2_mid", "wavelet_sym2_high", "wavelet_low", "wavelet_mid", "wavelet_high", "wavelet_haar_base", "wavelet_haar_low", "wavelet_haar_mid", "wavelet_haar_high", "wavelet_haar_freq_x1", "wavelet_haar_freq_x2", "wavelet_haar_freq_x3" ]
 
 
 ## ======================= ##
