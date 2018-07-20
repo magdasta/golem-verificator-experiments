@@ -81,17 +81,21 @@ def image_to_numpy( image ):
     image = image.convert("RGB")
     b, g, r = image.split()
     return numpy.array( Image.merge( "RGB", (r, g, b) ) )
-    
+
+def correct_path( path ):
+    csv_dirs = "D:\\GolemData\\images_database", "\\home\\imapp\\Dokumenty\\partial_datasets\\atom_dataset"
+    local_dir = "e:\golem\\images_database"
+    for csv_dir in csv_dirs:
+        path = path.replace( csv_dir, local_dir )
+	path = path.replace( "\\", "/" )
+    return path
     
 def chessboard_from_csv( row ):
-    csv_dir = "D:\\GolemData"
-    local_dir = "D:\\GolemData"
-
     first_path = os.path.normpath(row["reference_image"].decode('UTF-8'))
     second_path = os.path.normpath(row["image"].decode('UTF-8'))
 
-    first_path = first_path.replace( csv_dir, local_dir )
-    second_path = second_path.replace( csv_dir, local_dir )
+    first_path = correct_path( first_path )
+    second_path = correct_path( second_path )
 
     chessboard = mix( first_path, second_path, 20 )
 

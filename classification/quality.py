@@ -1,6 +1,7 @@
 import numpy
 import sys
 import os
+import math
 
 import loading
 
@@ -135,6 +136,26 @@ def compute_dontknows_rate( error_matrix, unique_labels ):
     
     return 100 * num_dontknows / num_samples
     
+## ======================= ##
+##
+def compute_dontknows_as_true_rate( error_matrix, unique_labels ):
+    
+    dontknow_idx = unique_labels.index( b'DONT_KNOW' )
+    true_idx = unique_labels.index( b'TRUE' )
+    
+    num_dontknows = numpy.sum( error_matrix, axis = 1 )[ dontknow_idx ]
+    return 100 * error_matrix[ dontknow_idx ][ true_idx ] / num_dontknows
+    
+## ======================= ##
+##
+def compute_dontknows_as_false_rate( error_matrix, unique_labels ):
+    
+    dontknow_idx = unique_labels.index( b'DONT_KNOW' )
+    false_idx = unique_labels.index( b'FALSE' )
+    
+    num_dontknows = numpy.sum( error_matrix, axis = 1 )[ dontknow_idx ]
+    return 100 * error_matrix[ dontknow_idx ][ false_idx ] / num_dontknows
+    
     
 ## ======================= ##
 ##
@@ -150,6 +171,8 @@ def print_classification_results( error_matrix, unique_labels ):
     print( "Correct rejections rate:    " + str( compute_correct_rejection_rate( error_matrix, unique_labels ) ) + " (% of incorrect images that were rejected)" )
     print( "False rejections rate:      " + str( compute_incorrect_rejection_rate( error_matrix, unique_labels ) ) + " (% of correct images that were falsely rejected)" )
     print( "% unclassified samples:     " + str( compute_dontknows_rate( error_matrix, unique_labels ) ) +  " (% of samples classified as DONT_KNOW)" )
+    print( "% DONT_KNOWs as TRUE:       " + str( compute_dontknows_as_true_rate( error_matrix, unique_labels ) ) )
+    print( "% DONT_KNOWs as FALSE:      " + str( compute_dontknows_as_false_rate( error_matrix, unique_labels ) ) )
     
     
 ## ======================= ##
@@ -183,7 +206,10 @@ def print_scenes( data ):
     for row in data:
         reference = row[ "reference_image" ]
         dirs.add( os.path.dirname( reference ) )
-    print( dirs )
+    
+    print( "Scenes:" )
+    for scene in dirs:
+        print( scene )
 
 
 
@@ -195,10 +221,17 @@ def run():
     
     #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
+    classifier.print_info()
 
     data = loading.load_dataset( sys.argv[ 1 ] )
     data = data[ data[ "is_cropped" ] == True ]
 
+    num_inf = 0
+    for i, row in enumerate( data ):
+        if math.isinf( row[ "psnr" ] ):
+            num_inf = num_inf + 1
+            data[ "psnr" ][ i ] = numpy.finfo( numpy.float32 ).max
+    
     label = "label"
 
     print_scenes( data )

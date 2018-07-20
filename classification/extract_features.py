@@ -210,14 +210,7 @@ def run():
     compare_dir_parent = sys.argv[ 2 ]
     csv_file = sys.argv[ 3 ]
     
-    features = [    metrics.ssim.MetricSSIM(),
-                    metrics.psnr.MetricPSNR(),
-                    metrics.variance.ImageVariance(),
-                    metrics.edges.MetricEdgeFactor(),
-                    metrics.wavelet.MetricWavelet(),
-                    metrics.histograms_correlation.MetricHistogramsCorrelation(),
-                    metrics.mass_center_distance.MetricMassCenterDistance()
-               ]
+    features = [ metrics.wavelet.MetricWavelet ]
 
     compare_images( reference_dir, compare_dir_parent, csv_file, features )
     convert_to_npy( csv_file )

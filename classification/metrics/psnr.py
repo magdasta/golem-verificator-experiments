@@ -10,7 +10,8 @@ class MetricPSNR:
 
     ## ======================= ##
     ##
-    def compute_metrics( this, image1, image2 ):
+    @staticmethod
+    def compute_metrics( image1, image2 ):
 
         image1 = image1.convert("RGB")
         image2 = image2.convert("RGB")
@@ -27,7 +28,8 @@ class MetricPSNR:
     
     ## ======================= ##
     ##
-    def get_labels( this ):
+    @staticmethod
+    def get_labels():
         return [ "psnr" ]
     
 ## ======================= ##

@@ -88,12 +88,12 @@ def mouse_select( event, x, y, flags, param ):
         
         ( tile_x, tile_y ) = position_to_crop( x, y )
         
-        if selected_crops[ tile_x ][ tile_y ] != FalseLabel:
-            selected_crops[ tile_x ][ tile_y ] = FalseLabel
-            print( "Deselected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
+        if selected_crops[ tile_x ][ tile_y ] != TrueLabel:
+            selected_crops[ tile_x ][ tile_y ] = TrueLabel
+            print( "Selected crop: [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
         else:
-            selected_crops[ tile_x ][ tile_y ] = IgnoreLabel
-            print( "Selected crop:   [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
+            selected_crops[ tile_x ][ tile_y ] = FalseLabel
+            print( "Deselected crop:   [" + str( tile_x ) + "][" + str( tile_y ) + "]" )
   
   
 ## ======================= ##
@@ -251,12 +251,14 @@ def update_crops_selection( data, config ):
             label = selected_crops[ tile_x ][ tile_y ]
             if label == FalseLabel:
                 data[ idx ][ "label" ] = get_label_string( should_accept.tell_from_samples( row[ "image" ].decode('UTF-8'), row[ "reference_image"].decode('UTF-8') ).value )
-            else:
+            elif label == TrueLabel:
                 threshold = should_accept.not_ok_thresholds[ scene ]
-                if row[ "samples"] > threshold and row[ "samples_reference" ] > threshold:
+                if row[ "samples"] >= threshold and row[ "samples_reference" ] >= threshold:
                     data[ idx ][ "label" ] = b"TRUE"
                 else:
                     data[ idx ][ "label" ] = b"IGNORE"
+            else:
+                pass
 
 ## ======================= ##
 ##

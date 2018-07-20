@@ -13,7 +13,8 @@ class MetricEdgeFactor:
 
     ## ======================= ##
     ##
-    def compute_metrics( this, image1, image2 ):
+    @staticmethod
+    def compute_metrics( image1, image2 ):
 
         image1 = image1.convert("RGB")
         image2 = image2.convert("RGB")
@@ -38,7 +39,8 @@ class MetricEdgeFactor:
     
     ## ======================= ##
     ##
-    def get_labels( this ):
+    @staticmethod
+    def get_labels():
         return [ "ref_edge_factor", "comp_edge_factor", "edge_difference" ]
     
 ## ======================= ##

@@ -27,12 +27,18 @@ def label_row( row ):
     
 ## ======================= ##
 ##
-def label_data( src_file, dest_file ):
+def data_sceneing( data ):
 
-    data = loading.load_dataset( src_file )
+    print("Sceneing data")
+    scene_names = [ should_accept.get_scene_name(row["image"].decode('UTF-8')) for row in data ]
+    data["scene"] = scene_names
+    
+    return data
 
-    # for i in range(1,100):
-    #     print( data[i]["psnr"] )
+
+## ======================= ##
+##
+def label_dataset( data ):
 
     print( "Creating new array" )
     new_dtype = numpy.dtype( [('scene', 'S17')] + data.dtype.descr + [('label', 'S9')] )
@@ -42,13 +48,21 @@ def label_data( src_file, dest_file ):
     for name in data.dtype.names:
         labeled_data[ name ] = data[ name ]
 
-    print("Sceneing data")
-    scene_names = [ should_accept.get_scene_name(row["image"].decode('UTF-8')) for row in data ]
-    labeled_data["scene"] = scene_names
+    labeled_data = data_sceneing( labeled_data )
 
     print( "Labeling data" )
     labels = [ label_row( row ) for row in data ]
     labeled_data[ "label" ] = labels
+    
+    return labeled_data
+    
+## ======================= ##
+##
+def label_data( src_file, dest_file ):
+
+    data = loading.load_dataset( src_file )
+    
+    labeled_data = label_dataset( data )
 
     print( "Saving file [" + dest_file + "]" )
     save_binary( labeled_data, dest_file )

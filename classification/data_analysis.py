@@ -10,6 +10,26 @@ import extract_features
 import optical_comparision.should_accept as should_accept
 import optical_comparision.chessboard as chessboard
 
+
+def print_funked_scenes( data ):
+    subsampling = data[data["samples"] != data["samples_reference"]]
+    # scene_names = [ should_accept.get_scene_name( row("image").decode('UTF-8') ) for row in data ]
+    for scene in should_accept.ok_thresholds:
+
+        filtered_ok = subsampling[ (subsampling[ "samples" ] == should_accept.ok_thresholds[ scene ]) | (subsampling[ "samples_reference" ] == should_accept.ok_thresholds[ scene ]) ]
+        filtered_ok_not_ok = filtered_ok[ (filtered_ok[ "samples" ] == should_accept.not_ok_thresholds[ scene ]) | (filtered_ok[ "samples_reference" ] == should_accept.not_ok_thresholds[ scene ]) ]
+
+        if scene == "atom":
+            for row in filtered_ok_not_ok:
+                if should_accept.get_scene_name( row["image"].decode('UTF-8') ) == scene:
+                    # print ( str( row["crop_x"] ) + ", " + str( row["crop_y"] ) )
+                    print( row )
+
+        rows = sum( 1 for row in filtered_ok_not_ok if should_accept.get_scene_name( row["image"].decode('UTF-8') ) == scene )
+        print( "Scene: " + scene + ", rows: " + str( rows ) )
+
+
+
 ## ======================= ##
 ##
 def create_directory_if_doesnt_exist(path):

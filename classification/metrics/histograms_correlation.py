@@ -6,14 +6,16 @@ import sys
 
 class MetricHistogramsCorrelation:
 
-    def compute_metrics(self, image1, image2):
+    @staticmethod
+    def compute_metrics( image1, image2):
         if image1.size != image2.size:
             raise Exception("Image sizes differ")
         opencv_image_1 = cv2.cvtColor(numpy.array(image1), cv2.COLOR_RGB2BGR)
         opencv_image_2 = cv2.cvtColor(numpy.array(image2), cv2.COLOR_RGB2BGR)
         return {"histograms_correlation": MetricHistogramsCorrelation.compare_histograms(opencv_image_1, opencv_image_2)}
 
-    def get_labels(self):
+    @staticmethod
+    def get_labels():
         return ["histograms_correlation"]
 
     @staticmethod
