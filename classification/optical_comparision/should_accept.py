@@ -56,7 +56,7 @@ not_ok_thresholds = {
     "mug" : 1125,
     "office" : 1425,
     "plushy" : 1125,
-    "ring" : 3125,
+    "ring" : 825,
     "rocks" : 1,
     "sea" : 25,
     "shark" : 601,
@@ -72,10 +72,14 @@ def extract_number_of_samples(filename):
     return int(match.group(0)[8:])
 
 
+def fix_windows_paths(path):
+    return path.replace( "\\", "/" )
+
 def get_scene_name(path):
+    path = fix_windows_paths( path )
     scene = os.path.basename(os.path.dirname(path))
     if scene not in ok_thresholds.keys():
-        raise Exception("Unknown scene '" + str( scene ) + "'")
+        raise Exception("Unknown scene '" + str( scene ) + "' (from path: " + str(path) + ")")
     return scene
 
 
@@ -129,13 +133,13 @@ def should_accept(row):
     if row["psnr"] > 70:
         psnred = psnred + 1
         return ShouldAccept.TRUE
-    if one_is_damaged(path_a, path_b):
-        return ShouldAccept.FALSE
     elif both_are_not_damaged(path_a, path_b):
         return tell_from_samples(path_a, path_b)
-    else: #should not get here anymore
-        assert False
+    else: #one_is_damaged(path_a, path_b):
         return ShouldAccept.FALSE
+    # else: #should not get here anymore
+    #     assert False
+    #     return ShouldAccept.FALSE
 
 
 # if __name__ == "__main__":

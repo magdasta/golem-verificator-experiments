@@ -8,7 +8,8 @@ class ImageVariance:
 
     ## ======================= ##
     ##
-    def compute_metrics( this, image1, image2 ):
+    @staticmethod
+    def compute_metrics( image1, image2 ):
 
         image1 = image1.convert("RGB")
         image2 = image2.convert("RGB")
@@ -25,12 +26,14 @@ class ImageVariance:
         result = dict()
         result[ "reference_variance" ] = reference_variance
         result[ "image_variance" ] = image_variance
+        result[ "variance_difference" ] = image_variance - reference_variance
         
         return result
     
     ## ======================= ##
     ##
-    def get_labels( this ):
-        return [ "reference_variance", "image_variance" ]
+    @staticmethod
+    def get_labels():
+        return [ "reference_variance", "image_variance", "variance_difference"]
         
         

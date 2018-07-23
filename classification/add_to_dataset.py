@@ -5,8 +5,20 @@ import numpy
 import os
 from sys import argv
 
-
 full_image_sizes = dict()
+
+
+def add_variance_difference(data_file_path, output_path):
+    data = load_dataset(data_file_path)
+    variance_differences = [get_variance_difference(row) for row in data]
+    output_data = append_fields(data, "variance_difference", variance_differences, usemask=False)
+    numpy.save(output_path, output_data)
+
+
+def get_variance_difference(row):
+    reference_variance = row["reference_variance"]
+    image_variance = row["image_variance"]
+    return abs(reference_variance - image_variance)
 
 
 def add_image_sizes(data_file_path, output_path, images_database_path):
@@ -41,7 +53,13 @@ def get_image_path_on_local_machine(images_database_path, path_from_data):
 
 
 def run():
-    add_image_sizes(argv[1], argv[2], argv[3])
+    column_name = argv[1].lower()
+    if column_name == "number_of_pixels":
+        add_image_sizes(argv[2], argv[3], argv[4])
+    elif column_name == "variance_difference":
+        add_variance_difference(argv[2], argv[3])
+    else:
+        print("Invalid column name: " + argv[1])
 
 
 if __name__ == "__main__":
