@@ -59,9 +59,64 @@ def compute_additional_labels( type1, type2 ):
 
 ## ======================= ##
 ##
-def build_index_mapping( data1, data2 ):
+def row_is_less( row1, row2 ):
 
+    if row1[ "reference_image" ] < row2[ "reference_image" ]:
+        return True
+    elif row1[ "reference_image" ] == row2[ "reference_image" ]:
+        if row1[ "image" ] < row2[ "image" ]:
+            return True
+        elif row1[ "image" ] == row2[ "image" ]:    
+            if row1[ "is_cropped" ] < row2[ "is_cropped" ]:
+                return True
+            elif row1[ "is_cropped" ] == row2[ "is_cropped" ]:
+                if row1[ "crop_x" ] < row2[ "crop_x" ]:
+                    return True
+                elif row1[ "crop_x" ] == row2[ "crop_x" ]:    
+                    if row1[ "crop_y" ] < row2[ "crop_y" ]:
+                        return True
+
+    return False
+
+## ======================= ##
+##
+def find_row_idx( row, data, start_idx ):
+
+    while row_is_less( data[ start_idx ], row ):
+        start_idx = start_idx + 1
+        
+    row2 = data[ start_idx ]
     
+    print( str( row ) + " and " + str( row2 ) )
+    assert row[ "reference_image" ] == row2[ "reference_image" ]
+    assert row[ "image" ] == row2[ "image" ]
+    assert row[ "is_cropped" ] == row2[ "is_cropped" ]
+    assert row[ "crop_x" ] == row2[ "crop_x" ]
+    assert row[ "crop_y" ] == row2[ "crop_y" ]
+        
+    return start_idx
+
+## ======================= ##
+##
+def copy_content( data2, extended_dataset, additional_labels ):
+
+    sec_idx = 0
+    for idx in range( 0, extended_dataset.shape[ 0 ] ):
+        
+        sec_idx = find_row_idx( extended_dataset[ idx ], data2, sec_idx )
+        
+        # Copy data
+        src_row = data2[ sec_idx ]
+        dst_row = extended_dataset[ idx ]
+        
+        print( "Rows:")
+        print( src_row )
+        print( dst_row )
+        
+        for column in additional_labels:
+            dst_row[ column[ 0 ] ] = src_row[ column[ 0 ] ]
+            
+        sec_idx += 1
 
     
 ## ======================= ##
@@ -78,12 +133,26 @@ def merge_datasets_new_metrics( data1, data2 ):
     print( "Creating new array" )
     new_dtype = numpy.dtype( data1.dtype.descr + additional_labels )
     extended_dataset = numpy.zeros( data1.shape, dtype=new_dtype )
+
+    print( "Sorting datasets" )
+    sorting_order = [ "reference_image", "image", "is_cropped", "crop_x", "crop_y" ]
+    
+    print( "    Sorting first dataset..." )
+    data1.sort( order=sorting_order )
+    #numpy.set_printoptions(threshold=numpy.inf)
+    #print( data1[ [ "reference_image", "image" ] ] )
+    
+    print( "    Sorting second dataset..." )
+    data2.sort( order=sorting_order )
+    #print( data2 )
+    print( "    Sorting finished." )
     
     print( "Coping content to new array" )
     for name in data1.dtype.names:
         extended_dataset[ name ] = data1[ name ]
         
-
+    print( "Coping new metrics to created array." )
+    copy_content( data2, extended_dataset, additional_labels )
     
     return None
     
