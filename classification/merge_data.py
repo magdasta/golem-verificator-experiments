@@ -77,12 +77,33 @@ def row_is_less( row1, row2 ):
                         return True
 
     return False
+    
+
+## ======================= ##
+##
+def is_row_equal( row1, row2 ):
+
+    if row1[ "reference_image" ] != row2[ "reference_image" ]:
+        return False
+    if row1[ "image" ] != row2[ "image" ]:
+        return False
+        
+    if row1[ "is_cropped" ] != row2[ "is_cropped" ]:
+        return False
+
+    if row1[ "crop_x" ] == row2[ "crop_x" ]:
+        return False
+
+    if row1[ "crop_y" ] == row2[ "crop_y" ]:
+        return False
+
+    return True
 
 ## ======================= ##
 ##
 def find_row_idx( row, data, start_idx ):
 
-    while row_is_less( data[ start_idx ], row ):
+    while not is_row_equal( data[ start_idx ], row ):
         start_idx = start_idx + 1
         
     row2 = data[ start_idx ]
@@ -96,6 +117,7 @@ def find_row_idx( row, data, start_idx ):
         
     return start_idx
 
+    
 ## ======================= ##
 ##
 def copy_content( data2, extended_dataset, additional_labels ):
