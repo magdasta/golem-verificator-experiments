@@ -156,9 +156,16 @@ def copy_content( data2, extended_dataset, additional_labels ):
         else:
             not_matched.append( idx )
         
+    not_matched_images = set()
+    for idx in not_matched:
+        not_matched_images.add( ( extended_dataset[ idx ][ "reference_image" ], extended_dataset[ idx ][ "image" ] ) )
+        
     print( "==========================================================" )
     print( "Number of not matched rows: " + str( len( not_matched ) ) )
-            
+    
+    print( "Not matched images:" )
+    for image in not_matched_images:
+        print( str( image[ 0 ] ) + ", " + str( image[ 1 ] ) )
     
 ## ======================= ##
 ##
@@ -180,12 +187,9 @@ def merge_datasets_new_metrics( data1, data2 ):
     
     print( "    Sorting first dataset..." )
     data1.sort( order=sorting_order )
-    #numpy.set_printoptions(threshold=numpy.inf)
-    #print( data1[ [ "reference_image", "image" ] ] )
     
     print( "    Sorting second dataset..." )
     data2.sort( order=sorting_order )
-    #print( data2 )
     print( "    Sorting finished." )
     
     print( "Coping content to new array" )
@@ -217,10 +221,10 @@ def run():
     
     if add_metrics_mode:
         data = merge_datasets_new_metrics( data, data2 )
-        print_dtype( data.dtype )
+        print_dtype( data )
     elif add_rows_mode:
         data = merge_datasets( data, data2 )
-        print_dtype( data.dtype )
+        print_dtype( data )
     else:
         print( "Add one of flags: -add_metrics, -add_rows" )
         exit()
