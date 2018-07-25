@@ -38,6 +38,11 @@ def print_dtype( data ):
    
 ## ======================= ##
 ##
+def print_row( row ):
+    print( str( row[ "reference_image" ] ) + ", " + str( row[ "image" ] ) + ", [" + str( row[ "is_cropped" ] ) + ", " + str( row[ "crop_x" ] ) + ", " + str( row[ "crop_y" ] ) + "]" )
+   
+## ======================= ##
+##
 def is_label_in( label, type ):
 
     for column in type.descr:
@@ -91,10 +96,10 @@ def is_row_equal( row1, row2 ):
     if row1[ "is_cropped" ] != row2[ "is_cropped" ]:
         return False
 
-    if row1[ "crop_x" ] == row2[ "crop_x" ]:
+    if row1[ "crop_x" ] != row2[ "crop_x" ]:
         return False
 
-    if row1[ "crop_y" ] == row2[ "crop_y" ]:
+    if row1[ "crop_y" ] != row2[ "crop_y" ]:
         return False
 
     return True
@@ -103,43 +108,57 @@ def is_row_equal( row1, row2 ):
 ##
 def find_row_idx( row, data, start_idx ):
 
-    while not is_row_equal( data[ start_idx ], row ):
-        start_idx = start_idx + 1
-        
-    row2 = data[ start_idx ]
+    idx = start_idx
     
-    print( str( row ) + " and " + str( row2 ) )
-    assert row[ "reference_image" ] == row2[ "reference_image" ]
-    assert row[ "image" ] == row2[ "image" ]
-    assert row[ "is_cropped" ] == row2[ "is_cropped" ]
-    assert row[ "crop_x" ] == row2[ "crop_x" ]
-    assert row[ "crop_y" ] == row2[ "crop_y" ]
+    while row_is_less( data[ idx ], row ):
+        idx = idx + 1
         
-    return start_idx
+    row2 = data[ idx ]
+    
+    if not is_row_equal( row, row2 ):
+        print( "Rows don't match: " )
+        print_row( row )
+        print( "and")
+        print_row( row2 )
+        
+        #assert( False )
+        return -1
+    
+    return idx
 
     
 ## ======================= ##
 ##
 def copy_content( data2, extended_dataset, additional_labels ):
 
+    not_matched = []
+
     sec_idx = 0
     for idx in range( 0, extended_dataset.shape[ 0 ] ):
         
-        sec_idx = find_row_idx( extended_dataset[ idx ], data2, sec_idx )
+        sec_idx_tmp = find_row_idx( extended_dataset[ idx ], data2, sec_idx )
         
-        # Copy data
-        src_row = data2[ sec_idx ]
-        dst_row = extended_dataset[ idx ]
+        if sec_idx_tmp >= 0:
         
-        print( "Rows:")
-        print( src_row )
-        print( dst_row )
-        
-        for column in additional_labels:
-            dst_row[ column[ 0 ] ] = src_row[ column[ 0 ] ]
+            sec_idx = sec_idx_tmp
             
-        sec_idx += 1
-
+            # Copy data
+            src_row = data2[ sec_idx ]
+            dst_row = extended_dataset[ idx ]
+            
+            print_row( src_row )
+            
+            for column in additional_labels:
+                dst_row[ column[ 0 ] ] = src_row[ column[ 0 ] ]
+            
+            sec_idx += 1
+            
+        else:
+            not_matched.append( idx )
+        
+    print( "==========================================================" )
+    print( "Number of not matched rows: " + str( len( not_matched ) ) )
+            
     
 ## ======================= ##
 ##
@@ -176,25 +195,37 @@ def merge_datasets_new_metrics( data1, data2 ):
     print( "Coping new metrics to created array." )
     copy_content( data2, extended_dataset, additional_labels )
     
-    return None
+    return extended_dataset
     
     
 ## ======================= ##
 ##
 def run():
 
+    add_metrics_mode = "-add_metrics" in sys.argv
+    add_rows_mode = "-add_rows" in sys.argv
+
     data = loading.load_dataset( sys.argv[ 1 ] )
     print_dtype( data )
     
     data2 = loading.load_dataset( sys.argv[ 2 ] )
     print_dtype( data2 )
-
-    #data = merge_datasets( data, data2 )
-    #print( data.dtype )
     
-    merge_datasets_new_metrics( data, data2 )
+    if add_metrics_mode and add_rows_mode:
+        print( "Choose only one option:  -add_metrics, -add_rows" )
+        exit()
     
-    #loading.save_binary( data, sys.argv[ 3 ] )
+    if add_metrics_mode:
+        data = merge_datasets_new_metrics( data, data2 )
+        print_dtype( data.dtype )
+    elif add_rows_mode:
+        data = merge_datasets( data, data2 )
+        print_dtype( data.dtype )
+    else:
+        print( "Add one of flags: -add_metrics, -add_rows" )
+        exit()
+    
+    loading.save_binary( data, sys.argv[ 3 ] )
     
 
 if __name__ == "__main__":

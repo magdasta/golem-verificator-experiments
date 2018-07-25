@@ -109,5 +109,7 @@ python classification/split_data.py D:\GolemData\images_database\datasets/serie2
 python classification/manual_labeling.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70.npy
 python classification/manual_labeling.py D:\GolemData\images_database\datasets/metrics_full_labels_psnred_70.npy -filter_threshold
 
+# merge data
+python classification/merge_data.py D:\GolemData\images_database\metrics\serie4/metrics_new_wavelets_repath.npy D:\GolemData\images_database\datasets\serie4/metrics_repath.npy D:\GolemData\images_database\datasets\serie4/metrics_merged_wavelets.npy -add_metrics
 
 
