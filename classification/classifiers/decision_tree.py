@@ -141,7 +141,8 @@ class DecisionTree:
             print( "Parameters used to create this tree:" )
             
             print( "Split criterion         -       " + params[ "criterion" ] )
-            print( "Split strategy          -       " + params[ "splitter" ] )
+            if "splitter" in params:
+                print( "Split strategy          -       " + params[ "splitter" ] )
             print( "Max tree depth          -       " + str( params[ "max_depth" ] ) )
             print( "Min samples in leaf     -       " + str( params[ "min_samples_leaf" ] ) )
             print( "Min impurity decrease   -       " + str( params[ "min_impurity_decrease" ] ) )
