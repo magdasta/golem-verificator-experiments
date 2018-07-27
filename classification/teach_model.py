@@ -86,9 +86,16 @@ def run():
     
     ( index_labels, unique_labels ) = labels_to_int( data, "label" )
     
-    features_labels = [ "ssim", "psnr", "max_x_mass_center_distance", "histograms_correlation",
+    features_labels = [
+        "ssim", "psnr", "max_x_mass_center_distance", "histograms_correlation",
         "max_y_mass_center_distance", "edge_difference", "comp_edge_factor",
-        "wavelet_mid", "wavelet_low", "wavelet_high" ]
+        "wavelet_mid", "wavelet_low", "wavelet_high",
+        "wavelet_sym2_base", "wavelet_sym2_low", "wavelet_sym2_mid", "wavelet_sym2_high",
+        "wavelet_db4_base", "wavelet_db4_low", "wavelet_db4_mid", "wavelet_db4_high",
+        "wavelet_haar_base", "wavelet_haar_low", "wavelet_haar_mid", "wavelet_haar_high",
+        "wavelet_haar_freq_x1", "wavelet_haar_freq_x2", "wavelet_haar_freq_x3"
+        ]
+
     
     params = dict()
     params[ "criterion" ] = "gini"
