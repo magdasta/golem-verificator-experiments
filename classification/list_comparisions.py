@@ -62,7 +62,7 @@ def make_relative_path( pair, relative_dir ):
         
 ## ======================= ##
 ##
-def list_reference_comparisions( images_dir, reference_dir ):
+def list_reference_comparisions( images_dir, reference_dir, scenes ):
 
     # consists of pairs of files to compare
     comparision_list = []
@@ -72,6 +72,11 @@ def list_reference_comparisions( images_dir, reference_dir ):
     for root, dirs, files in os.walk( images_dir ):
     
         relative_directory = os.path.relpath( root, images_dir )
+        
+        # Filter scenes
+        if relative_directory not in scenes:
+            continue
+        
         reference_path = os.path.join( reference_dir, relative_directory )
         
         print( "Processing directory: [" + root + "]" )
@@ -157,7 +162,7 @@ def list_different_seeds( directory1, directory2 ):
     
 ## ======================= ##
 ##
-def list_all_combinations_comparisions( directory ):
+def list_all_combinations_comparisions( directory, scenes ):
        
     # consists of pairs of files to compare
     comparision_list = []
@@ -165,6 +170,10 @@ def list_all_combinations_comparisions( directory ):
     for root, dirs, files in os.walk( directory ):
     
         relative_directory = os.path.relpath( root, directory )
+        
+        # Filter scenes
+        if relative_directory not in scenes:
+            continue
         
         print( "Processing directory: [" + root + "]" )    
         
@@ -183,7 +192,7 @@ def list_all_combinations_comparisions( directory ):
         
 ## ======================= ##
 ##
-def list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs ):
+def list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs, scenes ):
     
     comparision_list = []
     
@@ -193,7 +202,7 @@ def list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs ):
     
         dir = make_relative( compare_dir_parent, subdir )
     
-        list = list_reference_comparisions( dir, reference_dir )
+        list = list_reference_comparisions( dir, reference_dir, scenes )
         pairs = [ ( make_relative( reference_dir, pair[ 0 ] ), make_relative( dir, pair[ 1 ] ) ) for pair in list ]
         
         comparision_list.extend( pairs )
@@ -201,7 +210,7 @@ def list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs ):
         
     print( "Processing combinations with different sampling rate in subdirectory: " + str( reference_dir ) + "\n")
     
-    pairs = list_all_combinations_comparisions( reference_dir )
+    pairs = list_all_combinations_comparisions( reference_dir, scenes )
     pairs = [ ( make_relative( reference_dir, pair[ 0 ] ), make_relative( reference_dir, pair[ 1 ] ) ) for pair in pairs ]
     
     comparision_list.extend( pairs )
@@ -210,10 +219,10 @@ def list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs ):
         
 ## ======================= ##
 ##
-def list_all( reference_dir, compare_dir_parent ):
+def list_all( reference_dir, compare_dir_parent, scenes ):
 
     subdirs = list_directories( compare_dir_parent )
-    return list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs )
+    return list_all_in_subdirs( reference_dir, compare_dir_parent, subdirs, scenes )
     
     
         
@@ -227,7 +236,7 @@ def run():
     #print( list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] ) )
     #list = list_reference_comparisions( sys.argv[ 2 ], sys.argv[ 1 ] )
     #list = list_all( reference_dir, compare_dir_parent )
-    list = list_different_seeds( reference_dir, compare_dir_parent )
+    list = list_all( reference_dir, compare_dir_parent, [ "atom" ] )
     
     file = open("list.txt","w") 
     file.write( str( list ) )

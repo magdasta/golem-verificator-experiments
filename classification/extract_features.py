@@ -99,14 +99,14 @@ def crop_image( tile_x, tile_y, tiles, image, reference ):
     
 ## ======================= ##
 ## 
-def compare_images( reference_dir, compare_dir_parent, csv_file, features ):
+def compare_images( reference_dir, compare_dir_parent, csv_file, features, scenes ):
     
     create_directory_if_doesnt_exist( os.path.dirname( csv_file ) )
     
     errors_list = []
     num_crops = 10      # In one dimmension
     
-    compare_list = list_comparisions.list_all( reference_dir, compare_dir_parent )
+    compare_list = list_comparisions.list_all( reference_dir, compare_dir_parent, scenes )
     
     params = list( unique_params( compare_list ) )
     labels = list()
@@ -208,6 +208,7 @@ def run():
     reference_dir = sys.argv[ 1 ]
     compare_dir_parent = sys.argv[ 2 ]
     csv_file = sys.argv[ 3 ]
+    scenes = sys.argv[ 4: ]
     
     features = [    metrics.ssim.MetricSSIM,
                     metrics.psnr.MetricPSNR,
@@ -218,7 +219,7 @@ def run():
                     metrics.mass_center_distance.MetricMassCenterDistance  ]
 
     ft.save_all_feature_labels(features)
-    compare_images( reference_dir, compare_dir_parent, csv_file, features )
+    compare_images( reference_dir, compare_dir_parent, csv_file, features, scenes )
     
     convert_to_npy( csv_file )
         
