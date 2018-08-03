@@ -1,16 +1,10 @@
 import sys
 import math
+import numpy
 
 
 max_reputation = 10
 
-
-
-## ======================= ##
-##
-def increment_reputation_part( reputation_part ):
-
-    return 1 + 0.9 * reputation_part
 
 
 ## ======================= ##
@@ -24,7 +18,12 @@ def compute_number_crops( reputation, max_crops = 3, new_nodes_distrust = 1 ):
     
     sum = failed_timeout + failed_verification + failed + good
     
-    anti_reputation = failed_verification / sum
+    anti_reputation = 0
+    if sum > 10:
+        raise ValueError( "Sum of reputation coefficients exceeds maximal value = 10." )
+    if sum != 0:
+        anti_reputation = failed_verification / sum
+        
     history_len_coeff = 1 - sum / max_reputation
     
     print( "Anti reputation: " + str( anti_reputation ) )
@@ -45,7 +44,7 @@ def compute_number_crops( reputation, max_crops = 3, new_nodes_distrust = 1 ):
     num_crops = weighted_distrust * max_crops / range
     print( "Not rounded crops: " + str( num_crops ) )
     
-    return math.ceil( num_crops )
+    return numpy.clip( math.ceil( num_crops ), 1, max_crops )
 
 
 ## ======================= ##
