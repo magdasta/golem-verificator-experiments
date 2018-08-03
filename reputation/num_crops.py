@@ -24,25 +24,10 @@ def compute_number_crops( reputation, max_crops = 3, new_nodes_distrust = 1 ):
     if sum != 0:
         anti_reputation = failed_verification / sum
         
-    history_len_coeff = 1 - sum / max_reputation
-    
-    print( "Anti reputation: " + str( anti_reputation ) )
-    print( "History coeff: " + str( history_len_coeff ) )
-
-    weighted_distrust = 3 * anti_reputation #+ new_nodes_distrust * history_len_coeff
-    normalization_factor = 1
-    
-    print( "Weighted distrust " + str( weighted_distrust ) )
-    
-    weighted_distrust = math.sqrt( weighted_distrust / normalization_factor )
-    
-    print( "Weighted distrust exp " + str( weighted_distrust ) )
+    weighted_distrust = math.sqrt( 3 * anti_reputation )
     
     range = math.sqrt( 3 )
-    print( "Range: " + str( range ) )
-    
     num_crops = weighted_distrust * max_crops / range
-    print( "Not rounded crops: " + str( num_crops ) )
     
     return numpy.clip( math.ceil( num_crops ), 1, max_crops )
 
