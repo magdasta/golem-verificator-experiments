@@ -61,7 +61,7 @@ class DecisionTree:
         print( "Saving tree to file [" + file + "]" )
         
         dot_data = StringIO() 
-        tree.export_graphviz( self.clf, out_file=dot_data, feature_names = self.features_labels, rounded = True, filled = True, class_names = self.labels ) 
+        tree.export_graphviz( self.clf, out_file=dot_data, feature_names = self.features_labels, rounded = True, filled = True, class_names = self.labels, precision=6 ) 
         
         graph = pydot.graph_from_dot_data( dot_data.getvalue() )
         graph[ 0 ].write_pdf( file ) 
