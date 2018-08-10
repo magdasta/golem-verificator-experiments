@@ -1,4 +1,5 @@
 import numpy
+import math
 from skimage.measure import compare_psnr as compare_psnr
 
 import sys
@@ -20,6 +21,9 @@ class MetricPSNR:
         np_image2 = numpy.array( image2 )
         
         psnr = compare_psnr( np_image1, np_image2 )
+        
+        if math.isinf( psnr ):
+            psnr = numpy.finfo( numpy.float32 ).max
         
         result = dict()
         result[ "psnr" ] = psnr
