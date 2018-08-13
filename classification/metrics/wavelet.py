@@ -73,6 +73,9 @@ class MetricWavelet:
         np_image1 = numpy.array(image1)
         np_image2 = numpy.array(image2)
 
+        im_size = image1.size
+        rescale = im_size[ 0 ] * im_size[ 1 ]
+        
         result = dict()
         result["wavelet_db4_base"] = 0
         result["wavelet_db4_low"] = 0
@@ -92,6 +95,8 @@ class MetricWavelet:
             result[ "wavelet_db4_mid" ] = result[ "wavelet_db4_mid" ] + calculate_mse( coeff1, coeff2, 1 + len_div_3, 1 + len_two_thirds )
             result[ "wavelet_db4_high" ] = result[ "wavelet_db4_high" ] + calculate_mse( coeff1, coeff2, 1 + len_two_thirds, 1 + len_total )
 
+        result[ "wavelet_db4_base" ] = result[ "wavelet_db4_base" ] / rescale
+            
         #
         result["wavelet_sym2_base"] = 0
         result["wavelet_sym2_low"] = 0
@@ -111,6 +116,7 @@ class MetricWavelet:
             result[ "wavelet_sym2_mid" ] = result[ "wavelet_sym2_mid" ] + calculate_mse( coeff1, coeff2, 1 + len_div_3, 1 + len_two_thirds )
             result[ "wavelet_sym2_high" ] = result[ "wavelet_sym2_high" ] + calculate_mse( coeff1, coeff2, 1 + len_two_thirds, 1 + len_total )
             
+        result[ "wavelet_sym2_base" ] = result[ "wavelet_sym2_base" ] / rescale
             
         # Frequency metrics based on haar wavlets
         result[ "wavelet_haar_freq_x1" ] = 0
@@ -141,6 +147,8 @@ class MetricWavelet:
             result[ "wavelet_haar_mid" ] += calculate_mse( coeff1, coeff2, 1 + len_div_3, 1 + len_two_thirds )
             result[ "wavelet_haar_high" ] += calculate_mse( coeff1, coeff2, 1 + len_two_thirds, 1 + len_total )
 
+        result[ "wavelet_haar_base" ] = result[ "wavelet_haar_base" ] / rescale
+            
         return result
 
     ## ======================= ##
