@@ -217,7 +217,7 @@ def print_scenes( data ):
 ##
 def run():
 
-    filters = [ "blured", "watermark", "noise", "noise_colored", "noise_peak", "enhancedcolor", "enhancedcontrast", "enhancedbrightness", "randomobjects", "wavelet_denoise", "channelsswitched", "smoothed", "sharpened" ]
+    filters = [ "blured", "watermark", "noise", "noise_colored", "noise_peak", "enhancedcolor", "enhancedcontrast", "enhancedbrightness", "randomobjects", "wavelet_denoise", "channelsswitched", "smoothed", "sharpened", "scaled" ]
     
     #classifier = classifiers.ssim_threshold.ThresholdSSIM( 0.92 )
     classifier = classifiers.decision_tree.DecisionTree.load( sys.argv[ 2 ] )
