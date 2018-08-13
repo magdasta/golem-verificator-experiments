@@ -9,18 +9,30 @@ import optical_comparision.should_accept as accept
 
 ## ======================= ##
 ##
-test_set = { "metal", "mug", "toughship", "breakfast_room", "plushy", "glass_material" }
+test_set = { b"metal", b"mug", b"toughship", b"breakfast_room", b"plushy", b"glass_material" }
 
 
 ## ======================= ##
 ##
 def split_by_scenes( data, scenes ):
     
-    test_set = [ row for row in data if accept.get_scene_name( row[ "image" ].decode('UTF-8') ) in scenes ]
-    train_set = [ row for row in data if accept.get_scene_name( row[ "image" ].decode('UTF-8') ) not in scenes ]
+    if "scene" in data.dtype.names:
+        
+        test_mask = data[ "scene" ] == "not_existing_scene_to_create_empty_mask"
+        for scene in scenes:
+            test_mask = test_mask | ( data[ "scene" ] == scene )
     
-    return train_set, test_set
+        train_mask = ~test_mask
     
+        test_set = data[ test_mask ]
+        train_set = data[ train_mask ]
+    
+        return train_set, test_set
+    else:
+        test_set = [ row for row in data if accept.get_scene_name( row[ "image" ].decode('UTF-8') ) in scenes ]
+        train_set = [ row for row in data if accept.get_scene_name( row[ "image" ].decode('UTF-8') ) not in scenes ]
+        
+        return train_set, test_set
 
 ## ======================= ##
 ##
