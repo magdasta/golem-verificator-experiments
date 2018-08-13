@@ -2,6 +2,8 @@ import os
 import sys
 import traceback
 import csv
+import math
+import numpy
 
 from PIL import Image
 
@@ -127,6 +129,56 @@ def overwrite_features( data, metrics, features ):
     metrics_dict = select_metrics_features( metrics, features )
     return overwrite_features_impl( data, metrics_dict )
 
+    
+resolutions = {
+    b"atom" : [ 1280, 720 ],
+    b"barcelona" : [ 800, 600 ],
+    b"breakfast_room" : [ 800, 600 ],
+    b"bunkbed" : [ 800, 600 ],
+    b"car" : [ 1600, 1200 ],
+    b"cat" : [ 1600, 1200 ],
+    b"eco_light_bulb" : [ 800, 600 ],
+    b"french_woman" : [ 1920, 1080 ],
+    b"glass" : [ 800, 600 ],
+    b"glass_material" : [ 800, 600 ],
+    b"habitacion" : [ 800, 600 ],
+    b"head" : [ 600, 450 ],
+    b"interior" : [ 1497, 865 ],
+    b"metal" : [ 800, 600 ],
+    b"mug" : [ 800, 600 ],
+    b"office" : [ 800, 600 ],
+    b"plushy" : [ 400, 300 ],
+    b"ring" : [ 800, 600 ],
+    b"rocks" : [ 1920, 1080 ],
+    b"sea" : [ 800, 600 ],
+    b"shark" : [ 1920, 1080 ],
+    b"toughship" : [ 800, 600 ],
+    b"tree" : [ 800, 600 ]
+}
+
+    
+## ======================= ##
+##
+def fix_psnr_infs( data ):
+    
+    for row in data:
+        if math.isinf( row[ "psnr" ] ):
+            row[ "psnr" ] = numpy.finfo( numpy.float32 ).max
+        
+## ======================= ##
+##
+def rescale_wavelets_to_resolution( data, crop_divisor ):
+    
+    for row in data:
+        
+        resolution = resolutions[ row[ "scene" ] ]
+        rescale = 1 / ( resolution[ 0 ] * resolution[ 1 ] )
+        if row[ "is_cropped" ]:
+            rescale = crop_divisor * crop_divisor * rescale
+        
+        row[ "wavelet_sym2_base" ] = row[ "wavelet_sym2_base" ] * rescale
+        row[ "wavelet_db4_base" ] = row[ "wavelet_db4_base" ] * rescale
+        row[ "wavelet_haar_base" ] = row[ "wavelet_haar_base" ] * rescale
 
 ## ======================= ##
 ##
@@ -147,7 +199,11 @@ def run():
                     metrics.histograms_correlation.MetricHistogramsCorrelation,
                     metrics.mass_center_distance.MetricMassCenterDistance  ]
 
+                    
+    #fix_psnr_infs( data )
+    #rescale_wavelets_to_resolution( data, 13 )
 
+                    
     data = overwrite_features( data, metrics_obj, features )
     
     loading.save_binary( data, target_file )
