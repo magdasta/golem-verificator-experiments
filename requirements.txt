@@ -7,4 +7,5 @@ sklearn
 pydot
 Pillow==5.1.0
 scikit-image
+git+https://github.com/golemfactory/golem-verificator.git@master#egg=golem-verificator
 

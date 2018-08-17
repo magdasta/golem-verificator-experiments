@@ -9,13 +9,13 @@ from PIL import Image
 
 import extract_params as extr
 import list_comparisions
-import metrics.ssim
-import metrics.psnr
-import metrics.variance
-import metrics.edges
-import metrics.wavelet
-import metrics.histograms_correlation
-import metrics.mass_center_distance
+import golem_verificator.docker.blender.images.scripts.metrics.ssim
+import golem_verificator.docker.blender.images.scripts.metrics.psnr
+import golem_verificator.docker.blender.images.scripts.metrics.variance
+import golem_verificator.docker.blender.images.scripts.metrics.edges
+import golem_verificator.docker.blender.images.scripts.metrics.wavelet
+import golem_verificator.docker.blender.images.scripts.metrics.histograms_correlation
+import golem_verificator.docker.blender.images.scripts.metrics.mass_center_distance
 import features as ft
 
 import data_filtering
